@@ -49,6 +49,7 @@
     },
     "groupAdmin": {
       "inviteLinkLabel": "Invite link",
+      "predictLink": "Open predictions",
       "membersTitle": "Members",
       "noMembers": "No members yet."
     },
@@ -57,6 +58,22 @@
       "groupNameLabel": "Group: {name}",
       "joinButton": "Join this group",
       "joiningButton": "Joining..."
+    }
+  },
+  "Predictions": {
+    "title": "Match predictions",
+    "subtitle": "Submit your picks for {groupName}.",
+    "empty": "No upcoming matches available.",
+    "homeScore": "Home score",
+    "awayScore": "Away score",
+    "advancesLabel": "Team that advances",
+    "chooseTeam": "Select team",
+    "lockedLabel": "Locked",
+    "saveButton": "Save predictions",
+    "saveSaving": "Saving...",
+    "messages": {
+      "saveSuccess": "Predictions saved.",
+      "saveError": "Could not save predictions."
     }
   }
 }

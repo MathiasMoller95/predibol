@@ -49,6 +49,7 @@
     },
     "groupAdmin": {
       "inviteLinkLabel": "Link de convite",
+      "predictLink": "Abrir palpites",
       "membersTitle": "Membros",
       "noMembers": "Ainda nao ha membros."
     },
@@ -57,6 +58,22 @@
       "groupNameLabel": "Grupo: {name}",
       "joinButton": "Entrar neste grupo",
       "joiningButton": "Entrando..."
+    }
+  },
+  "Predictions": {
+    "title": "Palpites de partidas",
+    "subtitle": "Envie seus palpites para {groupName}.",
+    "empty": "Nao ha partidas futuras disponiveis.",
+    "homeScore": "Gols do mandante",
+    "awayScore": "Gols do visitante",
+    "advancesLabel": "Time que avanca",
+    "chooseTeam": "Selecionar time",
+    "lockedLabel": "Travado",
+    "saveButton": "Salvar palpites",
+    "saveSaving": "Salvando...",
+    "messages": {
+      "saveSuccess": "Palpites salvos.",
+      "saveError": "Nao foi possivel salvar os palpites."
     }
   }
 }

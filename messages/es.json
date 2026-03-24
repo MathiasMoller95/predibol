@@ -49,6 +49,7 @@
     },
     "groupAdmin": {
       "inviteLinkLabel": "Enlace de invitacion",
+      "predictLink": "Abrir pronosticos",
       "membersTitle": "Miembros",
       "noMembers": "Todavia no hay miembros."
     },
@@ -57,6 +58,22 @@
       "groupNameLabel": "Grupo: {name}",
       "joinButton": "Unirme a este grupo",
       "joiningButton": "Uniendote..."
+    }
+  },
+  "Predictions": {
+    "title": "Pronosticos de partidos",
+    "subtitle": "Envia tus pronosticos para {groupName}.",
+    "empty": "No hay partidos proximos disponibles.",
+    "homeScore": "Goles local",
+    "awayScore": "Goles visitante",
+    "advancesLabel": "Equipo que avanza",
+    "chooseTeam": "Seleccionar equipo",
+    "lockedLabel": "Bloqueado",
+    "saveButton": "Guardar pronosticos",
+    "saveSaving": "Guardando...",
+    "messages": {
+      "saveSuccess": "Pronosticos guardados.",
+      "saveError": "No se pudieron guardar los pronosticos."
     }
   }
 }

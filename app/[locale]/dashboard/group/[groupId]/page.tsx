@@ -63,6 +63,15 @@ export default async function GroupAdminPage({ params }: Props) {
         </div>
 
         <div className="mt-6">
+          <a
+            href={`/${locale}/dashboard/group/${typedGroup.id}/predict`}
+            className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
+          >
+            {t("groupAdmin.predictLink")}
+          </a>
+        </div>
+
+        <div className="mt-6">
           <h2 className="text-lg font-semibold text-slate-900">{t("groupAdmin.membersTitle")}</h2>
           {members && members.length > 0 ? (
             <ul className="mt-3 space-y-2">
