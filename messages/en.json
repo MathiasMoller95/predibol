@@ -14,5 +14,49 @@
     "loggedInAs": "Logged in as",
     "logoutButton": "Logout",
     "loggingOutButton": "Logging out..."
+  },
+  "Groups": {
+    "create": {
+      "title": "Create group",
+      "subtitle": "Set up your group scoring and invite your friends.",
+      "submit": "Create group",
+      "submitting": "Creating group..."
+    },
+    "fields": {
+      "name": "Group name",
+      "slug": "Slug",
+      "primaryColor": "Primary color",
+      "secondaryColor": "Secondary color",
+      "pointsCorrectResult": "Points for correct result",
+      "pointsCorrectDifference": "Points for correct goal difference",
+      "pointsExactScore": "Points for exact score",
+      "bonusChampion": "Bonus champion",
+      "bonusRunnerUp": "Bonus runner-up",
+      "bonusThirdPlace": "Bonus third place",
+      "bonusTopScorer": "Bonus top scorer",
+      "bonusBestPlayer": "Bonus best player",
+      "bonusBestGoalkeeper": "Bonus best goalkeeper",
+      "tiebreakerRule": "Tiebreaker rule"
+    },
+    "tiebreakers": {
+      "mostExactScores": "Most exact scores",
+      "mostCorrectResults": "Most correct results",
+      "earliestSubmission": "Earliest submission"
+    },
+    "errors": {
+      "missingRequired": "Please complete the required fields.",
+      "createFailed": "Could not create the group."
+    },
+    "groupAdmin": {
+      "inviteLinkLabel": "Invite link",
+      "membersTitle": "Members",
+      "noMembers": "No members yet."
+    },
+    "join": {
+      "title": "Join group",
+      "groupNameLabel": "Group: {name}",
+      "joinButton": "Join this group",
+      "joiningButton": "Joining..."
+    }
   }
 }

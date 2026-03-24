@@ -189,6 +189,13 @@ for select
 to authenticated
 using (admin_id = auth.uid());
 
+drop policy if exists groups_select_authenticated_for_join on public.groups;
+create policy groups_select_authenticated_for_join
+on public.groups
+for select
+to authenticated
+using (true);
+
 drop policy if exists groups_insert_self_admin on public.groups;
 create policy groups_insert_self_admin
 on public.groups

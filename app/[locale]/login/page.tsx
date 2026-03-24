@@ -2,11 +2,29 @@
 
 import { FormEvent, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+
+function getSafeNextPath(next: string | null, locale: string) {
+  if (!next) {
+    return null;
+  }
+
+  if (!next.startsWith(`/${locale}/`)) {
+    return null;
+  }
+
+  if (next.startsWith("//")) {
+    return null;
+  }
+
+  return next;
+}
 
 export default function LoginPage() {
   const t = useTranslations("Auth");
   const locale = useLocale();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -18,11 +36,17 @@ export default function LoginPage() {
     setError(null);
 
     const supabase = createClient();
-    const emailRedirectTo = `${window.location.origin}/${locale}/auth/callback`;
+    const callbackUrl = new URL(`/${locale}/auth/callback`, window.location.origin);
+    const nextPath = getSafeNextPath(searchParams.get("next"), locale);
+
+    if (nextPath) {
+      callbackUrl.searchParams.set("next", nextPath);
+    }
+
     const { error: signInError } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo,
+        emailRedirectTo: callbackUrl.toString(),
       },
     });
 

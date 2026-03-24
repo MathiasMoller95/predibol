@@ -14,5 +14,49 @@
     "loggedInAs": "Sesion iniciada como",
     "logoutButton": "Cerrar sesion",
     "loggingOutButton": "Cerrando sesion..."
+  },
+  "Groups": {
+    "create": {
+      "title": "Crear grupo",
+      "subtitle": "Configura la puntuacion de tu grupo e invita a tus amigos.",
+      "submit": "Crear grupo",
+      "submitting": "Creando grupo..."
+    },
+    "fields": {
+      "name": "Nombre del grupo",
+      "slug": "Slug",
+      "primaryColor": "Color primario",
+      "secondaryColor": "Color secundario",
+      "pointsCorrectResult": "Puntos por resultado correcto",
+      "pointsCorrectDifference": "Puntos por diferencia de goles correcta",
+      "pointsExactScore": "Puntos por marcador exacto",
+      "bonusChampion": "Bonus campeon",
+      "bonusRunnerUp": "Bonus subcampeon",
+      "bonusThirdPlace": "Bonus tercer lugar",
+      "bonusTopScorer": "Bonus goleador",
+      "bonusBestPlayer": "Bonus mejor jugador",
+      "bonusBestGoalkeeper": "Bonus mejor portero",
+      "tiebreakerRule": "Regla de desempate"
+    },
+    "tiebreakers": {
+      "mostExactScores": "Mas marcadores exactos",
+      "mostCorrectResults": "Mas resultados correctos",
+      "earliestSubmission": "Envio mas temprano"
+    },
+    "errors": {
+      "missingRequired": "Completa los campos obligatorios.",
+      "createFailed": "No se pudo crear el grupo."
+    },
+    "groupAdmin": {
+      "inviteLinkLabel": "Enlace de invitacion",
+      "membersTitle": "Miembros",
+      "noMembers": "Todavia no hay miembros."
+    },
+    "join": {
+      "title": "Unirse al grupo",
+      "groupNameLabel": "Grupo: {name}",
+      "joinButton": "Unirme a este grupo",
+      "joiningButton": "Uniendote..."
+    }
   }
 }
