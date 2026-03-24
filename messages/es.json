@@ -50,6 +50,8 @@
     "groupAdmin": {
       "inviteLinkLabel": "Enlace de invitacion",
       "predictLink": "Abrir pronosticos",
+      "leaderboardLink": "Clasificacion",
+      "picksLink": "Pronosticos previos",
       "membersTitle": "Miembros",
       "noMembers": "Todavia no hay miembros."
     },
@@ -58,6 +60,40 @@
       "groupNameLabel": "Grupo: {name}",
       "joinButton": "Unirme a este grupo",
       "joiningButton": "Uniendote..."
+    }
+  },
+  "Leaderboard": {
+    "title": "Clasificacion",
+    "subtitle": "Posiciones de {groupName}.",
+    "backToGroup": "Volver al grupo",
+    "openPredictions": "Pronosticos",
+    "empty": "Aun no hay clasificacion. Aparecera cuando se puntuen los partidos.",
+    "unknownMember": "—",
+    "youBadge": "Tu",
+    "colRank": "Pos.",
+    "colName": "Nombre",
+    "colPoints": "Puntos",
+    "colCorrectResults": "Aciertos",
+    "colExactScores": "Marcadores exactos",
+    "colPredictionsMade": "Pronosticos"
+  },
+  "Picks": {
+    "title": "Pronosticos previos al torneo",
+    "subtitle": "Tus pronosticos antes del inicio para {groupName}.",
+    "backToGroup": "Volver al grupo",
+    "lockedNotice": "El torneo ha comenzado. Los pronosticos previos estan bloqueados.",
+    "champion": "Campeon",
+    "runnerUp": "Subcampeon",
+    "thirdPlace": "Tercer lugar",
+    "topScorer": "Goleador",
+    "bestPlayer": "Mejor jugador",
+    "bestGoalkeeper": "Mejor portero",
+    "saveButton": "Guardar pronosticos",
+    "saveSaving": "Guardando...",
+    "messages": {
+      "saveSuccess": "Pronosticos guardados.",
+      "saveError": "No se pudieron guardar los pronosticos.",
+      "lockedError": "Los pronosticos estan bloqueados porque el torneo ha comenzado."
     }
   },
   "Predictions": {

@@ -50,6 +50,8 @@
     "groupAdmin": {
       "inviteLinkLabel": "Invite link",
       "predictLink": "Open predictions",
+      "leaderboardLink": "Leaderboard",
+      "picksLink": "Pre-tournament picks",
       "membersTitle": "Members",
       "noMembers": "No members yet."
     },
@@ -58,6 +60,40 @@
       "groupNameLabel": "Group: {name}",
       "joinButton": "Join this group",
       "joiningButton": "Joining..."
+    }
+  },
+  "Leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Standings for {groupName}.",
+    "backToGroup": "Back to group",
+    "openPredictions": "Predictions",
+    "empty": "No leaderboard rows yet. Predictions will appear here after matches are scored.",
+    "unknownMember": "—",
+    "youBadge": "You",
+    "colRank": "Rank",
+    "colName": "Name",
+    "colPoints": "Points",
+    "colCorrectResults": "Correct results",
+    "colExactScores": "Exact scores",
+    "colPredictionsMade": "Predictions"
+  },
+  "Picks": {
+    "title": "Pre-tournament picks",
+    "subtitle": "Your picks before kickoff for {groupName}.",
+    "backToGroup": "Back to group",
+    "lockedNotice": "The tournament has started. Pre-tournament picks are locked.",
+    "champion": "Champion",
+    "runnerUp": "Runner-up",
+    "thirdPlace": "Third place",
+    "topScorer": "Top scorer",
+    "bestPlayer": "Best player",
+    "bestGoalkeeper": "Best goalkeeper",
+    "saveButton": "Save picks",
+    "saveSaving": "Saving...",
+    "messages": {
+      "saveSuccess": "Picks saved.",
+      "saveError": "Could not save picks.",
+      "lockedError": "Picks are locked because the tournament has started."
     }
   },
   "Predictions": {

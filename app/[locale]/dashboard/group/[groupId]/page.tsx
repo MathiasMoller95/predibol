@@ -62,12 +62,24 @@ export default async function GroupAdminPage({ params }: Props) {
           <div className="mt-2 rounded-md bg-slate-100 p-3 text-sm text-slate-800">{invitePath}</div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap gap-2">
           <a
             href={`/${locale}/dashboard/group/${typedGroup.id}/predict`}
             className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
           >
             {t("groupAdmin.predictLink")}
+          </a>
+          <a
+            href={`/${locale}/dashboard/group/${typedGroup.id}/leaderboard`}
+            className="inline-flex rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+          >
+            {t("groupAdmin.leaderboardLink")}
+          </a>
+          <a
+            href={`/${locale}/dashboard/group/${typedGroup.id}/picks`}
+            className="inline-flex rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+          >
+            {t("groupAdmin.picksLink")}
           </a>
         </div>
 

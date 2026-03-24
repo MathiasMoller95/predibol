@@ -46,10 +46,15 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ ok: true });
   }
 
-  const matchIds = [...new Set(predictions.map((entry) => entry.matchId))];
+  const matchIds = Array.from(new Set(predictions.map((entry) => entry.matchId)));
   const { data: matches } = await supabase.from("matches").select("id,locked_at").in("id", matchIds);
 
-  const lockMap = new Map((matches ?? []).map((match) => [match.id, new Date(match.locked_at)]));
+  const lockMap = new Map(
+    (matches ?? []).map((match) => [
+      match.id,
+      match.locked_at != null ? new Date(match.locked_at) : new Date(0),
+    ]),
+  );
   const now = new Date();
   const rows = predictions
     .filter((entry) => {

@@ -50,6 +50,8 @@
     "groupAdmin": {
       "inviteLinkLabel": "Link de convite",
       "predictLink": "Abrir palpites",
+      "leaderboardLink": "Classificacao",
+      "picksLink": "Palpites pre-torneio",
       "membersTitle": "Membros",
       "noMembers": "Ainda nao ha membros."
     },
@@ -58,6 +60,40 @@
       "groupNameLabel": "Grupo: {name}",
       "joinButton": "Entrar neste grupo",
       "joiningButton": "Entrando..."
+    }
+  },
+  "Leaderboard": {
+    "title": "Classificacao",
+    "subtitle": "Tabela de {groupName}.",
+    "backToGroup": "Voltar ao grupo",
+    "openPredictions": "Palpites",
+    "empty": "Ainda nao ha classificacao. Aparecera quando as partidas forem pontuadas.",
+    "unknownMember": "—",
+    "youBadge": "Voce",
+    "colRank": "Pos.",
+    "colName": "Nome",
+    "colPoints": "Pontos",
+    "colCorrectResults": "Resultados certos",
+    "colExactScores": "Placares exatos",
+    "colPredictionsMade": "Palpites"
+  },
+  "Picks": {
+    "title": "Palpites pre-torneio",
+    "subtitle": "Seus palpites antes do apito inicial para {groupName}.",
+    "backToGroup": "Voltar ao grupo",
+    "lockedNotice": "O torneio comecou. Os palpites pre-torneio estao bloqueados.",
+    "champion": "Campeao",
+    "runnerUp": "Vice-campeao",
+    "thirdPlace": "Terceiro lugar",
+    "topScorer": "Artilheiro",
+    "bestPlayer": "Melhor jogador",
+    "bestGoalkeeper": "Melhor goleiro",
+    "saveButton": "Salvar palpites",
+    "saveSaving": "Salvando...",
+    "messages": {
+      "saveSuccess": "Palpites salvos.",
+      "saveError": "Nao foi possivel salvar os palpites.",
+      "lockedError": "Os palpites estao bloqueados porque o torneio comecou."
     }
   },
   "Predictions": {

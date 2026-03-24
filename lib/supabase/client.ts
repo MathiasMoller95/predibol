@@ -1,17 +1,9 @@
 import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/supabase";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/supabase/env";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl) {
-  throw new Error("Missing environment variable: NEXT_PUBLIC_SUPABASE_URL");
-}
-
-if (!supabaseAnonKey) {
-  throw new Error("Missing environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY");
-}
-
-export function createClient() {
-  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
+export function createClient(): SupabaseClient<Database> {
+  // @supabase/ssr ships untyped JS; assert so query builders use Database.
+  return createBrowserClient(SUPABASE_URL, SUPABASE_ANON_KEY) as SupabaseClient<Database>;
 }
