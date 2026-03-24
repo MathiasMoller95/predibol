@@ -1,5 +1,18 @@
 {
   "Home": {
     "welcome": "Bem-vindo ao Predibol"
+  },
+  "Auth": {
+    "loginTitle": "Entrar",
+    "loginSubtitle": "Entre com seu link magico por e-mail.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "voce@exemplo.com",
+    "sendLinkButton": "Enviar link de acesso",
+    "sendingButton": "Enviando...",
+    "checkEmailConfirmation": "Verifique seu e-mail para o link de acesso",
+    "dashboardTitle": "Painel",
+    "loggedInAs": "Conectado como",
+    "logoutButton": "Sair",
+    "loggingOutButton": "Saindo..."
   }
 }

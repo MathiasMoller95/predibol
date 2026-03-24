@@ -1,5 +1,18 @@
 {
   "Home": {
     "welcome": "Bienvenido a Predibol"
+  },
+  "Auth": {
+    "loginTitle": "Iniciar sesion",
+    "loginSubtitle": "Inicia sesion con un enlace magico por correo.",
+    "emailLabel": "Correo electronico",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "sendLinkButton": "Enviar enlace de acceso",
+    "sendingButton": "Enviando...",
+    "checkEmailConfirmation": "Revisa tu correo para el enlace de acceso",
+    "dashboardTitle": "Panel",
+    "loggedInAs": "Sesion iniciada como",
+    "logoutButton": "Cerrar sesion",
+    "loggingOutButton": "Cerrando sesion..."
   }
 }

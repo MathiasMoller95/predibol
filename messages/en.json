@@ -1,5 +1,18 @@
 {
   "Home": {
     "welcome": "Welcome to Predibol"
+  },
+  "Auth": {
+    "loginTitle": "Login",
+    "loginSubtitle": "Sign in with your email magic link.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "sendLinkButton": "Send login link",
+    "sendingButton": "Sending...",
+    "checkEmailConfirmation": "Check your email for the login link",
+    "dashboardTitle": "Dashboard",
+    "loggedInAs": "Logged in as",
+    "logoutButton": "Logout",
+    "loggingOutButton": "Logging out..."
   }
 }
