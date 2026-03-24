@@ -1,0 +1,7 @@
+# Supabase CLI — https://supabase.com/docs/guides/cli/config
+#
+# Deploy Edge Function secrets (Dashboard or CLI):
+#   supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
+
+[functions.score-match]
+verify_jwt = true
