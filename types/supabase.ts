@@ -261,7 +261,18 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      get_group_public_by_slug: {
+        Args: { _slug: string };
+        Returns: {
+          id: string;
+          name: string;
+          slug: string;
+          primary_color: string | null;
+          secondary_color: string | null;
+          admin_id: string;
+          created_at: string;
+        }[];
+      };
     };
     Enums: {
       match_phase: MatchPhase;

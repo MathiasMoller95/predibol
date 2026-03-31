@@ -15,6 +15,23 @@
     "logoutButton": "Sair",
     "loggingOutButton": "Saindo..."
   },
+  "LoginPage": {
+    "title": "Bem-vindo ao Predibol",
+    "subtitle": "Digite seu e-mail e enviaremos um link para entrar ou criar sua conta.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "voce@exemplo.com",
+    "sendLinkButton": "Enviar link de acesso",
+    "sendingButton": "Enviando...",
+    "checkEmailConfirmation": "Verifique seu e-mail para o link de acesso",
+    "footerNote": "Sem senha — enviaremos um link magico por e-mail.",
+    "linkExpired": "Seu link expirou. Solicite um novo.",
+    "accessDenied": "Acesso negado. Solicite um novo link.",
+    "genericError": "Algo deu errado. Tente novamente."
+  },
+  "Navbar": {
+    "logout": "Sair",
+    "myGroups": "Meus Grupos"
+  },
   "Groups": {
     "create": {
       "title": "Criar grupo",
@@ -49,9 +66,12 @@
     },
     "groupAdmin": {
       "inviteLinkLabel": "Link de convite",
-      "predictLink": "Abrir palpites",
-      "leaderboardLink": "Classificacao",
-      "picksLink": "Palpites pre-torneio",
+      "copyLink": "Copiar link",
+      "copied": "✓ Copiado!",
+      "predictLink": "Vamos jogar!",
+      "leaderboardLink": "Ranking",
+      "picksLink": "Campeao e mais",
+      "manageResults": "Admin",
       "membersTitle": "Membros",
       "noMembers": "Ainda nao ha membros."
     },
@@ -110,6 +130,55 @@
     "messages": {
       "saveSuccess": "Palpites salvos.",
       "saveError": "Nao foi possivel salvar os palpites."
-    }
+    },
+    "groupLabel": "Grupo {letter}",
+    "groupProgress": "{count}/6 palpites",
+    "backToGroups": "Voltar aos grupos",
+    "knockoutTitle": "Fase eliminatoria"
+  },
+  "AdminPage": {
+    "title": "Painel administrativo",
+    "pendingPredictions": "Palpites pendentes",
+    "predictionsSubmitted": "{count} / {total} palpites enviados",
+    "allPredictionsIn": "Todos os palpites enviados",
+    "matchResults": "Lancamento de resultados",
+    "homeScore": "Gols do mandante",
+    "awayScore": "Gols do visitante",
+    "markFinished": "Marcar como finalizada",
+    "finished": "Finalizada",
+    "scheduled": "Agendada",
+    "live": "Ao vivo",
+    "confirmTitle": "Confirmar resultado",
+    "confirmMessage": "Marcar {home} vs {away} como finalizada com placar {homeScore}-{awayScore}? Isso acionara a pontuacao de todos os palpites.",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "success": "Resultado salvo. Os pontos estao sendo calculados.",
+    "error": "Nao foi possivel salvar o resultado. Tente novamente.",
+    "noUpcoming": "Nao ha partidas futuras",
+    "manageResults": "Gerenciar resultados",
+    "notAdmin": "Voce nao e o administrador deste grupo."
+  },
+  "Dashboard": {
+    "title": "Meus grupos",
+    "subtitle": "Copa do Mundo 2026",
+    "createGroup": "Criar grupo",
+    "emptyTitle": "Voce ainda nao entrou em nenhum grupo",
+    "emptyDescription": "Entre com um link de convite ou crie seu proprio grupo.",
+    "rank": "#{rank} de {total}",
+    "noRank": "— / {total}",
+    "points": "{points} pts",
+    "nextMatch": "Proxima partida",
+    "noUpcomingMatches": "Nao ha partidas futuras",
+    "predictionSubmitted": "Palpite enviado",
+    "predictionMissing": "Falta palpite",
+    "predict": "Vamos jogar!",
+    "leaderboard": "Ranking",
+    "picks": "Campeao e mais",
+    "admin": "Admin",
+    "nextMatchDate": "Proxima: {home} vs {away}"
+  },
+  "Common": {
+    "backToGroups": "← Meus Grupos",
+    "backToGroup": "← Voltar para {groupName}"
   }
 }

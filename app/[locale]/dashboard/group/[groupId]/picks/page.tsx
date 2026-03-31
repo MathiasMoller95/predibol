@@ -19,6 +19,7 @@ export default async function GroupPicksPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Picks");
+  const common = await getTranslations("Common");
   const supabase = await createClient();
   const {
     data: { user },
@@ -72,6 +73,12 @@ export default async function GroupPicksPage({ params }: Props) {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
+        <Link
+          href={`/${locale}/dashboard/group/${groupId}`}
+          className="text-sm font-medium text-slate-500 hover:text-slate-700"
+        >
+          {common("backToGroup", { groupName: typedGroup.name })}
+        </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>

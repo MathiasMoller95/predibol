@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import InviteLink from "./invite-link";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -10,6 +12,7 @@ type GroupRecord = {
   id: string;
   name: string;
   slug: string;
+  admin_id: string;
 };
 
 type GroupMemberRecord = {
@@ -22,6 +25,7 @@ export default async function GroupAdminPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Groups");
+  const common = await getTranslations("Common");
   const supabase = await createClient();
   const {
     data: { user },
@@ -33,7 +37,7 @@ export default async function GroupAdminPage({ params }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,slug")
+    .select("id,name,slug,admin_id")
     .eq("id", groupId)
     .single();
 
@@ -50,16 +54,17 @@ export default async function GroupAdminPage({ params }: Props) {
     .order("joined_at", { ascending: true })
     .returns<GroupMemberRecord[]>();
 
-  const invitePath = `/${locale}/join/${typedGroup.slug}`;
-
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8">
       <section className="mx-auto w-full max-w-2xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
+        <Link href={`/${locale}/dashboard`} className="text-sm font-medium text-slate-500 hover:text-slate-700">
+          {common("backToGroups")}
+        </Link>
         <h1 className="text-2xl font-semibold text-slate-900">{typedGroup.name}</h1>
 
         <div className="mt-6">
           <p className="text-sm font-medium text-slate-700">{t("groupAdmin.inviteLinkLabel")}</p>
-          <div className="mt-2 rounded-md bg-slate-100 p-3 text-sm text-slate-800">{invitePath}</div>
+          <InviteLink locale={locale} slug={typedGroup.slug} />
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
@@ -81,6 +86,14 @@ export default async function GroupAdminPage({ params }: Props) {
           >
             {t("groupAdmin.picksLink")}
           </a>
+          {typedGroup.admin_id === user.id ? (
+            <a
+              href={`/${locale}/dashboard/group/${typedGroup.id}/admin`}
+              className="inline-flex rounded-md border border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-900 transition hover:bg-indigo-100"
+            >
+              {t("groupAdmin.manageResults")}
+            </a>
+          ) : null}
         </div>
 
         <div className="mt-6">

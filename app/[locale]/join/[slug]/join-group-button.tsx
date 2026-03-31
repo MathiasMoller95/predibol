@@ -7,7 +7,9 @@ import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   groupId: string;
+  slug: string;
   autoJoin: boolean;
+  isLoggedIn: boolean;
 };
 
 function getDisplayName(email: string | undefined, metadata: Record<string, unknown> | undefined) {
@@ -29,7 +31,7 @@ function getDisplayName(email: string | undefined, metadata: Record<string, unkn
   return "Player";
 }
 
-export default function JoinGroupButton({ groupId, autoJoin }: Props) {
+export default function JoinGroupButton({ groupId, slug, autoJoin, isLoggedIn }: Props) {
   const t = useTranslations("Groups");
   const locale = useLocale();
   const router = useRouter();
@@ -43,6 +45,13 @@ export default function JoinGroupButton({ groupId, autoJoin }: Props) {
 
     setIsJoining(true);
     setError(null);
+
+    if (!isLoggedIn) {
+      const nextPath = `/${locale}/join/${slug}?autoJoin=1`;
+      router.replace(`/${locale}/login?next=${encodeURIComponent(nextPath)}`);
+      return;
+    }
+
     const supabase = createClient();
     const {
       data: { user },
@@ -50,7 +59,8 @@ export default function JoinGroupButton({ groupId, autoJoin }: Props) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      router.replace(`/${locale}/login`);
+      const nextPath = `/${locale}/join/${slug}?autoJoin=1`;
+      router.replace(`/${locale}/login?next=${encodeURIComponent(nextPath)}`);
       return;
     }
 
@@ -66,7 +76,7 @@ export default function JoinGroupButton({ groupId, autoJoin }: Props) {
       return;
     }
 
-    router.replace(`/${locale}/dashboard`);
+    router.replace(`/${locale}/dashboard/group/${groupId}`);
   }
 
   useEffect(() => {

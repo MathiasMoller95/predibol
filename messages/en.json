@@ -15,6 +15,23 @@
     "logoutButton": "Logout",
     "loggingOutButton": "Logging out..."
   },
+  "LoginPage": {
+    "title": "Welcome to Predibol",
+    "subtitle": "Enter your email and we'll send you a link to sign in or create your account.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "sendLinkButton": "Send login link",
+    "sendingButton": "Sending...",
+    "checkEmailConfirmation": "Check your email for the login link",
+    "footerNote": "No password needed — we'll send you a magic link by email.",
+    "linkExpired": "Your link has expired. Please request a new one.",
+    "accessDenied": "Access denied. Please request a new link.",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "Navbar": {
+    "logout": "Log out",
+    "myGroups": "My Groups"
+  },
   "Groups": {
     "create": {
       "title": "Create group",
@@ -49,9 +66,12 @@
     },
     "groupAdmin": {
       "inviteLinkLabel": "Invite link",
-      "predictLink": "Open predictions",
-      "leaderboardLink": "Leaderboard",
-      "picksLink": "Pre-tournament picks",
+      "copyLink": "Copy link",
+      "copied": "✓ Copied!",
+      "predictLink": "Let's play!",
+      "leaderboardLink": "Ranking",
+      "picksLink": "Champion & more",
+      "manageResults": "Admin",
       "membersTitle": "Members",
       "noMembers": "No members yet."
     },
@@ -110,6 +130,55 @@
     "messages": {
       "saveSuccess": "Predictions saved.",
       "saveError": "Could not save predictions."
-    }
+    },
+    "groupLabel": "Group {letter}",
+    "groupProgress": "{count}/6 predicted",
+    "backToGroups": "Back to groups",
+    "knockoutTitle": "Knockout stage"
+  },
+  "AdminPage": {
+    "title": "Admin Panel",
+    "pendingPredictions": "Pending Predictions",
+    "predictionsSubmitted": "{count} / {total} predictions submitted",
+    "allPredictionsIn": "All predictions in",
+    "matchResults": "Match Results",
+    "homeScore": "Home score",
+    "awayScore": "Away score",
+    "markFinished": "Mark as Finished",
+    "finished": "Finished",
+    "scheduled": "Scheduled",
+    "live": "Live",
+    "confirmTitle": "Confirm Result",
+    "confirmMessage": "Mark {home} vs {away} as finished with score {homeScore}-{awayScore}? This will trigger scoring for all predictions.",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "success": "Match result saved. Scores are being calculated.",
+    "error": "Failed to save result. Please try again.",
+    "noUpcoming": "No upcoming matches",
+    "manageResults": "Manage Results",
+    "notAdmin": "You are not the admin of this group."
+  },
+  "Dashboard": {
+    "title": "My Groups",
+    "subtitle": "World Cup 2026",
+    "createGroup": "Create Group",
+    "emptyTitle": "You haven't joined any groups yet",
+    "emptyDescription": "Join a group using an invite link or create your own.",
+    "rank": "#{rank} of {total}",
+    "noRank": "— / {total}",
+    "points": "{points} pts",
+    "nextMatch": "Next match",
+    "noUpcomingMatches": "No upcoming matches",
+    "predictionSubmitted": "Prediction submitted",
+    "predictionMissing": "Prediction missing",
+    "predict": "Let's play!",
+    "leaderboard": "Ranking",
+    "picks": "Champion & more",
+    "admin": "Admin",
+    "nextMatchDate": "Next: {home} vs {away}"
+  },
+  "Common": {
+    "backToGroups": "← My Groups",
+    "backToGroup": "← Back to {groupName}"
   }
 }
