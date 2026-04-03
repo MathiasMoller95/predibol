@@ -129,7 +129,8 @@
     "errors": {
       "missingRequired": "Preencha os campos obrigatorios.",
       "createFailed": "Nao foi possivel criar o grupo.",
-      "memberSaveFailed": "O grupo foi criado, mas nao foi possivel adicionar voce como membro. Tente pelo link de convite."
+      "memberSaveFailed": "O grupo foi criado, mas nao foi possivel adicionar voce como membro. Tente pelo link de convite.",
+      "duplicateSlug": "Esse identificador do grupo ja esta em uso. Escolha outro unico (por exemplo adicione um numero ou uma palavra)."
     },
     "groupAdmin": {
       "inviteLinkLabel": "Link de convite",

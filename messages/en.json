@@ -129,7 +129,8 @@
     "errors": {
       "missingRequired": "Please complete the required fields.",
       "createFailed": "Could not create the group.",
-      "memberSaveFailed": "The group was created but we could not add you as a member. Try joining from the invite link or contact support."
+      "memberSaveFailed": "The group was created but we could not add you as a member. Try joining from the invite link or contact support.",
+      "duplicateSlug": "That group link is already taken. Change the slug to something unique (for example add a number or word)."
     },
     "groupAdmin": {
       "inviteLinkLabel": "Invite link",

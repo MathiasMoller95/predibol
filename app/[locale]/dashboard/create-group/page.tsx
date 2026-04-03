@@ -68,6 +68,19 @@ function adminDisplayNameFromEmail(email: string | undefined) {
   return "Player";
 }
 
+/** Maps Supabase/Postgres errors from `groups.insert` to user-facing copy (avoids raw SQL in the UI). */
+function messageForGroupInsertError(
+  err: { message?: string; code?: string } | null,
+  t: (key: "errors.createFailed" | "errors.duplicateSlug") => string
+): string {
+  if (!err) return t("errors.createFailed");
+  const msg = err.message ?? "";
+  if (err.code === "23505" && (msg.includes("groups_slug_key") || /unique constraint.*slug/i.test(msg))) {
+    return t("errors.duplicateSlug");
+  }
+  return msg || t("errors.createFailed");
+}
+
 export default function CreateGroupPage() {
   const t = useTranslations("Groups");
   const tc = useTranslations("CreateGroup");
@@ -144,7 +157,7 @@ export default function CreateGroupPage() {
       .single();
 
     if (groupError || !group?.id) {
-      setError(groupError?.message ?? t("errors.createFailed"));
+      setError(messageForGroupInsertError(groupError, t));
       setIsSubmitting(false);
       return;
     }

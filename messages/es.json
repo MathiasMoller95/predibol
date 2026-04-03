@@ -128,7 +128,9 @@
     },
     "errors": {
       "missingRequired": "Completa los campos obligatorios.",
-      "createFailed": "No se pudo crear el grupo."
+      "createFailed": "No se pudo crear el grupo.",
+      "memberSaveFailed": "El grupo se creo pero no pudimos anadirte como miembro. Prueba unirte desde el enlace de invitacion.",
+      "duplicateSlug": "Ese identificador (slug) ya esta en uso. Cambialo por otro unico (por ejemplo anade un numero o una palabra)."
     },
     "groupAdmin": {
       "inviteLinkLabel": "Enlace de invitacion",
