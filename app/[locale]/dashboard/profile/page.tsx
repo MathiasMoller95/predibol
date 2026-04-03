@@ -22,10 +22,12 @@ export default async function ProfilePage({ params }: Props) {
     redirect(`/${locale}/login`);
   }
 
-  const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("profiles").select("display_name,timezone").eq("id", user.id).maybeSingle();
 
   const initial =
     profile?.display_name?.trim() || emailPrefix(user.email);
+
+  const initialTimezone = (profile?.timezone as string | undefined)?.trim() || "Europe/Madrid";
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8">
@@ -33,7 +35,7 @@ export default async function ProfilePage({ params }: Props) {
         <p className="text-center text-sm font-semibold tracking-tight text-emerald-700">Predibol</p>
         <h1 className="mt-4 text-2xl font-semibold text-slate-900">{t("title")}</h1>
         <div className="mt-6">
-          <ProfileForm initialDisplayName={initial} email={user.email ?? ""} />
+          <ProfileForm initialDisplayName={initial} initialTimezone={initialTimezone} email={user.email ?? ""} />
         </div>
       </section>
     </main>

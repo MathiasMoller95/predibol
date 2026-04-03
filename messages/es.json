@@ -66,7 +66,9 @@
     "continue": "Continuar",
     "saving": "Guardando...",
     "tooShort": "El nombre debe tener al menos 2 caracteres.",
-    "tooLong": "El nombre no puede superar 30 caracteres."
+    "tooLong": "El nombre no puede superar 30 caracteres.",
+    "timezoneLabel": "Tu zona horaria",
+    "timezonePreview": "Ahora son las {time} en tu zona horaria"
   },
   "Profile": {
     "title": "Tu perfil",
@@ -78,7 +80,9 @@
     "logout": "Cerrar sesion",
     "dangerZone": "Zona de peligro",
     "tooShort": "El nombre debe tener al menos 2 caracteres.",
-    "tooLong": "El nombre no puede superar 30 caracteres."
+    "tooLong": "El nombre no puede superar 30 caracteres.",
+    "timezoneLabel": "Tu zona horaria",
+    "timezonePreview": "Ahora son las {time} en tu zona horaria"
   },
   "CreateGroup": {
     "visibility": "Visibilidad",
@@ -226,16 +230,20 @@
     "groupProgress": "{count}/6 pronosticados",
     "backToGroups": "Volver a grupos",
     "knockoutTitle": "Fase eliminatoria",
-    "tapToPredict": "Toca para pronosticar →",
+    "tapToPredict": "Toca para jugar →",
     "allPredicted": "✓ Todo pronosticado — toca para editar",
-    "continuePredicting": "Continuar pronosticando →",
+    "continuePredicting": "Continuar jugando →",
     "vs": "VS",
     "save": "Guardar",
     "update": "Actualizar",
-    "saveAll": "Guardar todos los pron?sticos del Grupo {group}",
-    "saved": "?Pron?sticos guardados!",
+    "saveAll": "Guardar todos los pronósticos del Grupo {group}",
+    "saved": "Pronósticos guardados!",
     "locked": "Bloqueado",
-    "matchDate": "{date}"
+    "matchDate": "{date}",
+    "marketOdds": "Mercado",
+    "aiPrediction": "IA",
+    "draw": "Empate",
+    "groupFavorite": "Fav"
   },
   "AdminPage": {
     "title": "Panel de administracion",

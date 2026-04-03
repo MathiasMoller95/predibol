@@ -22,6 +22,11 @@ type MatchRecord = {
   match_time: string;
   locked_at: string;
   status: string;
+  home_win_odds: number | null;
+  draw_odds: number | null;
+  away_win_odds: number | null;
+  ai_home_score: number | null;
+  ai_away_score: number | null;
 };
 
 type PredictionRecord = {
@@ -68,10 +73,15 @@ export default async function GroupPredictPage({ params }: Props) {
     redirect(`/${locale}/dashboard`);
   }
 
+  const { data: profileRow } = await supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle();
+  const profileTimeZone = ((profileRow?.timezone as string | undefined) ?? "").trim() || null;
+
   const nowIso = new Date().toISOString();
   const { data: matches } = await supabase
     .from("matches")
-    .select("id,phase,home_team,away_team,match_time,locked_at,status")
+    .select(
+      "id,phase,home_team,away_team,match_time,locked_at,status,home_win_odds,draw_odds,away_win_odds,ai_home_score,ai_away_score",
+    )
     .gte("match_time", nowIso)
     .order("match_time", { ascending: true });
 
@@ -102,7 +112,7 @@ export default async function GroupPredictPage({ params }: Props) {
         <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
         <p className="mt-1 text-sm text-slate-600">{t("subtitle", { groupName: typedGroup.name })}</p>
 
-        <PredictForm matches={typedMatches} initialPredictions={predictions} />
+        <PredictForm matches={typedMatches} initialPredictions={predictions} profileTimeZone={profileTimeZone} />
       </section>
     </main>
   );

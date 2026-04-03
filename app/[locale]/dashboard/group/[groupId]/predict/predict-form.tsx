@@ -1,7 +1,10 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { formatMatchTime } from "@/lib/format-match-time";
+import { formatGroupOddsCompactLine } from "@/lib/group-match-odds";
+import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 import { getFlag, getGroup } from "@/lib/team-metadata";
 
 type MatchRecord = {
@@ -12,6 +15,11 @@ type MatchRecord = {
   match_time: string;
   locked_at: string;
   status: string;
+  home_win_odds: number | null;
+  draw_odds: number | null;
+  away_win_odds: number | null;
+  ai_home_score: number | null;
+  ai_away_score: number | null;
 };
 
 type PredictionRecord = {
@@ -24,6 +32,7 @@ type PredictionRecord = {
 type Props = {
   matches: MatchRecord[];
   initialPredictions: PredictionRecord[];
+  profileTimeZone: string | null;
 };
 
 type PredictionInput = {
@@ -63,9 +72,10 @@ function toPayload(match: MatchRecord, input: PredictionInput | undefined): Pred
   };
 }
 
-export default function PredictForm({ matches, initialPredictions }: Props) {
+export default function PredictForm({ matches, initialPredictions, profileTimeZone }: Props) {
   const locale = useLocale();
   const t = useTranslations("Predictions");
+  const effectiveTz = useEffectiveTimeZone(profileTimeZone);
   const [isSaving, setIsSaving] = useState(false);
   const [savingMatchId, setSavingMatchId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -207,14 +217,7 @@ export default function PredictForm({ matches, initialPredictions }: Props) {
   }
 
   function formatMatchWhen(match: MatchRecord) {
-    return new Intl.DateTimeFormat(locale, {
-      day: "numeric",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZoneName: "short",
-    }).format(new Date(match.match_time));
+    return formatMatchTime(match.match_time, effectiveTz, locale);
   }
 
   const showGlobalSave =
@@ -310,6 +313,44 @@ export default function PredictForm({ matches, initialPredictions }: Props) {
                         />
                       )}
 
+                      {match.home_win_odds != null &&
+                      match.draw_odds != null &&
+                      match.away_win_odds != null ? (
+                        <div className="mt-4 rounded-lg bg-slate-100/90 px-3 py-2.5 text-xs text-slate-700 ring-1 ring-slate-200/80">
+                          <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                            📊 {t("marketOdds")}
+                          </p>
+                          <div className="grid grid-cols-3 gap-1 text-center tabular-nums sm:gap-2">
+                            <div>
+                              <span className="mr-0.5" aria-hidden>
+                                {getFlag(match.home_team)}
+                              </span>
+                              {Number(match.home_win_odds).toFixed(2)}
+                            </div>
+                            <div className="text-slate-600">
+                              {t("draw")} {Number(match.draw_odds).toFixed(2)}
+                            </div>
+                            <div>
+                              <span className="mr-0.5" aria-hidden>
+                                {getFlag(match.away_team)}
+                              </span>
+                              {Number(match.away_win_odds).toFixed(2)}
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {match.ai_home_score != null && match.ai_away_score != null ? (
+                        <div className="mt-3 rounded-lg bg-indigo-50 px-3 py-2.5 text-xs text-indigo-950 ring-1 ring-indigo-100">
+                          <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-indigo-700/90">
+                            🤖 {t("aiPrediction")}
+                          </p>
+                          <p className="text-sm">
+                            🤖 {match.home_team} {match.ai_home_score} - {match.ai_away_score} {match.away_team}
+                          </p>
+                        </div>
+                      ) : null}
+
                       {lockPassed ? (
                         <p className="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-slate-600">
                           <span aria-hidden>🔒</span>
@@ -364,6 +405,8 @@ export default function PredictForm({ matches, initialPredictions }: Props) {
                     ? "text-amber-700"
                     : "text-emerald-600";
 
+                const oddsLine = formatGroupOddsCompactLine(group.teams, group.matches);
+
                 return (
                   <button
                     key={group.letter}
@@ -394,6 +437,11 @@ export default function PredictForm({ matches, initialPredictions }: Props) {
                         </li>
                       ))}
                     </ul>
+                    {oddsLine ? (
+                      <p className="mt-1.5 truncate text-[10px] leading-tight text-slate-500" title={oddsLine}>
+                        {oddsLine}
+                      </p>
+                    ) : null}
                     <p className="mt-2 text-xs text-slate-600">{t("groupProgress", { count: group.predictedCount })}</p>
                     <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-2">
                       <span className={`text-xs font-medium leading-snug ${ctaClass}`}>{ctaText}</span>
@@ -460,6 +508,42 @@ export default function PredictForm({ matches, initialPredictions }: Props) {
                       />
                     </label>
                   </div>
+
+                  {match.home_win_odds != null &&
+                  match.draw_odds != null &&
+                  match.away_win_odds != null ? (
+                    <div className="mt-3 rounded-lg bg-slate-100/90 px-3 py-2 text-[11px] text-slate-700 ring-1 ring-slate-200/80">
+                      <p className="mb-1.5 font-medium uppercase tracking-wide text-slate-500">📊 {t("marketOdds")}</p>
+                      <div className="grid grid-cols-3 gap-1 text-center tabular-nums">
+                        <div>
+                          <span className="mr-0.5" aria-hidden>
+                            {getFlag(match.home_team)}
+                          </span>
+                          {Number(match.home_win_odds).toFixed(2)}
+                        </div>
+                        <div className="text-slate-600">
+                          {t("draw")} {Number(match.draw_odds).toFixed(2)}
+                        </div>
+                        <div>
+                          <span className="mr-0.5" aria-hidden>
+                            {getFlag(match.away_team)}
+                          </span>
+                          {Number(match.away_win_odds).toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {match.ai_home_score != null && match.ai_away_score != null ? (
+                    <div className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs text-indigo-950 ring-1 ring-indigo-100">
+                      <p className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-indigo-700/90">
+                        🤖 {t("aiPrediction")}
+                      </p>
+                      <p>
+                        🤖 {match.home_team} {match.ai_home_score} - {match.ai_away_score} {match.away_team}
+                      </p>
+                    </div>
+                  ) : null}
 
                   <label className="mt-3 block text-xs text-slate-700">
                     {t("advancesLabel")}
@@ -552,6 +636,42 @@ export default function PredictForm({ matches, initialPredictions }: Props) {
                           />
                         </label>
                       </div>
+
+                      {match.home_win_odds != null &&
+                      match.draw_odds != null &&
+                      match.away_win_odds != null ? (
+                        <div className="mt-3 rounded-lg bg-slate-100/90 px-3 py-2 text-[11px] text-slate-700 ring-1 ring-slate-200/80">
+                          <p className="mb-1.5 font-medium uppercase tracking-wide text-slate-500">📊 {t("marketOdds")}</p>
+                          <div className="grid grid-cols-3 gap-1 text-center tabular-nums">
+                            <div>
+                              <span className="mr-0.5" aria-hidden>
+                                {getFlag(match.home_team)}
+                              </span>
+                              {Number(match.home_win_odds).toFixed(2)}
+                            </div>
+                            <div className="text-slate-600">
+                              {t("draw")} {Number(match.draw_odds).toFixed(2)}
+                            </div>
+                            <div>
+                              <span className="mr-0.5" aria-hidden>
+                                {getFlag(match.away_team)}
+                              </span>
+                              {Number(match.away_win_odds).toFixed(2)}
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {match.ai_home_score != null && match.ai_away_score != null ? (
+                        <div className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs text-indigo-950 ring-1 ring-indigo-100">
+                          <p className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-indigo-700/90">
+                            🤖 {t("aiPrediction")}
+                          </p>
+                          <p>
+                            🤖 {match.home_team} {match.ai_home_score} - {match.ai_away_score} {match.away_team}
+                          </p>
+                        </div>
+                      ) : null}
 
                       {match.phase !== "group" ? (
                         <label className="mt-3 block text-xs text-slate-700">

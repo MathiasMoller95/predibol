@@ -49,6 +49,9 @@ export default async function GroupAdminResultsPage({ params }: Props) {
     redirect(`/${locale}/dashboard/group/${groupId}`);
   }
 
+  const { data: profileRow } = await supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle();
+  const profileTimeZone = ((profileRow?.timezone as string | undefined) ?? "").trim() || null;
+
   const [{ data: matches }, { data: predictions }, { data: members }] = await Promise.all([
     supabase
       .from("matches")
@@ -81,6 +84,7 @@ export default async function GroupAdminResultsPage({ params }: Props) {
         </div>
 
         <AdminMatchPanel
+          profileTimeZone={profileTimeZone}
           matches={((matches ?? []) as AdminMatch[]).map((match) => ({
             ...match,
             home_score: match.home_score ?? null,

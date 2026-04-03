@@ -66,7 +66,9 @@
     "continue": "Continue",
     "saving": "Saving...",
     "tooShort": "Name must be at least 2 characters.",
-    "tooLong": "Name can't be longer than 30 characters."
+    "tooLong": "Name can't be longer than 30 characters.",
+    "timezoneLabel": "Your timezone",
+    "timezonePreview": "Right now it's {time} in your timezone"
   },
   "Profile": {
     "title": "Your Profile",
@@ -78,7 +80,9 @@
     "logout": "Log out",
     "dangerZone": "Danger zone",
     "tooShort": "Name must be at least 2 characters.",
-    "tooLong": "Name can't be longer than 30 characters."
+    "tooLong": "Name can't be longer than 30 characters.",
+    "timezoneLabel": "Your timezone",
+    "timezonePreview": "Right now it's {time} in your timezone"
   },
   "CreateGroup": {
     "visibility": "Visibility",
@@ -235,7 +239,11 @@
     "saveAll": "Save all predictions for Group {group}",
     "saved": "Predictions saved!",
     "locked": "Locked",
-    "matchDate": "{date}"
+    "matchDate": "{date}",
+    "marketOdds": "Market",
+    "aiPrediction": "AI",
+    "draw": "Draw",
+    "groupFavorite": "Fav"
   },
   "AdminPage": {
     "title": "Admin Panel",

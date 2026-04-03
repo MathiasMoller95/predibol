@@ -66,7 +66,9 @@
     "continue": "Continuar",
     "saving": "Salvando...",
     "tooShort": "O nome deve ter pelo menos 2 caracteres.",
-    "tooLong": "O nome nao pode ter mais de 30 caracteres."
+    "tooLong": "O nome nao pode ter mais de 30 caracteres.",
+    "timezoneLabel": "Seu fuso horario",
+    "timezonePreview": "Agora sao {time} no seu fuso horario"
   },
   "Profile": {
     "title": "Seu perfil",
@@ -78,7 +80,9 @@
     "logout": "Sair",
     "dangerZone": "Zona de perigo",
     "tooShort": "O nome deve ter pelo menos 2 caracteres.",
-    "tooLong": "O nome nao pode ter mais de 30 caracteres."
+    "tooLong": "O nome nao pode ter mais de 30 caracteres.",
+    "timezoneLabel": "Seu fuso horario",
+    "timezonePreview": "Agora sao {time} no seu fuso horario"
   },
   "CreateGroup": {
     "visibility": "Visibilidade",
@@ -235,7 +239,11 @@
     "saveAll": "Salvar todas as previs?es do Grupo {group}",
     "saved": "Previs?es salvas!",
     "locked": "Bloqueado",
-    "matchDate": "{date}"
+    "matchDate": "{date}",
+    "marketOdds": "Mercado",
+    "aiPrediction": "IA",
+    "draw": "Empate",
+    "groupFavorite": "Fav"
   },
   "AdminPage": {
     "title": "Painel administrativo",

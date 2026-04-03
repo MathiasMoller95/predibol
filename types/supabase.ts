@@ -110,18 +110,21 @@ export type Database = {
         Row: {
           id: string;
           display_name: string;
+          timezone: string;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id: string;
           display_name?: string;
+          timezone?: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
           display_name?: string;
+          timezone?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -138,6 +141,12 @@ export type Database = {
           away_score: number | null;
           status: MatchStatus;
           locked_at: string | null;
+          home_win_odds: number | null;
+          draw_odds: number | null;
+          away_win_odds: number | null;
+          ai_home_score: number | null;
+          ai_away_score: number | null;
+          odds_updated_at: string | null;
           created_at: string;
         };
         Insert: {
@@ -150,6 +159,12 @@ export type Database = {
           away_score?: number | null;
           status?: MatchStatus;
           locked_at?: string | null;
+          home_win_odds?: number | null;
+          draw_odds?: number | null;
+          away_win_odds?: number | null;
+          ai_home_score?: number | null;
+          ai_away_score?: number | null;
+          odds_updated_at?: string | null;
           created_at?: string;
         };
         Update: {
@@ -162,6 +177,12 @@ export type Database = {
           away_score?: number | null;
           status?: MatchStatus;
           locked_at?: string | null;
+          home_win_odds?: number | null;
+          draw_odds?: number | null;
+          away_win_odds?: number | null;
+          ai_home_score?: number | null;
+          ai_away_score?: number | null;
+          odds_updated_at?: string | null;
           created_at?: string;
         };
         Relationships: [];

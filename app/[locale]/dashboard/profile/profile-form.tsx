@@ -3,22 +3,26 @@
 import { FormEvent, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import TimezoneField from "@/components/timezone-field";
 import { createClient } from "@/lib/supabase/client";
 import { syncGroupMembersDisplayName } from "@/lib/display-name";
+import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
 
 const MIN = 2;
 const MAX = 30;
 
 type Props = {
   initialDisplayName: string;
+  initialTimezone: string;
   email: string;
 };
 
-export default function ProfileForm({ initialDisplayName, email }: Props) {
+export default function ProfileForm({ initialDisplayName, initialTimezone, email }: Props) {
   const t = useTranslations("Profile");
   const locale = useLocale();
   const router = useRouter();
   const [name, setName] = useState(initialDisplayName);
+  const [timezone, setTimezone] = useState(initialTimezone || DEFAULT_TIMEZONE);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -56,6 +60,7 @@ export default function ProfileForm({ initialDisplayName, email }: Props) {
       {
         id: user.id,
         display_name: trimmed,
+        timezone,
         updated_at: now,
       },
       { onConflict: "id" }
@@ -109,6 +114,7 @@ export default function ProfileForm({ initialDisplayName, email }: Props) {
             maxLength={MAX}
           />
         </div>
+        <TimezoneField translationNamespace="Profile" value={timezone} onChange={setTimezone} />
         <div>
           <span className="mb-1 block text-sm font-medium text-slate-700">{t("emailLabel")}</span>
           <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">{email}</p>

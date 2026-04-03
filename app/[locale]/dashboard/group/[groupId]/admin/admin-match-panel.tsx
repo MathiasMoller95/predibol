@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { formatMatchTime } from "@/lib/format-match-time";
+import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 import type { MatchPhase, MatchStatus } from "@/types/supabase";
 
 export type AdminMatch = {
@@ -23,6 +25,7 @@ export type PredictionLite = {
 };
 
 type Props = {
+  profileTimeZone: string | null;
   matches: AdminMatch[];
   predictions: PredictionLite[];
   totalMembers: number;
@@ -60,23 +63,19 @@ function statusStyles(status: MatchStatus) {
   return "bg-slate-100 text-slate-700";
 }
 
-export default function AdminMatchPanel({ matches, predictions, totalMembers }: Props) {
+export default function AdminMatchPanel({ profileTimeZone, matches, predictions, totalMembers }: Props) {
   const t = useTranslations("AdminPage");
   const locale = useLocale();
   const router = useRouter();
   const supabase = createClient();
+  const effectiveTz = useEffectiveTimeZone(profileTimeZone);
   const [scores, setScores] = useState<Record<string, ScoreInput>>({});
   const [isSavingByMatch, setIsSavingByMatch] = useState<Record<string, boolean>>({});
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const formatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat(locale, {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }),
-    [locale],
-  );
+  const formatWhen = useMemo(() => {
+    return (iso: string) => formatMatchTime(iso, effectiveTz, locale);
+  }, [effectiveTz, locale]);
 
   const submissionsByMatch = useMemo(() => {
     const map = new Map<string, Set<string>>();
@@ -202,7 +201,7 @@ export default function AdminMatchPanel({ matches, predictions, totalMembers }: 
                       <p className="font-medium text-slate-900">
                         {match.home_team} vs {match.away_team}
                       </p>
-                      <p className="mt-1 text-sm text-slate-600">{formatter.format(new Date(match.match_time))}</p>
+                      <p className="mt-1 text-sm text-slate-600">{formatWhen(match.match_time)}</p>
                       <p className="mt-1 text-sm text-slate-700">
                         {t("predictionsSubmitted", { count: submitted, total: totalMembers })}
                       </p>
@@ -253,7 +252,7 @@ export default function AdminMatchPanel({ matches, predictions, totalMembers }: 
                           <p className="font-medium text-slate-900">
                             {match.home_team} vs {match.away_team}
                           </p>
-                          <p className="mt-1 text-xs text-slate-600">{formatter.format(new Date(match.match_time))}</p>
+                          <p className="mt-1 text-xs text-slate-600">{formatWhen(match.match_time)}</p>
                           <span className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${statusStyles(match.status)}`}>
                             {match.status === "finished"
                               ? t("finished")

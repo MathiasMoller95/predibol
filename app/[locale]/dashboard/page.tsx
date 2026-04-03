@@ -21,6 +21,9 @@ export default async function DashboardPage({ params }: Props) {
     redirect(`/${locale}/login`);
   }
 
+  const { data: profileRow } = await supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle();
+  const profileTimeZone = ((profileRow?.timezone as string | undefined) ?? "").trim() || null;
+
   const { data: memberships } = await supabase
     .from("group_members")
     .select("group_id")
@@ -141,7 +144,7 @@ export default async function DashboardPage({ params }: Props) {
           </div>
         </div>
 
-        <DashboardGroupList locale={locale} currentUserId={user.id} groups={summaries} />
+        <DashboardGroupList locale={locale} currentUserId={user.id} profileTimeZone={profileTimeZone} groups={summaries} />
       </section>
     </main>
   );

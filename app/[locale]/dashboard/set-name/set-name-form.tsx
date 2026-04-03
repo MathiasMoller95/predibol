@@ -1,10 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import TimezoneField from "@/components/timezone-field";
 import { createClient } from "@/lib/supabase/client";
 import { syncGroupMembersDisplayName } from "@/lib/display-name";
+import { DEFAULT_TIMEZONE, getBrowserTimeZone } from "@/lib/format-match-time";
 
 const MIN = 2;
 const MAX = 30;
@@ -14,8 +16,13 @@ export default function SetNameForm() {
   const locale = useLocale();
   const router = useRouter();
   const [name, setName] = useState("");
+  const [timezone, setTimezone] = useState(DEFAULT_TIMEZONE);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setTimezone(getBrowserTimeZone());
+  }, []);
 
   function validate(raw: string): string | null {
     const trimmed = raw.trim();
@@ -48,6 +55,7 @@ export default function SetNameForm() {
       {
         id: user.id,
         display_name: trimmed,
+        timezone,
         updated_at: now,
       },
       { onConflict: "id" }
@@ -89,6 +97,7 @@ export default function SetNameForm() {
           maxLength={MAX}
         />
       </div>
+      <TimezoneField translationNamespace="SetName" value={timezone} onChange={setTimezone} />
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
       <button
         type="submit"

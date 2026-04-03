@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { formatMatchTime } from "@/lib/format-match-time";
+import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 
 export type GroupSummary = {
   id: string;
@@ -18,14 +20,14 @@ export type GroupSummary = {
 type Props = {
   locale: string;
   currentUserId: string;
+  profileTimeZone: string | null;
   groups: GroupSummary[];
 };
 
-export default function DashboardGroupList({ locale, currentUserId, groups }: Props) {
+export default function DashboardGroupList({ locale, currentUserId, profileTimeZone, groups }: Props) {
   const t = useTranslations("Dashboard");
   const intlLocale = useLocale();
-
-  const formatter = new Intl.DateTimeFormat(intlLocale, { dateStyle: "medium", timeStyle: "short" });
+  const effectiveTz = useEffectiveTimeZone(profileTimeZone);
 
   if (groups.length === 0) {
     return (
@@ -59,7 +61,7 @@ export default function DashboardGroupList({ locale, currentUserId, groups }: Pr
             : `🏆 ${t("noRank", { total: group.totalMembers })}`;
 
         const nextMatchLine = group.nextMatch
-          ? `${t("nextMatchDate", { home: group.nextMatch.homeTeam, away: group.nextMatch.awayTeam })} — ${formatter.format(new Date(group.nextMatch.matchTime))}`
+          ? `${t("nextMatchDate", { home: group.nextMatch.homeTeam, away: group.nextMatch.awayTeam })} — ${formatMatchTime(group.nextMatch.matchTime, effectiveTz, intlLocale)}`
           : t("noUpcomingMatches");
 
         return (
