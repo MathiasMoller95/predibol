@@ -20,7 +20,7 @@ export default function TeamPicker({ value, onChange, label, placeholder, disabl
 
   return (
     <div>
-      <span className="mb-1 block text-sm font-medium text-slate-700">{label}</span>
+      <span className="mb-1 block text-sm font-medium text-slate-300">{label}</span>
       <select
         disabled={disabled}
         value={legacyUnknown ? LEGACY_VALUE : value}
@@ -29,7 +29,7 @@ export default function TeamPicker({ value, onChange, label, placeholder, disabl
           if (v === LEGACY_VALUE) return;
           onChange(v);
         }}
-        className="mt-1 w-full min-h-[44px] rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:cursor-not-allowed disabled:bg-slate-100"
+        className="mt-1 w-full min-h-[44px] rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
       >
         <option value="" disabled>
           {placeholder}

@@ -27,19 +27,19 @@ export default function Navbar({ displayName, email, locale }: Props) {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-50 border-b border-dark-600 bg-dark-800">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-4 sm:gap-6">
           <Link
             href={`/${locale}/dashboard`}
             aria-label={t("myGroups")}
-            className="shrink-0 font-semibold tracking-tight text-emerald-700 hover:text-emerald-800"
+            className="shrink-0 text-lg font-bold tracking-tight text-emerald-400 transition-colors hover:text-emerald-300"
           >
             Predibol
           </Link>
           <Link
             href={`/${locale}/dashboard/discover`}
-            className="shrink-0 text-sm font-medium text-slate-600 hover:text-emerald-700"
+            className="shrink-0 text-sm text-slate-400 transition-colors hover:text-white"
           >
             {t("discover")}
           </Link>
@@ -50,7 +50,7 @@ export default function Navbar({ displayName, email, locale }: Props) {
             href={`/${locale}/dashboard/profile`}
             title={email}
             aria-label={`${t("profile")}: ${displayName}`}
-            className="min-w-0 truncate text-sm font-medium text-slate-700 hover:text-emerald-700"
+            className="min-w-0 truncate text-sm text-slate-400 transition-colors hover:text-white"
           >
             {displayName}
           </Link>
@@ -58,7 +58,7 @@ export default function Navbar({ displayName, email, locale }: Props) {
             type="button"
             onClick={() => void onLogout()}
             disabled={isSigningOut}
-            className="shrink-0 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="shrink-0 rounded-lg border border-dark-500 px-3 py-1.5 text-sm text-slate-500 transition hover:border-dark-500 hover:text-slate-300 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("logout")}
           </button>
@@ -67,4 +67,3 @@ export default function Navbar({ displayName, email, locale }: Props) {
     </header>
   );
 }
-

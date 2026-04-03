@@ -101,16 +101,16 @@ export default async function GroupPredictPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <section className="mx-auto w-full max-w-4xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
+    <main className="min-h-screen bg-dark-900 px-4 py-8">
+      <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-slate-500 hover:text-slate-700"
+          className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
         >
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>
-        <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
-        <p className="mt-1 text-sm text-slate-600">{t("subtitle", { groupName: typedGroup.name })}</p>
+        <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+        <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
 
         <PredictForm matches={typedMatches} initialPredictions={predictions} profileTimeZone={profileTimeZone} />
       </section>

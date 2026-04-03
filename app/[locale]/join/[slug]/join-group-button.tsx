@@ -72,12 +72,12 @@ export default function JoinGroupButton({ groupId, slug, autoJoin, isLoggedIn }:
 
   return (
     <div className="mt-6">
-      {error ? <p className="mb-3 text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="mb-3 rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p> : null}
       <button
         type="button"
         onClick={() => void joinGroup()}
         disabled={isJoining}
-        className="w-full rounded-md bg-emerald-600 px-4 py-2 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+        className="min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
       >
         {isJoining ? t("join.joiningButton") : t("join.joinButton")}
       </button>

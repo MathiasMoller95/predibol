@@ -115,22 +115,22 @@ export default async function GroupHubPage({ params }: Props) {
   ].filter((c) => c.show);
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <section className="mx-auto w-full max-w-3xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
-        <Link href={`/${locale}/dashboard`} className="text-sm font-medium text-slate-500 hover:text-slate-700">
+    <main className="min-h-screen bg-dark-900 px-4 py-8">
+      <section className="mx-auto w-full max-w-3xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
+        <Link href={`/${locale}/dashboard`} className="text-sm font-medium text-emerald-400 hover:text-emerald-300">
           {common("backToGroups")}
         </Link>
 
         <div className="mt-4 border-l-4 pl-4" style={{ borderColor: accent }}>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-3xl font-bold text-slate-900">{typedGroup.name}</h1>
+            <h1 className="text-3xl font-bold text-white">{typedGroup.name}</h1>
             {isAdmin ? (
-              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-900">
+              <span className="rounded-full bg-indigo-900/40 px-2 py-0.5 text-xs font-semibold text-indigo-300 ring-1 ring-indigo-700/50">
                 {th("adminBadge")}
               </span>
             ) : null}
           </div>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-400">
             👥 {th("memberCount", { count: memberCount })}
           </p>
         </div>
@@ -140,13 +140,13 @@ export default async function GroupHubPage({ params }: Props) {
             <Link
               key={card.href}
               href={card.href}
-              className="flex flex-col rounded-xl border border-slate-200 bg-slate-50/50 p-4 transition hover:border-emerald-300 hover:bg-emerald-50/50 hover:shadow-sm"
+              className="flex flex-col rounded-xl border border-dark-600 bg-dark-700/50 p-4 transition hover:border-emerald-500/50 hover:bg-dark-700"
             >
               <span className="text-2xl" aria-hidden>
                 {card.emoji}
               </span>
-              <span className="mt-2 text-sm font-semibold text-slate-900">{th(card.titleKey)}</span>
-              <span className="mt-1 text-xs text-slate-600 leading-snug">{th(card.descKey)}</span>
+              <span className="mt-2 text-sm font-semibold text-white">{th(card.titleKey)}</span>
+              <span className="mt-1 text-xs text-slate-400 leading-snug">{th(card.descKey)}</span>
             </Link>
           ))}
         </div>
@@ -154,7 +154,7 @@ export default async function GroupHubPage({ params }: Props) {
         <GroupInvitePanel locale={locale} slug={typedGroup.slug} />
 
         <div className="mt-10">
-          <h2 className="text-lg font-semibold text-slate-900">{th("members")}</h2>
+          <h2 className="text-lg font-semibold text-white">{th("members")}</h2>
           {members.length > 0 ? (
             <ul className="mt-3 space-y-2">
               {members.map((member) => {
@@ -169,13 +169,15 @@ export default async function GroupHubPage({ params }: Props) {
                 return (
                   <li
                     key={member.id}
-                    className={`flex flex-wrap items-center gap-2 rounded-md border px-3 py-2 text-sm ${
-                      isSelf ? "border-emerald-200 bg-emerald-50/60" : "border-slate-200 bg-white"
+                    className={`flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
+                      isSelf
+                        ? "border-dark-600 border-l-2 border-l-emerald-500 bg-emerald-900/20"
+                        : "border-dark-600 bg-dark-700/50"
                     }`}
                   >
-                    <span className="font-medium text-slate-900">{label}</span>
+                    <span className="font-medium text-slate-100">{label}</span>
                     {isRowAdmin ? (
-                      <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-900">
+                      <span className="rounded-full bg-indigo-900/40 px-2 py-0.5 text-xs font-medium text-indigo-300 ring-1 ring-indigo-700/50">
                         {th("adminBadge")}
                       </span>
                     ) : null}
@@ -184,7 +186,7 @@ export default async function GroupHubPage({ params }: Props) {
               })}
             </ul>
           ) : (
-            <p className="mt-3 text-sm text-slate-600">{th("noMembers")}</p>
+            <p className="mt-3 text-sm text-slate-400">{th("noMembers")}</p>
           )}
         </div>
       </section>

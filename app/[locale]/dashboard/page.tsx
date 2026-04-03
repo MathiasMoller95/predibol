@@ -121,23 +121,23 @@ export default async function DashboardPage({ params }: Props) {
     });
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <section className="mx-auto w-full max-w-6xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
+    <main className="min-h-screen bg-dark-900 px-4 py-8">
+      <section className="mx-auto w-full max-w-6xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
-            <p className="mt-1 text-sm text-slate-600">{t("subtitle")}</p>
+            <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+            <p className="mt-1 text-sm text-slate-500">{t("subtitle")}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <a
               href={`/${locale}/dashboard/discover`}
-              className="inline-flex rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-dark-500 bg-dark-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-dark-600"
             >
               {t("discoverWorlds")}
             </a>
             <a
               href={`/${locale}/dashboard/create-group`}
-              className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
             >
               {t("createGroup")}
             </a>

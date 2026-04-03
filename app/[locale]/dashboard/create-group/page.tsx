@@ -177,14 +177,14 @@ export default function CreateGroupPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <section className="mx-auto w-full max-w-2xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
-        <h1 className="text-2xl font-semibold text-slate-900">{t("create.title")}</h1>
-        <p className="mt-1 text-sm text-slate-600">{t("create.subtitle")}</p>
+    <main className="min-h-screen bg-dark-900 px-4 py-8">
+      <section className="mx-auto w-full max-w-2xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
+        <h1 className="text-2xl font-bold text-white">{t("create.title")}</h1>
+        <p className="mt-1 text-sm text-slate-500">{t("create.subtitle")}</p>
 
         <form className="mt-6 space-y-5" onSubmit={onSubmit}>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="group-name">
+            <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="group-name">
               {t("fields.name")}
             </label>
             <input
@@ -192,13 +192,13 @@ export default function CreateGroupPage() {
               type="text"
               value={form.name}
               onChange={(event) => onNameChange(event.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+              className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="group-slug">
+            <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="group-slug">
               {t("fields.slug")}
             </label>
             <input
@@ -209,15 +209,15 @@ export default function CreateGroupPage() {
                 setSlugEdited(true);
                 setForm((prev) => ({ ...prev, slug: slugify(event.target.value) }));
               }}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+              className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               required
             />
           </div>
 
-          <fieldset className="rounded-lg border border-slate-200 p-4">
-            <legend className="px-1 text-sm font-medium text-slate-800">{tc("visibility")}</legend>
+          <fieldset className="rounded-lg border border-dark-600 bg-dark-700/50 p-4">
+            <legend className="px-1 text-sm font-medium text-slate-200">{tc("visibility")}</legend>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-              <label className="flex cursor-pointer items-start gap-2 rounded-md border border-slate-200 p-3 has-[:checked]:border-emerald-500 has-[:checked]:ring-1 has-[:checked]:ring-emerald-500">
+              <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-dark-600 bg-dark-800 p-3 has-[:checked]:border-emerald-500 has-[:checked]:ring-1 has-[:checked]:ring-emerald-500">
                 <input
                   type="radio"
                   name="visibility"
@@ -229,11 +229,11 @@ export default function CreateGroupPage() {
                   className="mt-1"
                 />
                 <span>
-                  <span className="block text-sm font-medium text-slate-900">{tc("private")}</span>
-                  <span className="mt-0.5 block text-xs text-slate-600">{tc("privateDescription")}</span>
+                  <span className="block text-sm font-medium text-white">{tc("private")}</span>
+                  <span className="mt-0.5 block text-xs text-slate-400">{tc("privateDescription")}</span>
                 </span>
               </label>
-              <label className="flex cursor-pointer items-start gap-2 rounded-md border border-slate-200 p-3 has-[:checked]:border-emerald-500 has-[:checked]:ring-1 has-[:checked]:ring-emerald-500">
+              <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-dark-600 bg-dark-800 p-3 has-[:checked]:border-emerald-500 has-[:checked]:ring-1 has-[:checked]:ring-emerald-500">
                 <input
                   type="radio"
                   name="visibility"
@@ -242,15 +242,15 @@ export default function CreateGroupPage() {
                   className="mt-1"
                 />
                 <span>
-                  <span className="block text-sm font-medium text-slate-900">{tc("public")}</span>
-                  <span className="mt-0.5 block text-xs text-slate-600">{tc("publicDescription")}</span>
+                  <span className="block text-sm font-medium text-white">{tc("public")}</span>
+                  <span className="mt-0.5 block text-xs text-slate-400">{tc("publicDescription")}</span>
                 </span>
               </label>
             </div>
 
             {isPublic ? (
               <div className="mt-4">
-                <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="group-desc">
+                <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="group-desc">
                   {tc("groupDescription")}
                 </label>
                 <textarea
@@ -259,7 +259,7 @@ export default function CreateGroupPage() {
                   onChange={(event) => setDescription(event.target.value.slice(0, 200))}
                   placeholder={tc("groupDescriptionPlaceholder")}
                   rows={3}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                  className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                 />
                 <p className="mt-1 text-xs text-slate-500">{tc("groupDescriptionHelp")}</p>
               </div>
@@ -268,7 +268,7 @@ export default function CreateGroupPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="primary-color">
+              <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="primary-color">
                 {t("fields.primaryColor")}
               </label>
               <input
@@ -276,11 +276,11 @@ export default function CreateGroupPage() {
                 type="color"
                 value={form.primaryColor}
                 onChange={(event) => setForm((prev) => ({ ...prev, primaryColor: event.target.value }))}
-                className="h-11 w-full rounded-md border border-slate-300 bg-white p-1"
+                className="h-11 w-full cursor-pointer rounded-lg border border-dark-500 bg-dark-700 p-1"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="secondary-color">
+              <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="secondary-color">
                 {t("fields.secondaryColor")}
               </label>
               <input
@@ -288,109 +288,109 @@ export default function CreateGroupPage() {
                 type="color"
                 value={form.secondaryColor}
                 onChange={(event) => setForm((prev) => ({ ...prev, secondaryColor: event.target.value }))}
-                className="h-11 w-full rounded-md border border-slate-300 bg-white p-1"
+                className="h-11 w-full cursor-pointer rounded-lg border border-dark-500 bg-dark-700 p-1"
               />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.pointsCorrectResult")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.pointsCorrectResult")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.pointsCorrectResult}
                 onChange={(event) => onNumberChange("pointsCorrectResult", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.pointsCorrectDifference")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.pointsCorrectDifference")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.pointsCorrectDifference}
                 onChange={(event) => onNumberChange("pointsCorrectDifference", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.pointsExactScore")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.pointsExactScore")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.pointsExactScore}
                 onChange={(event) => onNumberChange("pointsExactScore", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.bonusChampion")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusChampion")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.bonusChampion}
                 onChange={(event) => onNumberChange("bonusChampion", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.bonusRunnerUp")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusRunnerUp")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.bonusRunnerUp}
                 onChange={(event) => onNumberChange("bonusRunnerUp", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.bonusThirdPlace")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusThirdPlace")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.bonusThirdPlace}
                 onChange={(event) => onNumberChange("bonusThirdPlace", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.bonusTopScorer")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusTopScorer")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.bonusTopScorer}
                 onChange={(event) => onNumberChange("bonusTopScorer", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.bonusBestPlayer")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusBestPlayer")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.bonusBestPlayer}
                 onChange={(event) => onNumberChange("bonusBestPlayer", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("fields.bonusBestGoalkeeper")}</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusBestGoalkeeper")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.bonusBestGoalkeeper}
                 onChange={(event) => onNumberChange("bonusBestGoalkeeper", event.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="tiebreaker-rule">
+            <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="tiebreaker-rule">
               {t("fields.tiebreakerRule")}
             </label>
             <select
@@ -399,7 +399,7 @@ export default function CreateGroupPage() {
               onChange={(event) =>
                 setForm((prev) => ({ ...prev, tiebreakerRule: event.target.value as TiebreakerRule }))
               }
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+              className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
             >
               <option value="most_exact_scores">{t("tiebreakers.mostExactScores")}</option>
               <option value="most_correct_results">{t("tiebreakers.mostCorrectResults")}</option>
@@ -407,12 +407,14 @@ export default function CreateGroupPage() {
             </select>
           </div>
 
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {error ? (
+            <p className="rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p>
+          ) : null}
 
           <button
             type="submit"
             disabled={isSubmitting || !canSubmit}
-            className="w-full rounded-md bg-emerald-600 px-4 py-2 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+            className="min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
           >
             {isSubmitting ? t("create.submitting") : t("create.submit")}
           </button>

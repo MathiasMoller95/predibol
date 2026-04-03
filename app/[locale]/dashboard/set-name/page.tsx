@@ -28,11 +28,11 @@ export default async function SetNamePage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <section className="mx-auto w-full max-w-md rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
-        <p className="text-center text-sm font-semibold tracking-tight text-emerald-700">Predibol</p>
-        <h1 className="mt-4 text-center text-2xl font-semibold text-slate-900">{t("title")}</h1>
-        <p className="mt-2 text-center text-sm text-slate-600">{t("subtitle")}</p>
+    <main className="min-h-screen bg-dark-900 px-4 py-8">
+      <section className="mx-auto w-full max-w-md rounded-2xl border border-dark-600 bg-dark-800 p-8 sm:p-8">
+        <p className="text-center text-xl font-bold text-emerald-400">Predibol</p>
+        <h1 className="mt-4 text-center text-2xl font-bold text-white">{t("title")}</h1>
+        <p className="mt-2 text-center text-sm text-slate-400">{t("subtitle")}</p>
         <SetNameForm />
       </section>
     </main>

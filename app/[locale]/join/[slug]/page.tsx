@@ -57,10 +57,10 @@ export default async function JoinGroupPage({ params, searchParams }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10">
-      <section className="mx-auto w-full max-w-md rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <h1 className="text-2xl font-semibold text-slate-900">{t("join.title")}</h1>
-        <p className="mt-2 text-sm text-slate-600">{t("join.groupNameLabel", { name: typedGroup.name })}</p>
+    <main className="min-h-screen bg-dark-900 px-4 py-10">
+      <section className="mx-auto w-full max-w-md rounded-2xl border border-dark-600 bg-dark-800 p-8">
+        <h1 className="text-2xl font-bold text-white">{t("join.title")}</h1>
+        <p className="mt-2 text-sm text-slate-400">{t("join.groupNameLabel", { name: typedGroup.name })}</p>
         <JoinGroupButton groupId={typedGroup.id} slug={typedGroup.slug} autoJoin={autoJoin} isLoggedIn={Boolean(user)} />
       </section>
     </main>

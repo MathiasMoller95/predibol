@@ -224,7 +224,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
     !expandedGroup && (knockoutMatches.length > 0 || (groupCards.length === 0 && groupedMatches.length > 0));
 
   if (matches.length === 0) {
-    return <p className="mt-6 text-sm text-slate-600">{t("empty")}</p>;
+    return <p className="mt-6 text-sm text-slate-400">{t("empty")}</p>;
   }
 
   return (
@@ -235,7 +235,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
             <button
               type="button"
               onClick={() => setExpandedGroup(null)}
-              className="text-sm font-medium text-slate-600 hover:text-slate-900"
+              className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
             >
               ← {t("backToGroups")}
             </button>
@@ -257,16 +257,16 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                   return (
                     <div
                       key={match.id}
-                      className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-100"
+                      className="rounded-xl border border-dark-600 bg-dark-800 p-4"
                     >
-                      <p className="text-right text-sm text-slate-500">{t("matchDate", { date: formatMatchWhen(match) })}</p>
+                      <p className="text-right text-sm text-slate-400">{t("matchDate", { date: formatMatchWhen(match) })}</p>
 
-                      <div className="mt-3 flex items-center gap-2 text-lg font-semibold text-slate-900">
+                      <div className="mt-3 flex items-center gap-2 text-lg font-semibold text-white">
                         <span aria-hidden>{getFlag(match.home_team)}</span>
                         <span>{match.home_team}</span>
                       </div>
                       {lockPassed ? (
-                        <p className="mt-2 flex min-h-[44px] items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 text-2xl font-semibold tabular-nums text-slate-800">
+                        <p className="mt-2 flex min-h-[56px] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-3 text-2xl font-semibold tabular-nums text-slate-200">
                           {currentInput.predictedHome || "—"}
                         </p>
                       ) : (
@@ -282,18 +282,18 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                               [match.id]: { ...currentInput, predictedHome: event.target.value },
                             }))
                           }
-                          className="mt-2 min-h-[44px] w-full rounded-lg border border-slate-300 px-3 text-center text-2xl font-semibold tabular-nums outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2"
+                          className="mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                         />
                       )}
 
-                      <p className="my-4 text-center text-sm font-medium text-slate-400">{t("vs")}</p>
+                      <p className="my-4 text-center text-sm font-medium text-slate-500">{t("vs")}</p>
 
-                      <div className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+                      <div className="flex items-center gap-2 text-lg font-semibold text-white">
                         <span aria-hidden>{getFlag(match.away_team)}</span>
                         <span>{match.away_team}</span>
                       </div>
                       {lockPassed ? (
-                        <p className="mt-2 flex min-h-[44px] items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 text-2xl font-semibold tabular-nums text-slate-800">
+                        <p className="mt-2 flex min-h-[56px] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-3 text-2xl font-semibold tabular-nums text-slate-200">
                           {currentInput.predictedAway || "—"}
                         </p>
                       ) : (
@@ -309,14 +309,14 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                               [match.id]: { ...currentInput, predictedAway: event.target.value },
                             }))
                           }
-                          className="mt-2 min-h-[44px] w-full rounded-lg border border-slate-300 px-3 text-center text-2xl font-semibold tabular-nums outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2"
+                          className="mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                         />
                       )}
 
                       {match.home_win_odds != null &&
                       match.draw_odds != null &&
                       match.away_win_odds != null ? (
-                        <div className="mt-4 rounded-lg bg-slate-100/90 px-3 py-2.5 text-xs text-slate-700 ring-1 ring-slate-200/80">
+                        <div className="mt-4 rounded-lg border border-dark-600 bg-dark-800 px-3 py-2.5 text-xs text-slate-300">
                           <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
                             📊 {t("marketOdds")}
                           </p>
@@ -327,7 +327,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                               </span>
                               {Number(match.home_win_odds).toFixed(2)}
                             </div>
-                            <div className="text-slate-600">
+                            <div className="text-slate-400">
                               {t("draw")} {Number(match.draw_odds).toFixed(2)}
                             </div>
                             <div>
@@ -341,8 +341,8 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                       ) : null}
 
                       {match.ai_home_score != null && match.ai_away_score != null ? (
-                        <div className="mt-3 rounded-lg bg-indigo-50 px-3 py-2.5 text-xs text-indigo-950 ring-1 ring-indigo-100">
-                          <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-indigo-700/90">
+                        <div className="mt-3 rounded-lg border border-indigo-800/40 bg-indigo-900/20 px-3 py-2.5 text-xs text-indigo-300">
+                          <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-indigo-400">
                             🤖 {t("aiPrediction")}
                           </p>
                           <p className="text-sm">
@@ -352,7 +352,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                       ) : null}
 
                       {lockPassed ? (
-                        <p className="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-slate-600">
+                        <p className="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-slate-400">
                           <span aria-hidden>🔒</span>
                           {t("locked")}
                         </p>
@@ -361,7 +361,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                           type="button"
                           disabled={busy || isSaving}
                           onClick={() => void saveSingleMatch(match)}
-                          className="mt-4 w-full min-h-[44px] rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100 disabled:opacity-60"
+                          className="mt-4 w-full min-h-[48px] rounded-lg border border-emerald-600/50 bg-emerald-900/30 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-900/50 disabled:opacity-60"
                         >
                           {busy ? t("saveSaving") : saved ? t("update") : t("save")}
                         </button>
@@ -388,10 +388,10 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                 const partial = group.predictedCount > 0 && !allPredicted;
                 const accent =
                   group.predictedCount === 0
-                    ? "border-slate-200"
+                    ? "border-dark-600"
                     : allPredicted
-                      ? "border-emerald-200"
-                      : "border-amber-200";
+                      ? "border-emerald-500/50"
+                      : "border-amber-500/50";
 
                 const ctaText = allPredicted
                   ? t("allPredicted")
@@ -400,10 +400,10 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                     : t("tapToPredict");
 
                 const ctaClass = allPredicted
-                  ? "text-emerald-700/90"
+                  ? "text-emerald-400"
                   : partial
-                    ? "text-amber-700"
-                    : "text-emerald-600";
+                    ? "text-amber-400"
+                    : "text-emerald-400";
 
                 const oddsLine = formatGroupOddsCompactLine(group.teams, group.matches);
 
@@ -412,25 +412,25 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                     key={group.letter}
                     type="button"
                     onClick={() => setExpandedGroup(group.letter)}
-                    className={`group/card cursor-pointer rounded-lg border ${accent} bg-white p-3 text-left shadow-sm transition hover:border-emerald-300 hover:shadow-md active:scale-[0.98] active:bg-slate-50`}
+                    className={`group/card cursor-pointer rounded-lg border ${accent} bg-dark-800 p-3 text-left transition hover:border-emerald-500/40 hover:bg-dark-700 active:scale-[0.98]`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-base font-semibold text-slate-900">
+                      <p className="text-base font-semibold text-white">
                         {t("groupLabel", { letter: group.letter })}
                       </p>
                       <span
                         className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${
                           allPredicted
-                            ? "bg-emerald-100 text-emerald-800"
+                            ? "bg-emerald-900/50 text-emerald-300 ring-1 ring-emerald-700/50"
                             : group.predictedCount > 0
-                              ? "bg-amber-100 text-amber-800"
-                              : "bg-slate-100 text-slate-700"
+                              ? "bg-amber-900/40 text-amber-300 ring-1 ring-amber-700/50"
+                              : "bg-dark-700 text-slate-400 ring-1 ring-dark-500"
                         }`}
                       >
                         {group.predictedCount}/6
                       </span>
                     </div>
-                    <ul className="mt-2 space-y-1 text-sm text-slate-800">
+                    <ul className="mt-2 space-y-1 text-sm text-slate-300">
                       {group.teams.slice(0, 4).map((team) => (
                         <li key={team}>
                           {getFlag(team)} {team}
@@ -442,10 +442,10 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                         {oddsLine}
                       </p>
                     ) : null}
-                    <p className="mt-2 text-xs text-slate-600">{t("groupProgress", { count: group.predictedCount })}</p>
-                    <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-2">
+                    <p className="mt-2 text-xs text-slate-400">{t("groupProgress", { count: group.predictedCount })}</p>
+                    <div className="mt-3 flex items-end justify-between gap-2 border-t border-dark-600 pt-2">
                       <span className={`text-xs font-medium leading-snug ${ctaClass}`}>{ctaText}</span>
-                      <span className="text-lg font-light text-emerald-600" aria-hidden>
+                      <span className="text-lg font-light text-emerald-400" aria-hidden>
                         ›
                       </span>
                     </div>
@@ -459,23 +459,23 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
 
       {knockoutMatches.length > 0 ? (
         <section>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">{t("knockoutTitle")}</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("knockoutTitle")}</h2>
           <div className="mt-3 space-y-3">
             {knockoutMatches.map((match) => {
               const lockPassed = new Date(match.locked_at) <= new Date();
               const currentInput = inputs[match.id] ?? { predictedHome: "", predictedAway: "", predictedWinner: "" };
 
               return (
-                <div key={match.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <div key={match.id} className="rounded-lg border border-dark-600 bg-dark-800 p-3">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-white">
                       {match.home_team} vs {match.away_team}
                     </p>
-                    <p className="text-xs text-slate-600">{formatMatchWhen(match)}</p>
+                    <p className="text-xs text-slate-400">{formatMatchWhen(match)}</p>
                   </div>
 
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <label className="text-xs text-slate-700">
+                    <label className="text-xs text-slate-300">
                       {t("homeScore")}
                       <input
                         type="number"
@@ -488,10 +488,10 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                             [match.id]: { ...currentInput, predictedHome: event.target.value },
                           }))
                         }
-                        className="mt-1 min-h-[44px] w-full rounded-md border border-slate-300 px-2 py-2 text-base outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2 disabled:bg-slate-200"
+                        className="mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-dark-700 disabled:text-slate-500"
                       />
                     </label>
-                    <label className="text-xs text-slate-700">
+                    <label className="text-xs text-slate-300">
                       {t("awayScore")}
                       <input
                         type="number"
@@ -504,7 +504,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                             [match.id]: { ...currentInput, predictedAway: event.target.value },
                           }))
                         }
-                        className="mt-1 min-h-[44px] w-full rounded-md border border-slate-300 px-2 py-2 text-base outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2 disabled:bg-slate-200"
+                        className="mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-dark-700 disabled:text-slate-500"
                       />
                     </label>
                   </div>
@@ -512,7 +512,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                   {match.home_win_odds != null &&
                   match.draw_odds != null &&
                   match.away_win_odds != null ? (
-                    <div className="mt-3 rounded-lg bg-slate-100/90 px-3 py-2 text-[11px] text-slate-700 ring-1 ring-slate-200/80">
+                    <div className="mt-3 rounded-lg border border-dark-600 bg-dark-800 px-3 py-2 text-[11px] text-slate-300">
                       <p className="mb-1.5 font-medium uppercase tracking-wide text-slate-500">📊 {t("marketOdds")}</p>
                       <div className="grid grid-cols-3 gap-1 text-center tabular-nums">
                         <div>
@@ -521,7 +521,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                           </span>
                           {Number(match.home_win_odds).toFixed(2)}
                         </div>
-                        <div className="text-slate-600">
+                        <div className="text-slate-400">
                           {t("draw")} {Number(match.draw_odds).toFixed(2)}
                         </div>
                         <div>
@@ -535,8 +535,8 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                   ) : null}
 
                   {match.ai_home_score != null && match.ai_away_score != null ? (
-                    <div className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs text-indigo-950 ring-1 ring-indigo-100">
-                      <p className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-indigo-700/90">
+                    <div className="mt-2 rounded-lg border border-indigo-800/40 bg-indigo-900/20 px-3 py-2 text-xs text-indigo-300">
+                      <p className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-indigo-400">
                         🤖 {t("aiPrediction")}
                       </p>
                       <p>
@@ -545,7 +545,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                     </div>
                   ) : null}
 
-                  <label className="mt-3 block text-xs text-slate-700">
+                  <label className="mt-3 block text-xs text-slate-300">
                     {t("advancesLabel")}
                     <select
                       value={currentInput.predictedWinner}
@@ -556,7 +556,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                           [match.id]: { ...currentInput, predictedWinner: event.target.value as "home" | "away" | "" },
                         }))
                       }
-                      className="mt-1 w-full rounded-md border border-slate-300 px-2 py-2 text-sm outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2 disabled:bg-slate-200"
+                      className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-dark-700 disabled:text-slate-500"
                     >
                       <option value="">{t("chooseTeam")}</option>
                       <option value="home">{match.home_team}</option>
@@ -564,7 +564,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                     </select>
                   </label>
 
-                  {lockPassed ? <p className="mt-3 text-xs font-medium text-amber-700">{t("lockedLabel")}</p> : null}
+                  {lockPassed ? <p className="mt-3 text-xs font-medium text-amber-400/90">{t("lockedLabel")}</p> : null}
                 </div>
               );
             })}
@@ -583,7 +583,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
 
           return (
             <section key={day}>
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">{dayLabel}</h2>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{dayLabel}</h2>
               <div className="mt-3 space-y-3">
                 {dayMatches.map((match) => {
                   const lockPassed = new Date(match.locked_at) <= new Date();
@@ -594,16 +594,16 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                   };
 
                   return (
-                    <div key={match.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                    <div key={match.id} className="rounded-lg border border-dark-600 bg-dark-800 p-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-sm font-medium text-slate-900">
+                        <p className="text-sm font-medium text-white">
                           {match.home_team} vs {match.away_team}
                         </p>
-                        <p className="text-xs text-slate-600">{formatMatchWhen(match)}</p>
+                        <p className="text-xs text-slate-400">{formatMatchWhen(match)}</p>
                       </div>
 
                       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                        <label className="text-xs text-slate-700">
+                        <label className="text-xs text-slate-300">
                           {t("homeScore")}
                           <input
                             type="number"
@@ -616,10 +616,10 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                                 [match.id]: { ...currentInput, predictedHome: event.target.value },
                               }))
                             }
-                            className="mt-1 min-h-[44px] w-full rounded-md border border-slate-300 px-2 py-2 text-base outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2 disabled:bg-slate-200"
+                            className="mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-dark-700 disabled:text-slate-500"
                           />
                         </label>
-                        <label className="text-xs text-slate-700">
+                        <label className="text-xs text-slate-300">
                           {t("awayScore")}
                           <input
                             type="number"
@@ -632,7 +632,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                                 [match.id]: { ...currentInput, predictedAway: event.target.value },
                               }))
                             }
-                            className="mt-1 min-h-[44px] w-full rounded-md border border-slate-300 px-2 py-2 text-base outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2 disabled:bg-slate-200"
+                            className="mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-dark-700 disabled:text-slate-500"
                           />
                         </label>
                       </div>
@@ -640,7 +640,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                       {match.home_win_odds != null &&
                       match.draw_odds != null &&
                       match.away_win_odds != null ? (
-                        <div className="mt-3 rounded-lg bg-slate-100/90 px-3 py-2 text-[11px] text-slate-700 ring-1 ring-slate-200/80">
+                        <div className="mt-3 rounded-lg border border-dark-600 bg-dark-800 px-3 py-2 text-[11px] text-slate-300">
                           <p className="mb-1.5 font-medium uppercase tracking-wide text-slate-500">📊 {t("marketOdds")}</p>
                           <div className="grid grid-cols-3 gap-1 text-center tabular-nums">
                             <div>
@@ -649,7 +649,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                               </span>
                               {Number(match.home_win_odds).toFixed(2)}
                             </div>
-                            <div className="text-slate-600">
+                            <div className="text-slate-400">
                               {t("draw")} {Number(match.draw_odds).toFixed(2)}
                             </div>
                             <div>
@@ -663,8 +663,8 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                       ) : null}
 
                       {match.ai_home_score != null && match.ai_away_score != null ? (
-                        <div className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs text-indigo-950 ring-1 ring-indigo-100">
-                          <p className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-indigo-700/90">
+                        <div className="mt-2 rounded-lg border border-indigo-800/40 bg-indigo-900/20 px-3 py-2 text-xs text-indigo-300">
+                          <p className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-indigo-400">
                             🤖 {t("aiPrediction")}
                           </p>
                           <p>
@@ -674,7 +674,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                       ) : null}
 
                       {match.phase !== "group" ? (
-                        <label className="mt-3 block text-xs text-slate-700">
+                        <label className="mt-3 block text-xs text-slate-300">
                           {t("advancesLabel")}
                           <select
                             value={currentInput.predictedWinner}
@@ -688,7 +688,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                                 },
                               }))
                             }
-                            className="mt-1 w-full rounded-md border border-slate-300 px-2 py-2 text-sm outline-none ring-emerald-200 focus:border-emerald-500 focus:ring-2 disabled:bg-slate-200"
+                            className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-dark-700 disabled:text-slate-500"
                           >
                             <option value="">{t("chooseTeam")}</option>
                             <option value="home">{match.home_team}</option>
@@ -698,7 +698,7 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                       ) : null}
 
                       {lockPassed ? (
-                        <p className="mt-3 text-xs font-medium text-amber-700">{t("lockedLabel")}</p>
+                        <p className="mt-3 text-xs font-medium text-amber-400/90">{t("lockedLabel")}</p>
                       ) : null}
                     </div>
                   );
@@ -709,14 +709,14 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
         })}
 
       {message ? (
-        <p className={`text-sm ${message.type === "success" ? "text-emerald-700" : "text-red-600"}`}>{message.text}</p>
+        <p className={`text-sm ${message.type === "success" ? "text-emerald-400" : "text-red-400"}`}>{message.text}</p>
       ) : null}
 
       {showGlobalSave ? (
         <button
           type="submit"
           disabled={isSaving}
-          className="w-full min-h-[44px] rounded-md bg-emerald-600 px-4 py-2 text-base font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+          className="w-full min-h-[48px] rounded-lg bg-emerald-600 px-4 py-3 text-base font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
         >
           {isSaving ? t("saveSaving") : t("saveButton")}
         </button>

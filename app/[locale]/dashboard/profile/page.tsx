@@ -30,10 +30,10 @@ export default async function ProfilePage({ params }: Props) {
   const initialTimezone = (profile?.timezone as string | undefined)?.trim() || "Europe/Madrid";
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <section className="mx-auto w-full max-w-md rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
-        <p className="text-center text-sm font-semibold tracking-tight text-emerald-700">Predibol</p>
-        <h1 className="mt-4 text-2xl font-semibold text-slate-900">{t("title")}</h1>
+    <main className="min-h-screen bg-dark-900 px-4 py-8">
+      <section className="mx-auto w-full max-w-md rounded-2xl border border-dark-600 bg-dark-800 p-8 sm:p-8">
+        <p className="text-center text-xl font-bold text-emerald-400">Predibol</p>
+        <h1 className="mt-4 text-2xl font-bold text-white">{t("title")}</h1>
         <div className="mt-6">
           <ProfileForm initialDisplayName={initial} initialTimezone={initialTimezone} email={user.email ?? ""} />
         </div>

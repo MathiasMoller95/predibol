@@ -99,29 +99,29 @@ export default async function GroupLeaderboardPage({ params }: Props) {
   }));
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <section className="mx-auto w-full max-w-4xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6">
+    <main className="min-h-screen bg-dark-900 px-4 py-8">
+      <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-slate-500 hover:text-slate-700"
+          className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
         >
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
-            <p className="mt-1 text-sm text-slate-600">{t("subtitle", { groupName: typedGroup.name })}</p>
+            <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+            <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/${locale}/dashboard/group/${groupId}`}
-              className="inline-flex rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+              className="inline-flex rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-emerald-500/40 hover:bg-dark-600"
             >
               {t("backToGroup")}
             </Link>
             <Link
               href={`/${locale}/dashboard/group/${groupId}/predict`}
-              className="inline-flex rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-900 transition hover:bg-emerald-100"
+              className="inline-flex rounded-lg border border-emerald-600/50 bg-emerald-900/30 px-3 py-2 text-sm font-medium text-emerald-300 transition hover:bg-emerald-900/50"
             >
               {t("openPredictions")}
             </Link>
@@ -129,45 +129,53 @@ export default async function GroupLeaderboardPage({ params }: Props) {
         </div>
 
         {rows.length === 0 ? (
-          <p className="mt-8 text-sm text-slate-600">{t("empty")}</p>
+          <p className="mt-8 text-sm text-slate-400">{t("empty")}</p>
         ) : (
-          <div className="mt-8 overflow-x-auto">
+          <div className="mt-8 overflow-x-auto rounded-xl border border-dark-600">
             <table className="min-w-full border-collapse text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-xs font-semibold uppercase tracking-wide text-slate-600">
-                  <th className="whitespace-nowrap py-3 pr-4">{t("colRank")}</th>
+                <tr className="border-b border-dark-600 bg-dark-700 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <th className="whitespace-nowrap py-3 pl-4 pr-4">{t("colRank")}</th>
                   <th className="whitespace-nowrap py-3 pr-4">{t("colName")}</th>
                   <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colPoints")}</th>
                   <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colCorrectResults")}</th>
                   <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colExactScores")}</th>
-                  <th className="whitespace-nowrap py-3 text-right">{t("colPredictionsMade")}</th>
+                  <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colPredictionsMade")}</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row) => {
                   const isSelf = row.user_id === user.id;
+                  const r = row.rank;
+                  const topThree = r != null && r >= 1 && r <= 3;
+                  const medal = r === 1 ? "🥇 " : r === 2 ? "🥈 " : r === 3 ? "🥉 " : "";
                   return (
                     <tr
                       key={row.user_id}
                       className={
                         isSelf
-                          ? "border-b border-slate-100 bg-emerald-50 ring-1 ring-inset ring-emerald-200/80"
-                          : "border-b border-slate-100"
+                          ? "border-b border-dark-600 bg-emerald-900/20 border-l-2 border-l-emerald-500"
+                          : "border-b border-dark-600"
                       }
                     >
-                      <td className="whitespace-nowrap py-3 pr-4 font-medium text-slate-900">
+                      <td
+                        className={`whitespace-nowrap py-3 pl-4 pr-4 font-medium ${
+                          topThree ? "text-gold" : "text-slate-200"
+                        }`}
+                      >
+                        <span aria-hidden>{medal}</span>
                         {row.rank ?? "—"}
                         {isSelf ? (
-                          <span className="ml-2 rounded-full bg-emerald-600/10 px-2 py-0.5 text-xs font-medium text-emerald-800">
+                          <span className="ml-2 rounded-full bg-emerald-900/50 px-2 py-0.5 text-xs font-medium text-emerald-300 ring-1 ring-emerald-700/50">
                             {t("youBadge")}
                           </span>
                         ) : null}
                       </td>
-                      <td className="py-3 pr-4 text-slate-800">{row.display_name}</td>
-                      <td className="py-3 pr-4 text-right tabular-nums text-slate-900">{row.total_points}</td>
-                      <td className="py-3 pr-4 text-right tabular-nums text-slate-800">{row.correct_results}</td>
-                      <td className="py-3 pr-4 text-right tabular-nums text-slate-800">{row.exact_scores}</td>
-                      <td className="py-3 text-right tabular-nums text-slate-800">{row.predictions_made}</td>
+                      <td className="py-3 pr-4 text-slate-300">{row.display_name}</td>
+                      <td className="py-3 pr-4 text-right tabular-nums font-bold text-emerald-400">{row.total_points}</td>
+                      <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.correct_results}</td>
+                      <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.exact_scores}</td>
+                      <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.predictions_made}</td>
                     </tr>
                   );
                 })}

@@ -81,7 +81,7 @@ export default function SetNameForm() {
   return (
     <form className="mt-8 space-y-5" onSubmit={(e) => void onSubmit(e)}>
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="display-name">
+        <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="display-name">
           {t("nameLabel")}
         </label>
         <input
@@ -91,18 +91,20 @@ export default function SetNameForm() {
           value={name}
           placeholder={t("namePlaceholder")}
           onChange={(e) => setName(e.target.value.slice(0, MAX))}
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+          className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
           required
           minLength={MIN}
           maxLength={MAX}
         />
       </div>
       <TimezoneField translationNamespace="SetName" value={timezone} onChange={setTimezone} />
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? (
+        <p className="rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p>
+      ) : null}
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-md bg-emerald-600 px-4 py-2 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+        className="min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
       >
         {submitting ? t("saving") : t("continue")}
       </button>

@@ -117,7 +117,7 @@ export default function PicksForm({ locked, initial }: Props) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
       {locked ? (
-        <p className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <p className="flex items-center gap-2 rounded-lg border border-amber-700/50 bg-amber-900/25 px-3 py-2 text-sm text-amber-200">
           <span aria-hidden>🔒</span>
           {t("locked")}
         </p>
@@ -174,7 +174,7 @@ export default function PicksForm({ locked, initial }: Props) {
       {message ? (
         <p
           className={
-            message.type === "success" ? "text-sm font-medium text-emerald-700" : "text-sm font-medium text-red-600"
+            message.type === "success" ? "text-sm font-medium text-emerald-400" : "text-sm font-medium text-red-400"
           }
         >
           {message.text}
@@ -185,7 +185,7 @@ export default function PicksForm({ locked, initial }: Props) {
         <button
           type="submit"
           disabled={disabled}
-          className="w-full min-h-[48px] rounded-md bg-emerald-600 px-4 py-3 text-base font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          className="w-full min-h-[48px] rounded-lg bg-emerald-600 px-4 py-3 text-base font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
           {isSaving ? t("saving") : t("save")}
         </button>

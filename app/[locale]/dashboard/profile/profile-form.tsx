@@ -11,6 +11,9 @@ import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
 const MIN = 2;
 const MAX = 30;
 
+const inputClass =
+  "w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500";
+
 type Props = {
   initialDisplayName: string;
   initialTimezone: string;
@@ -96,7 +99,7 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
     <div className="space-y-8">
       <form className="space-y-5" onSubmit={(e) => void onSubmit(e)}>
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="profile-display-name">
+          <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="profile-display-name">
             {t("displayNameLabel")}
           </label>
           <input
@@ -108,7 +111,7 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
               setSaved(false);
               setName(e.target.value.slice(0, MAX));
             }}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+            className={inputClass}
             required
             minLength={MIN}
             maxLength={MAX}
@@ -116,27 +119,27 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
         </div>
         <TimezoneField translationNamespace="Profile" value={timezone} onChange={setTimezone} />
         <div>
-          <span className="mb-1 block text-sm font-medium text-slate-700">{t("emailLabel")}</span>
-          <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">{email}</p>
+          <span className="mb-1 block text-sm font-medium text-slate-300">{t("emailLabel")}</span>
+          <p className="rounded-lg border border-dark-600 bg-dark-900 px-4 py-3 text-sm text-slate-400">{email}</p>
         </div>
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        {saved ? <p className="text-sm font-medium text-emerald-700">{t("saved")}</p> : null}
+        {error ? <p className="rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p> : null}
+        {saved ? <p className="text-sm font-medium text-emerald-400">{t("saved")}</p> : null}
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-md bg-emerald-600 px-4 py-2 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 sm:w-auto"
+          className="min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 sm:w-auto"
         >
           {submitting ? t("saving") : t("save")}
         </button>
       </form>
 
-      <div className="border-t border-slate-200 pt-6">
+      <div className="border-t border-dark-600 pt-6">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{t("dangerZone")}</p>
         <button
           type="button"
           onClick={() => void onLogout()}
           disabled={signingOut}
-          className="mt-3 rounded-md border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-900 transition hover:bg-red-100 disabled:opacity-60"
+          className="mt-3 rounded-lg border border-red-800/80 bg-red-950/40 px-4 py-2 text-sm font-medium text-red-300 transition hover:bg-red-950/60 disabled:opacity-60"
         >
           {t("logout")}
         </button>

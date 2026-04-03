@@ -55,12 +55,12 @@ function formatPhaseLabel(phase: MatchPhase): string {
 
 function statusStyles(status: MatchStatus) {
   if (status === "finished") {
-    return "bg-emerald-100 text-emerald-800";
+    return "bg-emerald-900/40 text-emerald-300 ring-1 ring-emerald-700/50";
   }
   if (status === "live") {
-    return "bg-amber-100 text-amber-800";
+    return "bg-amber-900/40 text-amber-300 ring-1 ring-amber-700/50";
   }
-  return "bg-slate-100 text-slate-700";
+  return "bg-dark-700 text-slate-300 ring-1 ring-dark-500";
 }
 
 export default function AdminMatchPanel({ profileTimeZone, matches, predictions, totalMembers }: Props) {
@@ -185,9 +185,9 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
   return (
     <div className="mt-6 space-y-8">
       <section>
-        <h2 className="text-lg font-semibold text-slate-900">{t("pendingPredictions")}</h2>
+        <h2 className="text-lg font-semibold text-white">{t("pendingPredictions")}</h2>
         {upcoming.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-600">{t("noUpcoming")}</p>
+          <p className="mt-3 text-sm text-slate-400">{t("noUpcoming")}</p>
         ) : (
           <div className="mt-3 space-y-3">
             {upcoming.map((match) => {
@@ -195,19 +195,23 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
               const allIn = totalMembers > 0 && submitted >= totalMembers;
 
               return (
-                <div key={match.id} className="rounded-lg border border-slate-200 bg-white p-3">
+                <div key={match.id} className="rounded-lg border border-dark-600 bg-dark-700/50 p-3">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium text-slate-900">
+                      <p className="font-medium text-white">
                         {match.home_team} vs {match.away_team}
                       </p>
-                      <p className="mt-1 text-sm text-slate-600">{formatWhen(match.match_time)}</p>
-                      <p className="mt-1 text-sm text-slate-700">
+                      <p className="mt-1 text-sm text-slate-400">{formatWhen(match.match_time)}</p>
+                      <p className="mt-1 text-sm text-slate-300">
                         {t("predictionsSubmitted", { count: submitted, total: totalMembers })}
                       </p>
                     </div>
                     <span
-                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${allIn ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        allIn
+                          ? "bg-emerald-900/50 text-emerald-300 ring-1 ring-emerald-700/50"
+                          : "bg-amber-900/40 text-amber-300 ring-1 ring-amber-700/50"
+                      }`}
                     >
                       {allIn ? t("allPredictionsIn") : "!"}
                     </span>
@@ -220,9 +224,9 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold text-slate-900">{t("matchResults")}</h2>
+        <h2 className="text-lg font-semibold text-white">{t("matchResults")}</h2>
         {message ? (
-          <p className={`mt-3 text-sm font-medium ${message.type === "success" ? "text-emerald-700" : "text-red-600"}`}>
+          <p className={`mt-3 text-sm font-medium ${message.type === "success" ? "text-emerald-400" : "text-red-400"}`}>
             {message.text}
           </p>
         ) : null}
@@ -233,11 +237,11 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
             const defaultOpen = activePhase ? phase === activePhase : !allFinished;
 
             return (
-              <details key={phase} open={defaultOpen} className="rounded-lg border border-slate-200 bg-white">
-                <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-slate-900">
+              <details key={phase} open={defaultOpen} className="rounded-lg border border-dark-600 bg-dark-700/50">
+                <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-white">
                   {formatPhaseLabel(phase)}
                 </summary>
-                <div className="space-y-3 border-t border-slate-200 p-3">
+                <div className="space-y-3 border-t border-dark-600 p-3">
                   {items.map((match) => {
                     const input = getScoreInput(match);
                     const isFinished = match.status === "finished";
@@ -246,13 +250,13 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
                     return (
                       <div
                         key={match.id}
-                        className="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:flex sm:items-center sm:justify-between sm:gap-3"
+                        className="rounded-lg border border-dark-600 bg-dark-800 p-3 sm:flex sm:items-center sm:justify-between sm:gap-3"
                       >
                         <div>
-                          <p className="font-medium text-slate-900">
+                          <p className="font-medium text-white">
                             {match.home_team} vs {match.away_team}
                           </p>
-                          <p className="mt-1 text-xs text-slate-600">{formatWhen(match.match_time)}</p>
+                          <p className="mt-1 text-xs text-slate-400">{formatWhen(match.match_time)}</p>
                           <span className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${statusStyles(match.status)}`}>
                             {match.status === "finished"
                               ? t("finished")
@@ -263,7 +267,7 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
                         </div>
 
                         {isFinished ? (
-                          <p className="mt-3 text-base font-semibold text-emerald-700 sm:mt-0">
+                          <p className="mt-3 text-base font-semibold text-emerald-400 sm:mt-0">
                             {match.home_score ?? 0} - {match.away_score ?? 0}
                           </p>
                         ) : (
@@ -275,17 +279,17 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
                                 inputMode="numeric"
                                 value={input.home}
                                 onChange={(event) => setScore(match.id, "home", event.target.value)}
-                                className="w-20 rounded-md border border-slate-300 px-2 py-2 text-center text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                className="w-20 rounded-lg border border-dark-500 bg-dark-900 px-2 py-2 text-center text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                 aria-label={t("homeScore")}
                               />
-                              <span className="text-slate-600">-</span>
+                              <span className="text-slate-500">-</span>
                               <input
                                 type="number"
                                 min={0}
                                 inputMode="numeric"
                                 value={input.away}
                                 onChange={(event) => setScore(match.id, "away", event.target.value)}
-                                className="w-20 rounded-md border border-slate-300 px-2 py-2 text-center text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                className="w-20 rounded-lg border border-dark-500 bg-dark-900 px-2 py-2 text-center text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                 aria-label={t("awayScore")}
                               />
                             </div>
@@ -295,7 +299,7 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
                               onClick={() => {
                                 void markAsFinished(match);
                               }}
-                              className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                              className="inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                             >
                               {t("markFinished")}
                             </button>
