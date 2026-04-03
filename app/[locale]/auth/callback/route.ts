@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-
+export const dynamic = "force-dynamic";
 type RouteContext = {
   params: { locale: string };
 };
@@ -29,6 +29,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
   const loginUrl = new URL(`/${locale}/login`, request.url);
 
   if (!code) {
+    loginUrl.searchParams.set("error", "auth_failed");
     return NextResponse.redirect(loginUrl);
   }
 
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
+    loginUrl.searchParams.set("error", "auth_failed");
     return NextResponse.redirect(loginUrl);
   }
 
