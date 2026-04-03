@@ -100,7 +100,7 @@
     "closeInvite": "Cerrar",
     "actionPlay": "¡A jugar!",
     "actionRanking": "Ranking",
-    "actionPicks": "Campeon y mas",
+    "actionPicks": "Campeón y más",
     "actionAdmin": "Admin",
     "playDescription": "Envia tus pronosticos de partidos",
     "rankingDescription": "Mira quien va ganando",
@@ -110,7 +110,7 @@
     "noMembers": "Todavia no hay miembros"
   },
   "Discover": {
-    "title": "Descubrir Mundos",
+    "title": "Descubrir grupos",
     "subtitle": "Encuentra un grupo y empieza a jugar",
     "searchPlaceholder": "Buscar grupos...",
     "memberCount": "{count} miembros",
@@ -225,7 +225,17 @@
     "groupLabel": "Grupo {letter}",
     "groupProgress": "{count}/6 pronosticados",
     "backToGroups": "Volver a grupos",
-    "knockoutTitle": "Fase eliminatoria"
+    "knockoutTitle": "Fase eliminatoria",
+    "tapToPredict": "Toca para pronosticar →",
+    "allPredicted": "✓ Todo pronosticado — toca para editar",
+    "continuePredicting": "Continuar pronosticando →",
+    "vs": "VS",
+    "save": "Guardar",
+    "update": "Actualizar",
+    "saveAll": "Guardar todos los pron?sticos del Grupo {group}",
+    "saved": "?Pron?sticos guardados!",
+    "locked": "Bloqueado",
+    "matchDate": "{date}"
   },
   "AdminPage": {
     "title": "Panel de administracion",
@@ -253,7 +263,7 @@
     "title": "Mis grupos",
     "subtitle": "Copa Mundial 2026",
     "createGroup": "Crear grupo",
-    "discoverWorlds": "Descubrir Mundos",
+    "discoverWorlds": "Descubrir grupos",
     "orDiscover": "O descubre mundos existentes",
     "emptyTitle": "Todavia no te has unido a ningun grupo",
     "emptyDescription": "Unete con un enlace de invitacion o crea tu propio grupo.",
@@ -266,7 +276,7 @@
     "predictionMissing": "Falta pronostico",
     "predict": "¡A jugar!",
     "leaderboard": "Ranking",
-    "picks": "Campeon y mas",
+    "picks": "Campeón y más",
     "admin": "Admin",
     "nextMatchDate": "Proximo: {home} vs {away}"
   },

@@ -225,7 +225,17 @@
     "groupLabel": "Group {letter}",
     "groupProgress": "{count}/6 predicted",
     "backToGroups": "Back to groups",
-    "knockoutTitle": "Knockout stage"
+    "knockoutTitle": "Knockout stage",
+    "tapToPredict": "Tap to predict →",
+    "allPredicted": "✓ All predicted — tap to edit",
+    "continuePredicting": "Continue predicting →",
+    "vs": "VS",
+    "save": "Save",
+    "update": "Update",
+    "saveAll": "Save all predictions for Group {group}",
+    "saved": "Predictions saved!",
+    "locked": "Locked",
+    "matchDate": "{date}"
   },
   "AdminPage": {
     "title": "Admin Panel",

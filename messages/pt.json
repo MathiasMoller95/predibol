@@ -225,7 +225,17 @@
     "groupLabel": "Grupo {letter}",
     "groupProgress": "{count}/6 palpites",
     "backToGroups": "Voltar aos grupos",
-    "knockoutTitle": "Fase eliminatoria"
+    "knockoutTitle": "Fase eliminatoria",
+    "tapToPredict": "Toque para prever →",
+    "allPredicted": "✓ Tudo previsto — toque para editar",
+    "continuePredicting": "Continuar prevendo →",
+    "vs": "VS",
+    "save": "Salvar",
+    "update": "Atualizar",
+    "saveAll": "Salvar todas as previs?es do Grupo {group}",
+    "saved": "Previs?es salvas!",
+    "locked": "Bloqueado",
+    "matchDate": "{date}"
   },
   "AdminPage": {
     "title": "Painel administrativo",
