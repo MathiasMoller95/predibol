@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 
 type Props = {
   groupId: string;
@@ -11,13 +12,6 @@ type Props = {
   autoJoin: boolean;
   isLoggedIn: boolean;
 };
-
-function emailPrefix(email: string | undefined) {
-  if (email && email.includes("@")) {
-    return email.split("@")[0]!;
-  }
-  return "Player";
-}
 
 export default function JoinGroupButton({ groupId, slug, autoJoin, isLoggedIn }: Props) {
   const t = useTranslations("Groups");
@@ -52,10 +46,12 @@ export default function JoinGroupButton({ groupId, slug, autoJoin, isLoggedIn }:
       return;
     }
 
+    const displayName = await getDisplayNameForMemberInsert(supabase, user.id, user.email);
+
     const { error: joinError } = await supabase.from("group_members").insert({
       group_id: groupId,
       user_id: user.id,
-      display_name: emailPrefix(user.email),
+      display_name: displayName,
     });
 
     if (joinError && joinError.code !== "23505") {

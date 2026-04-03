@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 
 export type DiscoverGroupRow = {
   id: string;
@@ -23,13 +24,6 @@ type Props = {
   userEmail: string | undefined;
   groups: DiscoverGroupRow[];
 };
-
-function emailPrefix(email: string | undefined) {
-  if (email && email.includes("@")) {
-    return email.split("@")[0]!;
-  }
-  return "Player";
-}
 
 export default function DiscoverGroupList({ locale, currentUserId, userEmail, groups }: Props) {
   const t = useTranslations("Discover");
@@ -56,10 +50,11 @@ export default function DiscoverGroupList({ locale, currentUserId, userEmail, gr
     });
 
     const supabase = createClient();
+    const displayName = await getDisplayNameForMemberInsert(supabase, currentUserId, userEmail);
     const { error } = await supabase.from("group_members").insert({
       group_id: group.id,
       user_id: currentUserId,
-      display_name: emailPrefix(userEmail),
+      display_name: displayName,
     });
 
     if (error && error.code !== "23505") {

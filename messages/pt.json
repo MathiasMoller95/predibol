@@ -55,7 +55,30 @@
   "Navbar": {
     "logout": "Sair",
     "myGroups": "Meus Grupos",
-    "discover": "Descobrir"
+    "discover": "Descobrir",
+    "profile": "Perfil"
+  },
+  "SetName": {
+    "title": "Como devemos te chamar?",
+    "subtitle": "Este nome aparecera nas classificacoes e para outros jogadores.",
+    "nameLabel": "Seu nome",
+    "namePlaceholder": "ex., Mathias M.",
+    "continue": "Continuar",
+    "saving": "Salvando...",
+    "tooShort": "O nome deve ter pelo menos 2 caracteres.",
+    "tooLong": "O nome nao pode ter mais de 30 caracteres."
+  },
+  "Profile": {
+    "title": "Seu perfil",
+    "displayNameLabel": "Nome visivel",
+    "emailLabel": "E-mail",
+    "save": "Salvar alteracoes",
+    "saving": "Salvando...",
+    "saved": "Perfil atualizado!",
+    "logout": "Sair",
+    "dangerZone": "Zona de perigo",
+    "tooShort": "O nome deve ter pelo menos 2 caracteres.",
+    "tooLong": "O nome nao pode ter mais de 30 caracteres."
   },
   "CreateGroup": {
     "visibility": "Visibilidade",

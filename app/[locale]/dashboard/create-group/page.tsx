@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 
 type TiebreakerRule = "most_exact_scores" | "most_correct_results" | "earliest_submission";
 
@@ -59,13 +60,6 @@ function slugify(value: string) {
     .replace(/[^a-z0-9\s-]/g, "")
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
-}
-
-function adminDisplayNameFromEmail(email: string | undefined) {
-  if (email && email.includes("@")) {
-    return email.split("@")[0]!;
-  }
-  return "Player";
 }
 
 /** Maps Supabase/Postgres errors from `groups.insert` to user-facing copy (avoids raw SQL in the UI). */
@@ -162,11 +156,13 @@ export default function CreateGroupPage() {
       return;
     }
 
+    const memberDisplayName = await getDisplayNameForMemberInsert(supabase, user.id, user.email);
+
     const { error: memberError } = await supabase.from("group_members").upsert(
       {
         group_id: group.id,
         user_id: user.id,
-        display_name: adminDisplayNameFromEmail(user.email),
+        display_name: memberDisplayName,
       },
       { onConflict: "group_id,user_id" }
     );

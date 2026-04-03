@@ -7,11 +7,12 @@ import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 type Props = {
+  displayName: string;
   email: string;
   locale: string;
 };
 
-export default function Navbar({ email, locale }: Props) {
+export default function Navbar({ displayName, email, locale }: Props) {
   const t = useTranslations("Navbar");
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -45,7 +46,14 @@ export default function Navbar({ email, locale }: Props) {
         </div>
 
         <div className="flex min-w-0 items-center gap-3">
-          <span className="min-w-0 truncate text-sm text-slate-500">{email}</span>
+          <Link
+            href={`/${locale}/dashboard/profile`}
+            title={email}
+            aria-label={`${t("profile")}: ${displayName}`}
+            className="min-w-0 truncate text-sm font-medium text-slate-700 hover:text-emerald-700"
+          >
+            {displayName}
+          </Link>
           <button
             type="button"
             onClick={() => void onLogout()}

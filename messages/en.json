@@ -55,7 +55,30 @@
   "Navbar": {
     "logout": "Log out",
     "myGroups": "My Groups",
-    "discover": "Discover"
+    "discover": "Discover",
+    "profile": "Profile"
+  },
+  "SetName": {
+    "title": "What should we call you?",
+    "subtitle": "This name will appear on leaderboards and to other players.",
+    "nameLabel": "Your name",
+    "namePlaceholder": "e.g., Mathias M.",
+    "continue": "Continue",
+    "saving": "Saving...",
+    "tooShort": "Name must be at least 2 characters.",
+    "tooLong": "Name can't be longer than 30 characters."
+  },
+  "Profile": {
+    "title": "Your Profile",
+    "displayNameLabel": "Display name",
+    "emailLabel": "Email",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "saved": "Profile updated!",
+    "logout": "Log out",
+    "dangerZone": "Danger zone",
+    "tooShort": "Name must be at least 2 characters.",
+    "tooLong": "Name can't be longer than 30 characters."
   },
   "CreateGroup": {
     "visibility": "Visibility",

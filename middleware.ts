@@ -15,6 +15,10 @@ function isProtectedDashboardRoute(pathname: string) {
   return /^\/(es|en|pt)\/dashboard(\/.*)?$/.test(pathname);
 }
 
+function isSetNameRoute(pathname: string) {
+  return pathname.includes("/dashboard/set-name");
+}
+
 export default async function middleware(request: NextRequest) {
   const intlResponse = intlMiddleware(request);
   const { pathname } = request.nextUrl;
@@ -46,13 +50,32 @@ export default async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (user) {
-    return response;
+  if (!user) {
+    const locale = getLocaleFromPathname(pathname);
+    const loginUrl = new URL(`/${locale}/login`, request.url);
+    return NextResponse.redirect(loginUrl);
   }
 
   const locale = getLocaleFromPathname(pathname);
-  const loginUrl = new URL(`/${locale}/login`, request.url);
-  return NextResponse.redirect(loginUrl);
+
+  if (isSetNameRoute(pathname)) {
+    return response;
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("display_name")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (
+    !profileError &&
+    (!profile || !String(profile.display_name ?? "").trim())
+  ) {
+    return NextResponse.redirect(new URL(`/${locale}/dashboard/set-name`, request.url));
+  }
+
+  return response;
 }
 
 export const config = {

@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { resolveDisplayName } from "@/lib/display-name";
 import Link from "next/link";
 import GroupInvitePanel from "./group-invite-panel";
 
@@ -21,6 +22,8 @@ type GroupMemberRecord = {
   user_id: string;
   display_name: string;
 };
+
+type ProfileRow = { id: string; display_name: string };
 
 export default async function GroupHubPage({ params }: Props) {
   const { locale, groupId } = params;
@@ -69,6 +72,15 @@ export default async function GroupHubPage({ params }: Props) {
 
   const members = (memberRows ?? []) as GroupMemberRecord[];
   const memberCount = members.length;
+
+  const memberIds = Array.from(new Set(members.map((m) => m.user_id)));
+  let profileByUserId = new Map<string, string>();
+  if (memberIds.length > 0) {
+    const { data: profileRows } = await supabase.from("profiles").select("id,display_name").in("id", memberIds);
+    profileByUserId = new Map(
+      ((profileRows ?? []) as ProfileRow[]).map((p) => [p.id, p.display_name])
+    );
+  }
   const accent = typedGroup.primary_color ?? "#16a34a";
 
   const actionCards = [
@@ -148,6 +160,12 @@ export default async function GroupHubPage({ params }: Props) {
               {members.map((member) => {
                 const isRowAdmin = member.user_id === typedGroup.admin_id;
                 const isSelf = member.user_id === user.id;
+                const profileName = profileByUserId.get(member.user_id);
+                const label = resolveDisplayName(
+                  profileName,
+                  member.display_name,
+                  isSelf ? user.email : undefined
+                );
                 return (
                   <li
                     key={member.id}
@@ -155,7 +173,7 @@ export default async function GroupHubPage({ params }: Props) {
                       isSelf ? "border-emerald-200 bg-emerald-50/60" : "border-slate-200 bg-white"
                     }`}
                   >
-                    <span className="font-medium text-slate-900">{member.display_name}</span>
+                    <span className="font-medium text-slate-900">{label}</span>
                     {isRowAdmin ? (
                       <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-900">
                         {th("adminBadge")}

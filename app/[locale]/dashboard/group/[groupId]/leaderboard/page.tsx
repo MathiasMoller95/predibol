@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { resolveDisplayName } from "@/lib/display-name";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -26,6 +27,8 @@ type MemberRow = {
   user_id: string;
   display_name: string;
 };
+
+type ProfileRow = { id: string; display_name: string };
 
 export default async function GroupLeaderboardPage({ params }: Props) {
   const { locale, groupId } = params;
@@ -73,13 +76,26 @@ export default async function GroupLeaderboardPage({ params }: Props) {
     supabase.from("group_members").select("user_id,display_name").eq("group_id", groupId),
   ]);
 
-  const nameByUser = new Map<string, string>(
-    ((members ?? []) as MemberRow[]).map((m) => [m.user_id, m.display_name]),
+  const memberList = (members ?? []) as MemberRow[];
+  const memberByUser = new Map(memberList.map((m) => [m.user_id, m.display_name]));
+  const boardUserIds = Array.from(
+    new Set(((boardRows ?? []) as LeaderboardRow[]).map((r) => r.user_id))
   );
+  let profileByUserId = new Map<string, string>();
+  if (boardUserIds.length > 0) {
+    const { data: profileRows } = await supabase.from("profiles").select("id,display_name").in("id", boardUserIds);
+    profileByUserId = new Map(
+      ((profileRows ?? []) as ProfileRow[]).map((p) => [p.id, p.display_name])
+    );
+  }
 
   const rows = ((boardRows ?? []) as LeaderboardRow[]).map((row) => ({
     ...row,
-    display_name: nameByUser.get(row.user_id) ?? t("unknownMember"),
+    display_name: resolveDisplayName(
+      profileByUserId.get(row.user_id),
+      memberByUser.get(row.user_id),
+      row.user_id === user.id ? user.email : undefined
+    ),
   }));
 
   return (
