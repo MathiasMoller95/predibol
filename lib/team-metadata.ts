@@ -1,60 +1,61 @@
-export const teamFlags: Record<string, string> = {
+﻿export const teamFlags: Record<string, string> = {
+  // Group A
   Mexico: "🇲🇽",
   "South Africa": "🇿🇦",
   "South Korea": "🇰🇷",
-  "UEFA Playoff D Winner": "🏳️",
-
+  Czechia: "🇨🇿",
+  // Group B
   Canada: "🇨🇦",
+  "Bosnia and Herzegovina": "🇧🇦",
   Qatar: "🇶🇦",
   Switzerland: "🇨🇭",
-  "UEFA Playoff A Winner": "🏳️",
-
-  "United States": "🇺🇸",
-  Paraguay: "🇵🇾",
-  Australia: "🇦🇺",
-  "UEFA Playoff C Winner": "🏳️",
-
+  // Group C
   Brazil: "🇧🇷",
   Morocco: "🇲🇦",
   Haiti: "🇭🇹",
-  Scotland: "🏴",
-
+  Scotland: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+  // Group D
+  "United States": "🇺🇸",
+  Paraguay: "🇵🇾",
+  Australia: "🇦🇺",
+  Türkiye: "🇹🇷",
+  // Group E
   Germany: "🇩🇪",
-  Curacao: "🇨🇼",
-  Ecuador: "🇪🇨",
+  Curaçao: "🇨🇼",
   "Ivory Coast": "🇨🇮",
-
+  Ecuador: "🇪🇨",
+  // Group F
   Netherlands: "🇳🇱",
   Japan: "🇯🇵",
+  Sweden: "🇸🇪",
   Tunisia: "🇹🇳",
-  "UEFA Playoff B Winner": "🏳️",
-
-  Spain: "🇪🇸",
-  "Cape Verde": "🇨🇻",
-  "Saudi Arabia": "🇸🇦",
-  Uruguay: "🇺🇾",
-
+  // Group G
   Belgium: "🇧🇪",
   Egypt: "🇪🇬",
   Iran: "🇮🇷",
   "New Zealand": "🇳🇿",
-
+  // Group H
+  Spain: "🇪🇸",
+  "Cape Verde": "🇨🇻",
+  "Saudi Arabia": "🇸🇦",
+  Uruguay: "🇺🇾",
+  // Group I
   France: "🇫🇷",
   Senegal: "🇸🇳",
+  Iraq: "🇮🇶",
   Norway: "🇳🇴",
-  "FIFA Playoff 2 Winner": "🏳️",
-
+  // Group J
   Argentina: "🇦🇷",
   Algeria: "🇩🇿",
   Austria: "🇦🇹",
   Jordan: "🇯🇴",
-
+  // Group K
   Portugal: "🇵🇹",
+  "DR Congo": "🇨🇩",
   Uzbekistan: "🇺🇿",
   Colombia: "🇨🇴",
-  "FIFA Playoff 1 Winner": "🏳️",
-
-  England: "🏴",
+  // Group L
+  England: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
   Croatia: "🇭🇷",
   Ghana: "🇬🇭",
   Panama: "🇵🇦",
@@ -64,58 +65,47 @@ export const teamGroup: Record<string, string> = {
   Mexico: "A",
   "South Africa": "A",
   "South Korea": "A",
-  "UEFA Playoff D Winner": "A",
-
+  Czechia: "A",
   Canada: "B",
+  "Bosnia and Herzegovina": "B",
   Qatar: "B",
   Switzerland: "B",
-  "UEFA Playoff A Winner": "B",
-
-  "United States": "C",
-  Paraguay: "C",
-  Australia: "C",
-  "UEFA Playoff C Winner": "C",
-
-  Brazil: "D",
-  Morocco: "D",
-  Haiti: "D",
-  Scotland: "D",
-
+  Brazil: "C",
+  Morocco: "C",
+  Haiti: "C",
+  Scotland: "C",
+  "United States": "D",
+  Paraguay: "D",
+  Australia: "D",
+  Türkiye: "D",
   Germany: "E",
-  Curacao: "E",
-  Ecuador: "E",
+  Curaçao: "E",
   "Ivory Coast": "E",
-
+  Ecuador: "E",
   Netherlands: "F",
   Japan: "F",
+  Sweden: "F",
   Tunisia: "F",
-  "UEFA Playoff B Winner": "F",
-
-  Spain: "G",
-  "Cape Verde": "G",
-  "Saudi Arabia": "G",
-  Uruguay: "G",
-
-  Belgium: "H",
-  Egypt: "H",
-  Iran: "H",
-  "New Zealand": "H",
-
+  Belgium: "G",
+  Egypt: "G",
+  Iran: "G",
+  "New Zealand": "G",
+  Spain: "H",
+  "Cape Verde": "H",
+  "Saudi Arabia": "H",
+  Uruguay: "H",
   France: "I",
   Senegal: "I",
+  Iraq: "I",
   Norway: "I",
-  "FIFA Playoff 2 Winner": "I",
-
   Argentina: "J",
   Algeria: "J",
   Austria: "J",
   Jordan: "J",
-
   Portugal: "K",
+  "DR Congo": "K",
   Uzbekistan: "K",
   Colombia: "K",
-  "FIFA Playoff 1 Winner": "K",
-
   England: "L",
   Croatia: "L",
   Ghana: "L",
@@ -129,4 +119,3 @@ export function getFlag(teamName: string): string {
 export function getGroup(teamName: string): string {
   return teamGroup[teamName] ?? "?";
 }
-
