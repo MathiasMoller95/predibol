@@ -82,7 +82,7 @@ export default async function GroupPicksPage({ params }: Props) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
-            <p className="mt-1 text-sm text-slate-600">{t("subtitle", { groupName: typedGroup.name })}</p>
+            <p className="mt-1 text-sm text-slate-600">{t("subtitle")}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link

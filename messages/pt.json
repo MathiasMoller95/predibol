@@ -193,23 +193,24 @@
     "colPredictionsMade": "Palpites"
   },
   "Picks": {
-    "title": "Palpites pre-torneio",
-    "subtitle": "Seus palpites antes do apito inicial para {groupName}.",
+    "title": "Campeão e mais",
+    "subtitle": "Escolha os vencedores do torneio antes de comecar",
     "backToGroup": "Voltar ao grupo",
-    "lockedNotice": "O torneio comecou. Os palpites pre-torneio estao bloqueados.",
-    "champion": "Campeao",
-    "runnerUp": "Vice-campeao",
-    "thirdPlace": "Terceiro lugar",
-    "topScorer": "Artilheiro",
-    "bestPlayer": "Melhor jogador",
-    "bestGoalkeeper": "Melhor goleiro",
-    "saveButton": "Salvar palpites",
-    "saveSaving": "Salvando...",
-    "messages": {
-      "saveSuccess": "Palpites salvos.",
-      "saveError": "Nao foi possivel salvar os palpites.",
-      "lockedError": "Os palpites estao bloqueados porque o torneio comecou."
-    }
+    "champion": "🏆 Campeão",
+    "runnerUp": "🥈 Vice-campeao",
+    "thirdPlace": "🥉 Terceiro lugar",
+    "topScorer": "⚽ Artilheiro",
+    "bestPlayer": "⭐ Melhor jogador",
+    "bestGoalkeeper": "🧤 Melhor goleiro",
+    "selectTeam": "Selecione uma equipe...",
+    "searchPlayer": "Busque ou digite um jogador...",
+    "searchGoalkeeper": "Busque ou digite um goleiro...",
+    "save": "Salvar palpites",
+    "saving": "Salvando...",
+    "saved": "Selecoes salvas!",
+    "locked": "Palpites bloqueados — o torneio ja comecou",
+    "error": "Falha ao salvar. Tente novamente.",
+    "noPlayerMatches": "Nenhuma correspondencia — voce pode digitar um nome personalizado"
   },
   "Predictions": {
     "title": "Palpites de partidas",

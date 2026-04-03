@@ -1,7 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import PlayerPicker from "@/components/picks/player-picker";
+import TeamPicker from "@/components/picks/team-picker";
+import { goalkeepers, players } from "@/lib/player-data";
 
 export type InitialPicks = {
   champion: string | null;
@@ -53,6 +56,10 @@ export default function PicksForm({ locked, initial }: Props) {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+  useEffect(() => {
+    setValues(toInputMap(initial));
+  }, [initial]);
+
   function setField(key: FieldKey, value: string) {
     setValues((prev) => ({ ...prev, [key]: value }));
   }
@@ -83,23 +90,23 @@ export default function PicksForm({ locked, initial }: Props) {
       if (response.status === 403) {
         const data = (await response.json().catch(() => ({}))) as { code?: string };
         if (data.code === "PICKS_LOCKED") {
-          setMessage({ type: "error", text: t("messages.lockedError") });
+          setMessage({ type: "error", text: t("locked") });
         } else {
-          setMessage({ type: "error", text: t("messages.saveError") });
+          setMessage({ type: "error", text: t("error") });
         }
         setIsSaving(false);
         return;
       }
 
       if (!response.ok) {
-        setMessage({ type: "error", text: t("messages.saveError") });
+        setMessage({ type: "error", text: t("error") });
         setIsSaving(false);
         return;
       }
 
-      setMessage({ type: "success", text: t("messages.saveSuccess") });
+      setMessage({ type: "success", text: t("saved") });
     } catch {
-      setMessage({ type: "error", text: t("messages.saveError") });
+      setMessage({ type: "error", text: t("error") });
     } finally {
       setIsSaving(false);
     }
@@ -110,78 +117,58 @@ export default function PicksForm({ locked, initial }: Props) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
       {locked ? (
-        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-          {t("lockedNotice")}
+        <p className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <span aria-hidden>🔒</span>
+          {t("locked")}
         </p>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block text-sm font-medium text-slate-700">
-          {t("champion")}
-          <input
-            type="text"
-            name="champion"
-            value={values.champion}
-            onChange={(e) => setField("champion", e.target.value)}
-            disabled={disabled}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-slate-100"
-          />
-        </label>
-        <label className="block text-sm font-medium text-slate-700">
-          {t("runnerUp")}
-          <input
-            type="text"
-            name="runnerUp"
-            value={values.runnerUp}
-            onChange={(e) => setField("runnerUp", e.target.value)}
-            disabled={disabled}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-slate-100"
-          />
-        </label>
-        <label className="block text-sm font-medium text-slate-700">
-          {t("thirdPlace")}
-          <input
-            type="text"
-            name="thirdPlace"
-            value={values.thirdPlace}
-            onChange={(e) => setField("thirdPlace", e.target.value)}
-            disabled={disabled}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-slate-100"
-          />
-        </label>
-        <label className="block text-sm font-medium text-slate-700">
-          {t("topScorer")}
-          <input
-            type="text"
-            name="topScorer"
-            value={values.topScorer}
-            onChange={(e) => setField("topScorer", e.target.value)}
-            disabled={disabled}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-slate-100"
-          />
-        </label>
-        <label className="block text-sm font-medium text-slate-700">
-          {t("bestPlayer")}
-          <input
-            type="text"
-            name="bestPlayer"
-            value={values.bestPlayer}
-            onChange={(e) => setField("bestPlayer", e.target.value)}
-            disabled={disabled}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-slate-100"
-          />
-        </label>
-        <label className="block text-sm font-medium text-slate-700">
-          {t("bestGoalkeeper")}
-          <input
-            type="text"
-            name="bestGoalkeeper"
-            value={values.bestGoalkeeper}
-            onChange={(e) => setField("bestGoalkeeper", e.target.value)}
-            disabled={disabled}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-slate-100"
-          />
-        </label>
+      <div className="flex flex-col gap-5">
+        <TeamPicker
+          label={t("champion")}
+          placeholder={t("selectTeam")}
+          value={values.champion}
+          onChange={(v) => setField("champion", v)}
+          disabled={disabled}
+        />
+        <TeamPicker
+          label={t("runnerUp")}
+          placeholder={t("selectTeam")}
+          value={values.runnerUp}
+          onChange={(v) => setField("runnerUp", v)}
+          disabled={disabled}
+        />
+        <TeamPicker
+          label={t("thirdPlace")}
+          placeholder={t("selectTeam")}
+          value={values.thirdPlace}
+          onChange={(v) => setField("thirdPlace", v)}
+          disabled={disabled}
+        />
+        <PlayerPicker
+          label={t("topScorer")}
+          placeholder={t("searchPlayer")}
+          playerList={players}
+          value={values.topScorer}
+          onChange={(v) => setField("topScorer", v)}
+          disabled={disabled}
+        />
+        <PlayerPicker
+          label={t("bestPlayer")}
+          placeholder={t("searchPlayer")}
+          playerList={players}
+          value={values.bestPlayer}
+          onChange={(v) => setField("bestPlayer", v)}
+          disabled={disabled}
+        />
+        <PlayerPicker
+          label={t("bestGoalkeeper")}
+          placeholder={t("searchGoalkeeper")}
+          playerList={goalkeepers}
+          value={values.bestGoalkeeper}
+          onChange={(v) => setField("bestGoalkeeper", v)}
+          disabled={disabled}
+        />
       </div>
 
       {message ? (
@@ -198,9 +185,9 @@ export default function PicksForm({ locked, initial }: Props) {
         <button
           type="submit"
           disabled={disabled}
-          className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full min-h-[48px] rounded-md bg-emerald-600 px-4 py-3 text-base font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
-          {isSaving ? t("saveSaving") : t("saveButton")}
+          {isSaving ? t("saving") : t("save")}
         </button>
       ) : null}
     </form>

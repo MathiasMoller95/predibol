@@ -193,23 +193,24 @@
     "colPredictionsMade": "Pronosticos"
   },
   "Picks": {
-    "title": "Pronosticos previos al torneo",
-    "subtitle": "Tus pronosticos antes del inicio para {groupName}.",
+    "title": "Campeón y más",
+    "subtitle": "Elige a los ganadores del torneo antes de que empiece",
     "backToGroup": "Volver al grupo",
-    "lockedNotice": "El torneo ha comenzado. Los pronosticos previos estan bloqueados.",
-    "champion": "Campeon",
-    "runnerUp": "Subcampeon",
-    "thirdPlace": "Tercer lugar",
-    "topScorer": "Goleador",
-    "bestPlayer": "Mejor jugador",
-    "bestGoalkeeper": "Mejor portero",
-    "saveButton": "Guardar pronosticos",
-    "saveSaving": "Guardando...",
-    "messages": {
-      "saveSuccess": "Pronosticos guardados.",
-      "saveError": "No se pudieron guardar los pronosticos.",
-      "lockedError": "Los pronosticos estan bloqueados porque el torneo ha comenzado."
-    }
+    "champion": "🏆 Campeón",
+    "runnerUp": "🥈 Subcampeón",
+    "thirdPlace": "🥉 Tercer lugar",
+    "topScorer": "⚽ Goleador",
+    "bestPlayer": "⭐ Mejor jugador",
+    "bestGoalkeeper": "🧤 Mejor portero",
+    "selectTeam": "Selecciona un equipo...",
+    "searchPlayer": "Busca o escribe un jugador...",
+    "searchGoalkeeper": "Busca o escribe un portero...",
+    "save": "Guardar pronosticos",
+    "saving": "Guardando...",
+    "saved": "¡Selecciones guardadas!",
+    "locked": "Pronosticos bloqueados: el torneo ya ha comenzado",
+    "error": "No se pudo guardar. Intentalo de nuevo.",
+    "noPlayerMatches": "Sin coincidencias: puedes escribir un nombre a mano"
   },
   "Predictions": {
     "title": "Pronosticos de partidos",
