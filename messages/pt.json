@@ -54,7 +54,49 @@
   },
   "Navbar": {
     "logout": "Sair",
-    "myGroups": "Meus Grupos"
+    "myGroups": "Meus Grupos",
+    "discover": "Descobrir"
+  },
+  "CreateGroup": {
+    "visibility": "Visibilidade",
+    "public": "Publico",
+    "private": "Privado",
+    "publicDescription": "Qualquer pessoa pode encontrar e entrar no seu grupo",
+    "privateDescription": "Apenas quem tiver o link de convite pode entrar",
+    "groupDescription": "Descricao",
+    "groupDescriptionPlaceholder": "Descreva seu grupo para outras pessoas encontrarem",
+    "groupDescriptionHelp": "No maximo 200 caracteres. Aparece na pagina de descoberta."
+  },
+  "GroupHub": {
+    "memberCount": "{count} membros",
+    "adminBadge": "Admin",
+    "inviteFriends": "Convidar amigos",
+    "copyLink": "Copiar link",
+    "copied": "✓ Copiado!",
+    "shareWhatsApp": "Compartilhar no WhatsApp",
+    "closeInvite": "Fechar",
+    "actionPlay": "Vamos jogar!",
+    "actionRanking": "Ranking",
+    "actionPicks": "Campeao e mais",
+    "actionAdmin": "Admin",
+    "playDescription": "Envie seus palpites dos jogos",
+    "rankingDescription": "Veja quem esta na frente",
+    "picksDescription": "Escolha os campeoes do torneio",
+    "adminDescription": "Gerenciar resultados",
+    "members": "Membros",
+    "noMembers": "Ainda nao ha membros"
+  },
+  "Discover": {
+    "title": "Descobrir Mundos",
+    "subtitle": "Encontre um grupo e comece a jogar",
+    "searchPlaceholder": "Buscar grupos...",
+    "memberCount": "{count} membros",
+    "join": "Entrar",
+    "joined": "✓ Entrou!",
+    "alreadyMember": "✓ Dentro",
+    "noGroups": "Ainda nao ha grupos publicos. Crie o seu!",
+    "createGroup": "Criar grupo",
+    "noSearchResults": "Nenhum resultado"
   },
   "Groups": {
     "create": {
@@ -86,7 +128,8 @@
     },
     "errors": {
       "missingRequired": "Preencha os campos obrigatorios.",
-      "createFailed": "Nao foi possivel criar o grupo."
+      "createFailed": "Nao foi possivel criar o grupo.",
+      "memberSaveFailed": "O grupo foi criado, mas nao foi possivel adicionar voce como membro. Tente pelo link de convite."
     },
     "groupAdmin": {
       "inviteLinkLabel": "Link de convite",
@@ -186,6 +229,8 @@
     "title": "Meus grupos",
     "subtitle": "Copa do Mundo 2026",
     "createGroup": "Criar grupo",
+    "discoverWorlds": "Descobrir Mundos",
+    "orDiscover": "Ou descubra mundos existentes",
     "emptyTitle": "Voce ainda nao entrou em nenhum grupo",
     "emptyDescription": "Entre com um link de convite ou crie seu proprio grupo.",
     "rank": "#{rank} de {total}",

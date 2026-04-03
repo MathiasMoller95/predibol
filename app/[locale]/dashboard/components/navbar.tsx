@@ -28,13 +28,21 @@ export default function Navbar({ email, locale }: Props) {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-        <Link
-          href={`/${locale}/dashboard`}
-          aria-label={t("myGroups")}
-          className="font-semibold tracking-tight text-emerald-700 hover:text-emerald-800"
-        >
-          Predibol
-        </Link>
+        <div className="flex min-w-0 flex-1 items-center gap-4 sm:gap-6">
+          <Link
+            href={`/${locale}/dashboard`}
+            aria-label={t("myGroups")}
+            className="shrink-0 font-semibold tracking-tight text-emerald-700 hover:text-emerald-800"
+          >
+            Predibol
+          </Link>
+          <Link
+            href={`/${locale}/dashboard/discover`}
+            className="shrink-0 text-sm font-medium text-slate-600 hover:text-emerald-700"
+          >
+            {t("discover")}
+          </Link>
+        </div>
 
         <div className="flex min-w-0 items-center gap-3">
           <span className="min-w-0 truncate text-sm text-slate-500">{email}</span>

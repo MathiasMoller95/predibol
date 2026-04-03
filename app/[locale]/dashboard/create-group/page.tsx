@@ -61,30 +61,21 @@ function slugify(value: string) {
     .replace(/-+/g, "-");
 }
 
-function getDisplayName(email: string | undefined, metadata: Record<string, unknown> | undefined) {
-  const fullName = metadata?.full_name;
-  const name = metadata?.name;
-
-  if (typeof fullName === "string" && fullName.trim()) {
-    return fullName.trim();
-  }
-
-  if (typeof name === "string" && name.trim()) {
-    return name.trim();
-  }
-
+function adminDisplayNameFromEmail(email: string | undefined) {
   if (email && email.includes("@")) {
-    return email.split("@")[0];
+    return email.split("@")[0]!;
   }
-
   return "Player";
 }
 
 export default function CreateGroupPage() {
   const t = useTranslations("Groups");
+  const tc = useTranslations("CreateGroup");
   const locale = useLocale();
   const router = useRouter();
   const [form, setForm] = useState<GroupFormState>(initialState);
+  const [isPublic, setIsPublic] = useState(false);
+  const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [slugEdited, setSlugEdited] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -126,6 +117,8 @@ export default function CreateGroupPage() {
       return;
     }
 
+    const descriptionTrimmed = isPublic ? description.trim().slice(0, 200) : "";
+
     const { data: group, error: groupError } = await supabase
       .from("groups")
       .insert({
@@ -144,6 +137,8 @@ export default function CreateGroupPage() {
         pre_tournament_bonus_best_player: form.bonusBestPlayer,
         pre_tournament_bonus_best_goalkeeper: form.bonusBestGoalkeeper,
         tiebreaker_rule: form.tiebreakerRule,
+        is_public: isPublic,
+        description: descriptionTrimmed,
       })
       .select("id")
       .single();
@@ -154,14 +149,20 @@ export default function CreateGroupPage() {
       return;
     }
 
-    await supabase.from("group_members").upsert(
+    const { error: memberError } = await supabase.from("group_members").upsert(
       {
         group_id: group.id,
         user_id: user.id,
-        display_name: getDisplayName(user.email, user.user_metadata),
+        display_name: adminDisplayNameFromEmail(user.email),
       },
       { onConflict: "group_id,user_id" }
     );
+
+    if (memberError) {
+      setError(memberError.message || t("errors.memberSaveFailed"));
+      setIsSubmitting(false);
+      return;
+    }
 
     router.push(`/${locale}/dashboard/group/${group.id}`);
   }
@@ -203,6 +204,58 @@ export default function CreateGroupPage() {
               required
             />
           </div>
+
+          <fieldset className="rounded-lg border border-slate-200 p-4">
+            <legend className="px-1 text-sm font-medium text-slate-800">{tc("visibility")}</legend>
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+              <label className="flex cursor-pointer items-start gap-2 rounded-md border border-slate-200 p-3 has-[:checked]:border-emerald-500 has-[:checked]:ring-1 has-[:checked]:ring-emerald-500">
+                <input
+                  type="radio"
+                  name="visibility"
+                  checked={!isPublic}
+                  onChange={() => {
+                    setIsPublic(false);
+                    setDescription("");
+                  }}
+                  className="mt-1"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-slate-900">{tc("private")}</span>
+                  <span className="mt-0.5 block text-xs text-slate-600">{tc("privateDescription")}</span>
+                </span>
+              </label>
+              <label className="flex cursor-pointer items-start gap-2 rounded-md border border-slate-200 p-3 has-[:checked]:border-emerald-500 has-[:checked]:ring-1 has-[:checked]:ring-emerald-500">
+                <input
+                  type="radio"
+                  name="visibility"
+                  checked={isPublic}
+                  onChange={() => setIsPublic(true)}
+                  className="mt-1"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-slate-900">{tc("public")}</span>
+                  <span className="mt-0.5 block text-xs text-slate-600">{tc("publicDescription")}</span>
+                </span>
+              </label>
+            </div>
+
+            {isPublic ? (
+              <div className="mt-4">
+                <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="group-desc">
+                  {tc("groupDescription")}
+                </label>
+                <textarea
+                  id="group-desc"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value.slice(0, 200))}
+                  placeholder={tc("groupDescriptionPlaceholder")}
+                  rows={3}
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 outline-none ring-emerald-200 transition focus:border-emerald-500 focus:ring-2"
+                />
+                <p className="mt-1 text-xs text-slate-500">{tc("groupDescriptionHelp")}</p>
+              </div>
+            ) : null}
+          </fieldset>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>

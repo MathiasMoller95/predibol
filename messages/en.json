@@ -54,7 +54,49 @@
   },
   "Navbar": {
     "logout": "Log out",
-    "myGroups": "My Groups"
+    "myGroups": "My Groups",
+    "discover": "Discover"
+  },
+  "CreateGroup": {
+    "visibility": "Visibility",
+    "public": "Public",
+    "private": "Private",
+    "publicDescription": "Anyone can find and join your group",
+    "privateDescription": "Only people with the invite link can join",
+    "groupDescription": "Description",
+    "groupDescriptionPlaceholder": "Describe your group so others can find it",
+    "groupDescriptionHelp": "Max 200 characters. Shown on the discovery page."
+  },
+  "GroupHub": {
+    "memberCount": "{count} members",
+    "adminBadge": "Admin",
+    "inviteFriends": "Invite friends",
+    "copyLink": "Copy link",
+    "copied": "✓ Copied!",
+    "shareWhatsApp": "Share on WhatsApp",
+    "closeInvite": "Close",
+    "actionPlay": "Let's play!",
+    "actionRanking": "Ranking",
+    "actionPicks": "Champion & more",
+    "actionAdmin": "Admin",
+    "playDescription": "Submit your match predictions",
+    "rankingDescription": "See who's winning",
+    "picksDescription": "Pick your tournament winners",
+    "adminDescription": "Manage results",
+    "members": "Members",
+    "noMembers": "No members yet"
+  },
+  "Discover": {
+    "title": "Discover Worlds",
+    "subtitle": "Find a group and start playing",
+    "searchPlaceholder": "Search groups...",
+    "memberCount": "{count} members",
+    "join": "Join",
+    "joined": "✓ Joined!",
+    "alreadyMember": "✓ Joined",
+    "noGroups": "No public groups yet. Create your own!",
+    "createGroup": "Create Group",
+    "noSearchResults": "No matches"
   },
   "Groups": {
     "create": {
@@ -86,7 +128,8 @@
     },
     "errors": {
       "missingRequired": "Please complete the required fields.",
-      "createFailed": "Could not create the group."
+      "createFailed": "Could not create the group.",
+      "memberSaveFailed": "The group was created but we could not add you as a member. Try joining from the invite link or contact support."
     },
     "groupAdmin": {
       "inviteLinkLabel": "Invite link",
@@ -186,6 +229,8 @@
     "title": "My Groups",
     "subtitle": "World Cup 2026",
     "createGroup": "Create Group",
+    "discoverWorlds": "Discover Worlds",
+    "orDiscover": "Or discover existing worlds",
     "emptyTitle": "You haven't joined any groups yet",
     "emptyDescription": "Join a group using an invite link or create your own.",
     "rank": "#{rank} of {total}",

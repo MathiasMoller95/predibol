@@ -12,22 +12,10 @@ type Props = {
   isLoggedIn: boolean;
 };
 
-function getDisplayName(email: string | undefined, metadata: Record<string, unknown> | undefined) {
-  const fullName = metadata?.full_name;
-  const name = metadata?.name;
-
-  if (typeof fullName === "string" && fullName.trim()) {
-    return fullName.trim();
-  }
-
-  if (typeof name === "string" && name.trim()) {
-    return name.trim();
-  }
-
+function emailPrefix(email: string | undefined) {
   if (email && email.includes("@")) {
-    return email.split("@")[0];
+    return email.split("@")[0]!;
   }
-
   return "Player";
 }
 
@@ -67,7 +55,7 @@ export default function JoinGroupButton({ groupId, slug, autoJoin, isLoggedIn }:
     const { error: joinError } = await supabase.from("group_members").insert({
       group_id: groupId,
       user_id: user.id,
-      display_name: getDisplayName(user.email, user.user_metadata),
+      display_name: emailPrefix(user.email),
     });
 
     if (joinError && joinError.code !== "23505") {

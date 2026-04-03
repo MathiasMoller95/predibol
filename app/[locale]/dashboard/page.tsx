@@ -125,12 +125,20 @@ export default async function DashboardPage({ params }: Props) {
             <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
             <p className="mt-1 text-sm text-slate-600">{t("subtitle")}</p>
           </div>
-          <a
-            href={`/${locale}/dashboard/create-group`}
-            className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
-          >
-            {t("createGroup")}
-          </a>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={`/${locale}/dashboard/discover`}
+              className="inline-flex rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+            >
+              {t("discoverWorlds")}
+            </a>
+            <a
+              href={`/${locale}/dashboard/create-group`}
+              className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
+            >
+              {t("createGroup")}
+            </a>
+          </div>
         </div>
 
         <DashboardGroupList locale={locale} currentUserId={user.id} groups={summaries} />

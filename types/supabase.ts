@@ -32,6 +32,8 @@ export type Database = {
           pre_tournament_bonus_best_player: number;
           pre_tournament_bonus_best_goalkeeper: number;
           tiebreaker_rule: TiebreakerRule;
+          is_public: boolean;
+          description: string;
           created_at: string;
         };
         Insert: {
@@ -52,6 +54,8 @@ export type Database = {
           pre_tournament_bonus_best_player?: number;
           pre_tournament_bonus_best_goalkeeper?: number;
           tiebreaker_rule?: TiebreakerRule;
+          is_public?: boolean;
+          description?: string;
           created_at?: string;
         };
         Update: {
@@ -72,6 +76,8 @@ export type Database = {
           pre_tournament_bonus_best_player?: number;
           pre_tournament_bonus_best_goalkeeper?: number;
           tiebreaker_rule?: TiebreakerRule;
+          is_public?: boolean;
+          description?: string;
           created_at?: string;
         };
         Relationships: [];

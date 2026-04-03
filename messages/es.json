@@ -54,7 +54,49 @@
   },
   "Navbar": {
     "logout": "Cerrar sesion",
-    "myGroups": "Mis Grupos"
+    "myGroups": "Mis Grupos",
+    "discover": "Descubrir"
+  },
+  "CreateGroup": {
+    "visibility": "Visibilidad",
+    "public": "Publico",
+    "private": "Privado",
+    "publicDescription": "Cualquiera puede encontrar y unirse a tu grupo",
+    "privateDescription": "Solo quienes tengan el enlace de invitacion pueden unirse",
+    "groupDescription": "Descripcion",
+    "groupDescriptionPlaceholder": "Describe tu grupo para que otros lo encuentren",
+    "groupDescriptionHelp": "Maximo 200 caracteres. Se muestra en la pagina de descubrimiento."
+  },
+  "GroupHub": {
+    "memberCount": "{count} miembros",
+    "adminBadge": "Admin",
+    "inviteFriends": "Invitar amigos",
+    "copyLink": "Copiar enlace",
+    "copied": "✓ Copiado!",
+    "shareWhatsApp": "Compartir en WhatsApp",
+    "closeInvite": "Cerrar",
+    "actionPlay": "¡A jugar!",
+    "actionRanking": "Ranking",
+    "actionPicks": "Campeon y mas",
+    "actionAdmin": "Admin",
+    "playDescription": "Envia tus pronosticos de partidos",
+    "rankingDescription": "Mira quien va ganando",
+    "picksDescription": "Elige a los campeones del torneo",
+    "adminDescription": "Gestionar resultados",
+    "members": "Miembros",
+    "noMembers": "Todavia no hay miembros"
+  },
+  "Discover": {
+    "title": "Descubrir Mundos",
+    "subtitle": "Encuentra un grupo y empieza a jugar",
+    "searchPlaceholder": "Buscar grupos...",
+    "memberCount": "{count} miembros",
+    "join": "Unirse",
+    "joined": "✓ Te uniste!",
+    "alreadyMember": "✓ Unido",
+    "noGroups": "Aun no hay grupos publicos. ¡Crea el tuyo!",
+    "createGroup": "Crear grupo",
+    "noSearchResults": "Sin resultados"
   },
   "Groups": {
     "create": {
@@ -186,6 +228,8 @@
     "title": "Mis grupos",
     "subtitle": "Copa Mundial 2026",
     "createGroup": "Crear grupo",
+    "discoverWorlds": "Descubrir Mundos",
+    "orDiscover": "O descubre mundos existentes",
     "emptyTitle": "Todavia no te has unido a ningun grupo",
     "emptyDescription": "Unete con un enlace de invitacion o crea tu propio grupo.",
     "rank": "#{rank} de {total}",

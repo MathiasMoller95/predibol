@@ -32,12 +32,18 @@ export default function DashboardGroupList({ locale, currentUserId, groups }: Pr
       <div className="mt-8 rounded-lg border border-slate-200 bg-slate-50 p-6">
         <h2 className="text-lg font-semibold text-slate-900">{t("emptyTitle")}</h2>
         <p className="mt-2 text-sm text-slate-700">{t("emptyDescription")}</p>
-        <div className="mt-5">
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Link
             href={`/${locale}/dashboard/create-group`}
             className="inline-flex rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
           >
             {t("createGroup")}
+          </Link>
+          <Link
+            href={`/${locale}/dashboard/discover`}
+            className="inline-flex text-sm font-medium text-emerald-700 underline-offset-2 hover:text-emerald-800 hover:underline"
+          >
+            {t("orDiscover")}
           </Link>
         </div>
       </div>
