@@ -68,7 +68,7 @@ export default async function DiscoverPage({ params }: Props) {
   }));
 
   return (
-    <main className="min-h-screen bg-dark-900 px-4 py-8">
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-5xl">
         <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
         <p className="mt-1 text-sm text-slate-500">{t("subtitle")}</p>

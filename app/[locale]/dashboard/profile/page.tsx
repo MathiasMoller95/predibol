@@ -30,7 +30,7 @@ export default async function ProfilePage({ params }: Props) {
   const initialTimezone = (profile?.timezone as string | undefined)?.trim() || "Europe/Madrid";
 
   return (
-    <main className="min-h-screen bg-dark-900 px-4 py-8">
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-md rounded-2xl border border-dark-600 bg-dark-800 p-8 sm:p-8">
         <p className="text-center text-xl font-bold text-emerald-400">Predibol</p>
         <h1 className="mt-4 text-2xl font-bold text-white">{t("title")}</h1>

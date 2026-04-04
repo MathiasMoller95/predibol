@@ -4,9 +4,11 @@ import { FormEvent, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import TimezoneField from "@/components/timezone-field";
+import { useToast } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/client";
 import { syncGroupMembersDisplayName } from "@/lib/display-name";
 import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
+import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 const MIN = 2;
 const MAX = 30;
@@ -24,10 +26,10 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
   const t = useTranslations("Profile");
   const locale = useLocale();
   const router = useRouter();
+  const { showToast } = useToast();
   const [name, setName] = useState(initialDisplayName);
   const [timezone, setTimezone] = useState(initialTimezone || DEFAULT_TIMEZONE);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -46,7 +48,6 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
       return;
     }
     setError(null);
-    setSaved(false);
     setSubmitting(true);
     const supabase = createClient();
     const trimmed = name.trim();
@@ -70,20 +71,20 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
     );
 
     if (upsertError) {
-      setError(upsertError.message);
+      showToast(upsertError.message, "error");
       setSubmitting(false);
       return;
     }
 
     const { error: syncError } = await syncGroupMembersDisplayName(supabase, user.id, trimmed);
     if (syncError) {
-      setError(syncError.message);
+      showToast(syncError.message, "error");
       setSubmitting(false);
       return;
     }
 
     setSubmitting(false);
-    setSaved(true);
+    showToast(t("saved"), "success");
     router.refresh();
   }
 
@@ -108,7 +109,6 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
             autoComplete="nickname"
             value={name}
             onChange={(e) => {
-              setSaved(false);
               setName(e.target.value.slice(0, MAX));
             }}
             className={inputClass}
@@ -123,11 +123,10 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
           <p className="rounded-lg border border-dark-600 bg-dark-900 px-4 py-3 text-sm text-slate-400">{email}</p>
         </div>
         {error ? <p className="rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p> : null}
-        {saved ? <p className="text-sm font-medium text-emerald-400">{t("saved")}</p> : null}
         <button
           type="submit"
           disabled={submitting}
-          className="min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 sm:w-auto"
+          className={`min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700 disabled:bg-emerald-400 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
         >
           {submitting ? t("saving") : t("save")}
         </button>

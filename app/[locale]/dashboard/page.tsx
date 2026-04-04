@@ -1,7 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { createClient } from "@/lib/supabase/server";
 import DashboardGroupList, { type GroupSummary } from "./dashboard-group-list";
+
+const WORLD_CUP_KICKOFF_UTC = Date.UTC(2026, 5, 11, 0, 0, 0);
 
 type Props = {
   params: { locale: string };
@@ -120,8 +123,15 @@ export default async function DashboardPage({ params }: Props) {
       };
     });
 
+  const nowMs = Date.now();
+  const beforeWorldCup = nowMs < WORLD_CUP_KICKOFF_UTC;
+  const worldCupDays = Math.max(
+    1,
+    Math.ceil((WORLD_CUP_KICKOFF_UTC - nowMs) / 86_400_000),
+  );
+
   return (
-    <main className="min-h-screen bg-dark-900 px-4 py-8">
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-6xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -131,18 +141,22 @@ export default async function DashboardPage({ params }: Props) {
           <div className="flex flex-wrap gap-2">
             <a
               href={`/${locale}/dashboard/discover`}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-dark-500 bg-dark-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-dark-600"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-dark-500 bg-dark-700 px-4 py-2 text-sm font-medium text-slate-300 transition-all duration-150 hover:bg-dark-600 active:scale-[0.97]"
             >
               {t("discoverWorlds")}
             </a>
             <a
               href={`/${locale}/dashboard/create-group`}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
+              className={`inline-flex min-h-[44px] items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 ${PRIMARY_BUTTON_CLASSES}`}
             >
               {t("createGroup")}
             </a>
           </div>
         </div>
+
+        <p className="mt-4 text-center text-xs text-slate-500">
+          {beforeWorldCup ? t("worldCupCountdown", { days: worldCupDays }) : t("worldCupLive")}
+        </p>
 
         <DashboardGroupList locale={locale} currentUserId={user.id} profileTimeZone={profileTimeZone} groups={summaries} />
       </section>

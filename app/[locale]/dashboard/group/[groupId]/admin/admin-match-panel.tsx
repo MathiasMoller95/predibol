@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/client";
 import { formatMatchTime } from "@/lib/format-match-time";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 import type { MatchPhase, MatchStatus } from "@/types/supabase";
+import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 export type AdminMatch = {
   id: string;
@@ -43,9 +45,13 @@ function formatPhaseLabel(phase: MatchPhase): string {
     case "round_of_16":
       return "Round of 16";
     case "quarter":
+    case "quarter_final":
       return "Quarter-finals";
     case "semi":
+    case "semi_final":
       return "Semi-finals";
+    case "third_place":
+      return "Third place";
     case "final":
       return "Final";
     default:
@@ -67,11 +73,11 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
   const t = useTranslations("AdminPage");
   const locale = useLocale();
   const router = useRouter();
+  const { showToast } = useToast();
   const supabase = createClient();
   const effectiveTz = useEffectiveTimeZone(profileTimeZone);
   const [scores, setScores] = useState<Record<string, ScoreInput>>({});
   const [isSavingByMatch, setIsSavingByMatch] = useState<Record<string, boolean>>({});
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const formatWhen = useMemo(() => {
     return (iso: string) => formatMatchTime(iso, effectiveTz, locale);
@@ -113,7 +119,16 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
     return map;
   }, [matches]);
 
-  const phaseOrder: MatchPhase[] = ["group", "round_of_16", "quarter", "semi", "final"];
+  const phaseOrder: MatchPhase[] = [
+    "group",
+    "round_of_16",
+    "quarter_final",
+    "quarter",
+    "semi_final",
+    "semi",
+    "third_place",
+    "final",
+  ];
   const phaseEntries = phaseOrder
     .map((phase) => ({ phase, items: matchesByPhase.get(phase) ?? [] }))
     .filter((entry) => entry.items.length > 0);
@@ -146,7 +161,7 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
     const awayScore = Number(input.away);
 
     if (!Number.isInteger(homeScore) || !Number.isInteger(awayScore) || homeScore < 0 || awayScore < 0) {
-      setMessage({ type: "error", text: t("error") });
+      showToast(t("error"), "error");
       return;
     }
 
@@ -164,7 +179,6 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
     }
 
     setIsSavingByMatch((prev) => ({ ...prev, [match.id]: true }));
-    setMessage(null);
 
     const { error } = await supabase
       .from("matches")
@@ -172,12 +186,12 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
       .eq("id", match.id);
 
     if (error) {
-      setMessage({ type: "error", text: t("error") });
+      showToast(t("error"), "error");
       setIsSavingByMatch((prev) => ({ ...prev, [match.id]: false }));
       return;
     }
 
-    setMessage({ type: "success", text: t("success") });
+    showToast(t("success"), "success");
     setIsSavingByMatch((prev) => ({ ...prev, [match.id]: false }));
     router.refresh();
   }
@@ -225,11 +239,6 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
 
       <section>
         <h2 className="text-lg font-semibold text-white">{t("matchResults")}</h2>
-        {message ? (
-          <p className={`mt-3 text-sm font-medium ${message.type === "success" ? "text-emerald-400" : "text-red-400"}`}>
-            {message.text}
-          </p>
-        ) : null}
 
         <div className="mt-3 space-y-4">
           {phaseEntries.map(({ phase, items }) => {
@@ -299,7 +308,7 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
                               onClick={() => {
                                 void markAsFinished(match);
                               }}
-                              className="inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                              className={`inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60 ${PRIMARY_BUTTON_CLASSES}`}
                             >
                               {t("markFinished")}
                             </button>

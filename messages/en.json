@@ -2,6 +2,95 @@
   "Home": {
     "welcome": "Welcome to Predibol"
   },
+  "LandingPage": {
+    "metaTitle": "Predibol — World Cup 2026 predictions",
+    "metaDescription": "Create your group, predict match scores, and compete on the live leaderboard. Free social competition for the 2026 World Cup.",
+    "header": {
+      "wordmark": "Predibol",
+      "login": "Log in"
+    },
+    "hero": {
+      "tagline": "Predict. Compete. Win.",
+      "subtitle": "The prediction platform for the 2026 World Cup. Create your group, invite your friends, and prove who knows football best.",
+      "ctaCreateGroup": "Create group",
+      "ctaLogin": "Log in"
+    },
+    "countdown": {
+      "label": "Kickoff in",
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    },
+    "howItWorks": {
+      "title": "How does it work?",
+      "step1": {
+        "title": "Create your group",
+        "description": "Choose a name, customize colors, and scoring rules."
+      },
+      "step2": {
+        "title": "Predict the scores",
+        "description": "Submit your predictions before each match. Check odds and AI picks."
+      },
+      "step3": {
+        "title": "Climb the leaderboard",
+        "description": "Earn points for every correct call. Who will be number one?"
+      }
+    },
+    "features": {
+      "title": "Everything you need",
+      "leaderboard": {
+        "title": "Live leaderboard",
+        "emoji": "🏆",
+        "description": "Watch rankings update as matches finish."
+      },
+      "odds": {
+        "title": "Betting odds info",
+        "emoji": "📊",
+        "description": "See market odds to inform your picks."
+      },
+      "ai": {
+        "title": "AI predictions",
+        "emoji": "🤖",
+        "description": "Glance at model scores before you commit."
+      },
+      "groups": {
+        "title": "Public & private groups",
+        "emoji": "🌍",
+        "description": "Invite-only rooms or discover open leagues."
+      },
+      "rules": {
+        "title": "Custom scoring rules",
+        "emoji": "⚙️",
+        "description": "Tune points for results, exact scores, and bonuses."
+      },
+      "mobile": {
+        "title": "Mobile optimized",
+        "emoji": "📱",
+        "description": "Predict from the stands or the sofa."
+      }
+    },
+    "stats": {
+      "title": "The biggest World Cup in history",
+      "teams": "48 teams",
+      "matches": "104 matches",
+      "groups": "12 groups",
+      "body": "For the first time, 48 nations will compete. More matches, more predictions, more fun."
+    },
+    "cta": {
+      "title": "Ready to play?",
+      "button": "Start for free",
+      "footnote": "Free during beta"
+    },
+    "footer": {
+      "copyright": "© 2026 Predibol",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "langEs": "ES",
+      "langEn": "EN",
+      "langPt": "PT"
+    }
+  },
   "Auth": {
     "loginTitle": "Login",
     "loginSubtitle": "Sign in with your email magic link.",
@@ -94,9 +183,31 @@
     "groupDescriptionPlaceholder": "Describe your group so others can find it",
     "groupDescriptionHelp": "Max 200 characters. Shown on the discovery page."
   },
+  "AccessCode": {
+    "title": "Group access",
+    "open": "Open",
+    "openDescription": "Anyone with the link can join",
+    "protected": "Protected",
+    "protectedDescription": "Access code required",
+    "generateCode": "Generate code",
+    "shareCodeHint": "Share this code with your group members",
+    "enterCode": "Enter the access code",
+    "incorrectCode": "Incorrect code",
+    "codeRequired": "Enter a valid 6-digit numeric code",
+    "regenerate": "Regenerate code",
+    "confirmOpenSwitch": "Are you sure? Anyone with the link will be able to join",
+    "codeCopied": "Code copied",
+    "copyCode": "Copy code",
+    "settingsSaved": "Changes saved",
+    "copyFailed": "Could not copy",
+    "linkAndCode": "Link + code: {code}",
+    "whatsappOpen": "Join {groupName} on Predibol! {link}",
+    "whatsappProtected": "Join {groupName} on Predibol! 🔗 {link} 🔑 Code: {code}"
+  },
   "GroupHub": {
     "memberCount": "{count} members",
     "adminBadge": "Admin",
+    "scoringRules": "{result}-{difference}-{exact} pts",
     "inviteFriends": "Invite friends",
     "copyLink": "Copy link",
     "copied": "✓ Copied!",
@@ -111,7 +222,47 @@
     "picksDescription": "Pick your tournament winners",
     "adminDescription": "Manage results",
     "members": "Members",
-    "noMembers": "No members yet"
+    "noMembers": "No members yet",
+    "nextMatch": {
+      "title": "Next match",
+      "vs": "vs",
+      "locksIn": "Locks in {days}d {hours}h {minutes}m",
+      "yourPrediction": "Your prediction: {home}-{away}",
+      "predictNow": "Predict now →",
+      "noUpcoming": "No upcoming matches",
+      "predictionsClosed": "Predictions closed"
+    },
+    "actions": {
+      "ariaLabel": "Quick actions",
+      "predict": "🎯 Predictions",
+      "leaderboard": "🏆 Leaderboard",
+      "picks": "⭐ Champion & more",
+      "admin": "⚙️ Admin",
+      "matchProgress": "{count}/{total} matches",
+      "yourRank": "Your rank: #{rank}",
+      "yourRankPending": "Your rank: —",
+      "completed": "Completed ✓",
+      "pending": "Pending",
+      "adminHint": "Manage results"
+    },
+    "leaderboardPreview": {
+      "title": "Top 5",
+      "seeAll": "See all →",
+      "empty": "No standings yet."
+    },
+    "recentResults": {
+      "title": "Recent results",
+      "seeAll": "See all →",
+      "yourPrediction": "Your prediction: {home}-{away}",
+      "noPrediction": "No prediction",
+      "points": "→ +{points} pts",
+      "noResults": "No results yet"
+    },
+    "invite": {
+      "title": "Invite more players",
+      "copied": "Link copied",
+      "copyFailed": "Could not copy"
+    }
   },
   "Discover": {
     "title": "Discover Worlds",
@@ -219,6 +370,20 @@
     "homeScore": "Home score",
     "awayScore": "Away score",
     "advancesLabel": "Team that advances",
+    "advancesIfNotDraw": "Team that advances (not a draw after 90′)",
+    "whoAdvances": "Who advances if the score is a draw after 90 minutes?",
+    "teamsTbd": "Teams to be decided — enter your score once both sides are known.",
+    "selectAdvances": "Choose which team advances for drawn knockout scores.",
+    "selectWinnerIfNotDraw": "Choose which team advances when the score is not a draw.",
+    "phase": {
+      "round_of_16": "Round of 16",
+      "quarter_final": "Quarter-finals",
+      "quarter": "Quarter-finals",
+      "semi_final": "Semi-finals",
+      "semi": "Semi-finals",
+      "third_place": "Third place",
+      "final": "Final"
+    },
     "chooseTeam": "Select team",
     "lockedLabel": "Locked",
     "saveButton": "Save predictions",
@@ -266,7 +431,14 @@
     "error": "Failed to save result. Please try again.",
     "noUpcoming": "No upcoming matches",
     "manageResults": "Manage Results",
-    "notAdmin": "You are not the admin of this group."
+    "notAdmin": "You are not the admin of this group.",
+    "email": {
+      "title": "Email tools",
+      "sendReminders": "Send reminders now (test)",
+      "testNote": "Sends reminders to players with pending predictions",
+      "sent": "Reminders sent",
+      "error": "Error sending reminders"
+    }
   },
   "Dashboard": {
     "title": "My Groups",
@@ -287,7 +459,23 @@
     "leaderboard": "Ranking",
     "picks": "Champion & more",
     "admin": "Admin",
-    "nextMatchDate": "Next: {home} vs {away}"
+    "nextMatchDate": "Next: {home} vs {away}",
+    "worldCupCountdown": "World Cup starts in {days, plural, one {1 day} other {# days}}",
+    "worldCupLive": "The World Cup is on"
+  },
+  "Share": {
+    "ranking": {
+      "button": "📸 Share ranking",
+      "footer": "Who knows football best?",
+      "toast": "Image ready to share",
+      "error": "Could not create the image."
+    },
+    "invite": {
+      "button": "🎨 Share invite card",
+      "joinUs": "Join our group!",
+      "toast": "Card ready to share",
+      "error": "Could not create the image."
+    }
   },
   "Common": {
     "backToGroups": "← My Groups",

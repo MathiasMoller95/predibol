@@ -2,7 +2,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import type { GroupAccessMode } from "@/types/supabase";
 import AdminMatchPanel, { type AdminMatch, type PredictionLite } from "./admin-match-panel";
+import GroupAccessAdminPanel from "./group-access-admin-panel";
+import ReminderTestButton from "./reminder-test-button";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -49,6 +52,15 @@ export default async function GroupAdminResultsPage({ params }: Props) {
     redirect(`/${locale}/dashboard/group/${groupId}`);
   }
 
+  const { data: accessRows } = await supabase.rpc("admin_group_access", { p_group_id: groupId });
+  const accessRow = accessRows?.[0];
+  let initialAccessMode: GroupAccessMode = "open";
+  let initialAccessCode: string | null = null;
+  if (accessRow?.access_mode === "open" || accessRow?.access_mode === "protected") {
+    initialAccessMode = accessRow.access_mode;
+  }
+  initialAccessCode = accessRow?.access_code ?? null;
+
   const { data: profileRow } = await supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle();
   const profileTimeZone = ((profileRow?.timezone as string | undefined) ?? "").trim() || null;
 
@@ -62,7 +74,7 @@ export default async function GroupAdminResultsPage({ params }: Props) {
   ]);
 
   return (
-    <main className="min-h-screen bg-dark-900 px-4 py-8">
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-5xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
@@ -83,6 +95,12 @@ export default async function GroupAdminResultsPage({ params }: Props) {
           </Link>
         </div>
 
+        <GroupAccessAdminPanel
+          groupId={groupId}
+          initialMode={initialAccessMode}
+          initialCode={initialAccessCode}
+        />
+
         <AdminMatchPanel
           profileTimeZone={profileTimeZone}
           matches={((matches ?? []) as AdminMatch[]).map((match) => ({
@@ -93,6 +111,8 @@ export default async function GroupAdminResultsPage({ params }: Props) {
           predictions={(predictions ?? []) as PredictionLite[]}
           totalMembers={((members ?? []) as MemberRecord[]).length}
         />
+
+        <ReminderTestButton />
       </section>
     </main>
   );

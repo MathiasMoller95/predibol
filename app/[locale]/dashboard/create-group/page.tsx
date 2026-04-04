@@ -3,8 +3,11 @@
 import { FormEvent, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
+import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
+import type { GroupAccessMode } from "@/types/supabase";
 
 type TiebreakerRule = "most_exact_scores" | "most_correct_results" | "earliest_submission";
 
@@ -53,6 +56,10 @@ const initialState: GroupFormState = {
   tiebreakerRule: "most_exact_scores",
 };
 
+function randomSixDigitCode() {
+  return Math.floor(100_000 + Math.random() * 900_000).toString();
+}
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -78,16 +85,24 @@ function messageForGroupInsertError(
 export default function CreateGroupPage() {
   const t = useTranslations("Groups");
   const tc = useTranslations("CreateGroup");
+  const ta = useTranslations("AccessCode");
   const locale = useLocale();
   const router = useRouter();
+  const { showToast } = useToast();
   const [form, setForm] = useState<GroupFormState>(initialState);
   const [isPublic, setIsPublic] = useState(false);
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [slugEdited, setSlugEdited] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [accessMode, setAccessMode] = useState<GroupAccessMode>("open");
+  const [accessCode, setAccessCode] = useState("");
 
-  const canSubmit = useMemo(() => form.name.trim().length > 0 && form.slug.trim().length > 0, [form]);
+  const canSubmit = useMemo(() => {
+    if (form.name.trim().length === 0 || form.slug.trim().length === 0) return false;
+    if (accessMode === "protected" && !/^\d{6}$/.test(accessCode.trim())) return false;
+    return true;
+  }, [form, accessMode, accessCode]);
 
   function onNameChange(name: string) {
     setForm((prev) => ({
@@ -106,7 +121,11 @@ export default function CreateGroupPage() {
     event.preventDefault();
 
     if (!canSubmit) {
-      setError(t("errors.missingRequired"));
+      if (form.name.trim().length === 0 || form.slug.trim().length === 0) {
+        setError(t("errors.missingRequired"));
+      } else if (accessMode === "protected") {
+        setError(ta("codeRequired"));
+      }
       return;
     }
 
@@ -125,6 +144,8 @@ export default function CreateGroupPage() {
     }
 
     const descriptionTrimmed = isPublic ? description.trim().slice(0, 200) : "";
+    const codeTrim = accessCode.trim();
+    const accessCodeInsert = accessMode === "protected" ? codeTrim : null;
 
     const { data: group, error: groupError } = await supabase
       .from("groups")
@@ -146,6 +167,8 @@ export default function CreateGroupPage() {
         tiebreaker_rule: form.tiebreakerRule,
         is_public: isPublic,
         description: descriptionTrimmed,
+        access_mode: accessMode,
+        access_code: accessCodeInsert,
       })
       .select("id")
       .single();
@@ -173,6 +196,7 @@ export default function CreateGroupPage() {
       return;
     }
 
+    showToast(`${t("create.submit")} ✓`, "success");
     router.push(`/${locale}/dashboard/group/${group.id}`);
   }
 
@@ -407,6 +431,82 @@ export default function CreateGroupPage() {
             </select>
           </div>
 
+          <div>
+            <h2 className="mb-3 text-sm font-semibold text-slate-200">{ta("title")}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setAccessMode("open");
+                  setAccessCode("");
+                }}
+                className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 ${
+                  accessMode === "open"
+                    ? "bg-emerald-500/5 ring-2 ring-emerald-500"
+                    : "bg-[#111720] ring-0"
+                }`}
+              >
+                <span className="text-lg" aria-hidden>
+                  🔓
+                </span>
+                <p className="mt-2 text-sm font-medium text-white">{ta("open")}</p>
+                <p className="mt-1 text-xs text-slate-400">{ta("openDescription")}</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAccessMode("protected");
+                  if (!/^\d{6}$/.test(accessCode)) {
+                    setAccessCode(randomSixDigitCode());
+                  }
+                }}
+                className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 ${
+                  accessMode === "protected"
+                    ? "bg-emerald-500/5 ring-2 ring-emerald-500"
+                    : "bg-[#111720] ring-0"
+                }`}
+              >
+                <span className="text-lg" aria-hidden>
+                  🔒
+                </span>
+                <p className="mt-2 text-sm font-medium text-white">{ta("protected")}</p>
+                <p className="mt-1 text-xs text-slate-400">{ta("protectedDescription")}</p>
+              </button>
+            </div>
+
+            {accessMode === "protected" ? (
+              <div className="mt-4 space-y-2 rounded-lg border border-dark-600 bg-dark-700/50 p-4">
+                <label className="block text-xs font-medium text-slate-400" htmlFor="access-code">
+                  {ta("protected")}
+                </label>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                  <input
+                    id="access-code"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 font-mono text-lg tracking-widest text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 sm:max-w-[12rem]"
+                    placeholder="000000"
+                    aria-describedby="access-code-hint"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setAccessCode(randomSixDigitCode())}
+                    className="shrink-0 rounded-lg border border-dark-500 bg-dark-800 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:border-emerald-500/50"
+                  >
+                    {ta("generateCode")}
+                  </button>
+                </div>
+                <p id="access-code-hint" className="text-xs text-slate-500">
+                  {ta("shareCodeHint")}
+                </p>
+              </div>
+            ) : null}
+          </div>
+
           {error ? (
             <p className="rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p>
           ) : null}
@@ -414,7 +514,7 @@ export default function CreateGroupPage() {
           <button
             type="submit"
             disabled={isSubmitting || !canSubmit}
-            className="min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+            className={`min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700 disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
           >
             {isSubmitting ? t("create.submitting") : t("create.submit")}
           </button>

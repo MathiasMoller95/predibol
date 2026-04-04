@@ -2,6 +2,95 @@
   "Home": {
     "welcome": "Bem-vindo ao Predibol"
   },
+  "LandingPage": {
+    "metaTitle": "Predibol — Palpites da Copa do Mundo 2026",
+    "metaDescription": "Crie seu grupo, palpite placares e dispute o ranking ao vivo. Competição social gratuita na Copa 2026.",
+    "header": {
+      "wordmark": "Predibol",
+      "login": "Entrar"
+    },
+    "hero": {
+      "tagline": "Preveja. Compita. Vença.",
+      "subtitle": "A plataforma de previsões para a Copa do Mundo 2026. Crie seu grupo, convide seus amigos e prove quem entende mais de futebol.",
+      "ctaCreateGroup": "Criar grupo",
+      "ctaLogin": "Entrar"
+    },
+    "countdown": {
+      "label": "Falta para a abertura",
+      "days": "Dias",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos"
+    },
+    "howItWorks": {
+      "title": "Como funciona?",
+      "step1": {
+        "title": "Crie seu grupo",
+        "description": "Escolha um nome, personalize cores e regras de pontuação."
+      },
+      "step2": {
+        "title": "Preveja os resultados",
+        "description": "Envie seus palpites antes de cada jogo. Veja odds e palpites de IA."
+      },
+      "step3": {
+        "title": "Suba no ranking",
+        "description": "Ganhe pontos a cada acerto. Quem será o número 1?"
+      }
+    },
+    "features": {
+      "title": "Tudo o que você precisa",
+      "leaderboard": {
+        "title": "Ranking ao vivo",
+        "emoji": "🏆",
+        "description": "Acompanhe a classificação quando os jogos terminam."
+      },
+      "odds": {
+        "title": "Odds das casas",
+        "emoji": "📊",
+        "description": "Use as cotações do mercado para refinar seus palpites."
+      },
+      "ai": {
+        "title": "Previsões de IA",
+        "emoji": "🤖",
+        "description": "Confira placares sugeridos pelo modelo antes de cravar."
+      },
+      "groups": {
+        "title": "Grupos públicos e privados",
+        "emoji": "🌍",
+        "description": "Só por convite ou ligas abertas para achar adversários."
+      },
+      "rules": {
+        "title": "Regras personalizáveis",
+        "emoji": "⚙️",
+        "description": "Ajuste pontos por resultado, placar exato e bônus."
+      },
+      "mobile": {
+        "title": "Otimizado para celular",
+        "emoji": "📱",
+        "description": "Palpite do estádio ou do sofá com a mesma fluidez."
+      }
+    },
+    "stats": {
+      "title": "A maior Copa de todos os tempos",
+      "teams": "48 equipes",
+      "matches": "104 jogos",
+      "groups": "12 grupos",
+      "body": "Pela primeira vez, 48 seleções disputarão a Copa. Mais jogos, mais palpites, mais diversão."
+    },
+    "cta": {
+      "title": "Pronto para jogar?",
+      "button": "Comece grátis",
+      "footnote": "Grátis durante o beta"
+    },
+    "footer": {
+      "copyright": "© 2026 Predibol",
+      "privacy": "Privacidade",
+      "terms": "Termos",
+      "langEs": "ES",
+      "langEn": "EN",
+      "langPt": "PT"
+    }
+  },
   "Auth": {
     "loginTitle": "Entrar",
     "loginSubtitle": "Entre com seu link magico por e-mail.",
@@ -94,9 +183,31 @@
     "groupDescriptionPlaceholder": "Descreva seu grupo para outras pessoas encontrarem",
     "groupDescriptionHelp": "No maximo 200 caracteres. Aparece na pagina de descoberta."
   },
+  "AccessCode": {
+    "title": "Acesso ao grupo",
+    "open": "Aberto",
+    "openDescription": "Qualquer pessoa com o link pode entrar",
+    "protected": "Protegido",
+    "protectedDescription": "Codigo de acesso necessario",
+    "generateCode": "Gerar codigo",
+    "shareCodeHint": "Compartilhe este codigo com os membros do seu grupo",
+    "enterCode": "Digite o codigo de acesso",
+    "incorrectCode": "Codigo incorreto",
+    "codeRequired": "Digite um codigo numerico de 6 digitos",
+    "regenerate": "Regenerar codigo",
+    "confirmOpenSwitch": "Tem certeza? Qualquer pessoa com o link podera entrar",
+    "codeCopied": "Codigo copiado",
+    "copyCode": "Copiar codigo",
+    "settingsSaved": "Alteracoes salvas",
+    "copyFailed": "Nao foi possivel copiar",
+    "linkAndCode": "Link + codigo: {code}",
+    "whatsappOpen": "Entre no grupo {groupName} no Predibol! {link}",
+    "whatsappProtected": "Entre no grupo {groupName} no Predibol! 🔗 {link} 🔑 Codigo: {code}"
+  },
   "GroupHub": {
     "memberCount": "{count} membros",
     "adminBadge": "Admin",
+    "scoringRules": "{result}-{difference}-{exact} pts",
     "inviteFriends": "Convidar amigos",
     "copyLink": "Copiar link",
     "copied": "✓ Copiado!",
@@ -111,7 +222,47 @@
     "picksDescription": "Escolha os campeoes do torneio",
     "adminDescription": "Gerenciar resultados",
     "members": "Membros",
-    "noMembers": "Ainda nao ha membros"
+    "noMembers": "Ainda nao ha membros",
+    "nextMatch": {
+      "title": "Próximo jogo",
+      "vs": "x",
+      "locksIn": "Fecha em {days}d {hours}h {minutes}m",
+      "yourPrediction": "Seu palpite: {home}-{away}",
+      "predictNow": "Palpite agora →",
+      "noUpcoming": "Nenhum jogo próximo",
+      "predictionsClosed": "Palpites fechados"
+    },
+    "actions": {
+      "ariaLabel": "Ações rápidas",
+      "predict": "🎯 Palpites",
+      "leaderboard": "🏆 Ranking",
+      "picks": "⭐ Campeão e mais",
+      "admin": "⚙️ Admin",
+      "matchProgress": "{count}/{total} jogos",
+      "yourRank": "Sua posição: #{rank}",
+      "yourRankPending": "Sua posição: —",
+      "completed": "Concluído ✓",
+      "pending": "Pendente",
+      "adminHint": "Gerenciar resultados"
+    },
+    "leaderboardPreview": {
+      "title": "Top 5",
+      "seeAll": "Ver tudo →",
+      "empty": "Ainda não há classificação."
+    },
+    "recentResults": {
+      "title": "Resultados recentes",
+      "seeAll": "Ver todos →",
+      "yourPrediction": "Seu palpite: {home}-{away}",
+      "noPrediction": "Sem palpite",
+      "points": "→ +{points} pts",
+      "noResults": "Ainda não há resultados"
+    },
+    "invite": {
+      "title": "Convide mais jogadores",
+      "copied": "Link copiado",
+      "copyFailed": "Não foi possível copiar"
+    }
   },
   "Discover": {
     "title": "Descobrir Mundos",
@@ -219,6 +370,20 @@
     "homeScore": "Gols do mandante",
     "awayScore": "Gols do visitante",
     "advancesLabel": "Time que avanca",
+    "advancesIfNotDraw": "Time que avanca (nao e empate aos 90′)",
+    "whoAdvances": "Quem avanca se o placar for empate aos 90 minutos?",
+    "teamsTbd": "Times a definir — informe o placar quando ambos forem conhecidos.",
+    "selectAdvances": "Escolha qual time avanca em empates da eliminatoria.",
+    "selectWinnerIfNotDraw": "Escolha qual time avanca quando o placar nao e empate.",
+    "phase": {
+      "round_of_16": "Oitavas de final",
+      "quarter_final": "Quartas de final",
+      "quarter": "Quartas de final",
+      "semi_final": "Semifinais",
+      "semi": "Semifinais",
+      "third_place": "Terceiro lugar",
+      "final": "Final"
+    },
     "chooseTeam": "Selecionar time",
     "lockedLabel": "Travado",
     "saveButton": "Salvar palpites",
@@ -266,7 +431,14 @@
     "error": "Nao foi possivel salvar o resultado. Tente novamente.",
     "noUpcoming": "Nao ha partidas futuras",
     "manageResults": "Gerenciar resultados",
-    "notAdmin": "Voce nao e o administrador deste grupo."
+    "notAdmin": "Voce nao e o administrador deste grupo.",
+    "email": {
+      "title": "Ferramentas de email",
+      "sendReminders": "Enviar lembretes agora (test)",
+      "testNote": "Envia lembretes para jogadores com previsoes pendentes",
+      "sent": "Lembretes enviados",
+      "error": "Erro ao enviar lembretes"
+    }
   },
   "Dashboard": {
     "title": "Meus grupos",
@@ -287,7 +459,23 @@
     "leaderboard": "Ranking",
     "picks": "Campeao e mais",
     "admin": "Admin",
-    "nextMatchDate": "Proxima: {home} vs {away}"
+    "nextMatchDate": "Proxima: {home} vs {away}",
+    "worldCupCountdown": "Faltam {days, plural, one {1 dia} other {# dias}} para a Copa",
+    "worldCupLive": "A Copa do Mundo está em andamento"
+  },
+  "Share": {
+    "ranking": {
+      "button": "📸 Compartilhar ranking",
+      "footer": "Quem entende mais de futebol?",
+      "toast": "Imagem pronta para compartilhar",
+      "error": "Não foi possível criar a imagem."
+    },
+    "invite": {
+      "button": "🎨 Compartilhar cartão",
+      "joinUs": "Junte-se ao nosso grupo!",
+      "toast": "Cartão pronto para compartilhar",
+      "error": "Não foi possível criar a imagem."
+    }
   },
   "Common": {
     "backToGroups": "← Meus Grupos",

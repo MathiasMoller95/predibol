@@ -2,6 +2,10 @@
 #
 # Deploy Edge Function secrets (Dashboard or CLI):
 #   supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
+#   send-prediction-reminders also needs: RESEND_API_KEY, SITE_URL, SUPABASE_ANON_KEY (for admin test JWT path)
 
 [functions.score-match]
+verify_jwt = true
+
+[functions.send-prediction-reminders]
 verify_jwt = true

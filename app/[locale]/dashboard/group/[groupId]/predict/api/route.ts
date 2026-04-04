@@ -10,6 +10,7 @@ type PredictionPayload = {
   predictedHome: number;
   predictedAway: number;
   predictedWinner: "home" | "away" | "draw" | null;
+  predictedAdvancing: string | null;
 };
 
 export async function POST(request: NextRequest, { params }: RouteContext) {
@@ -68,6 +69,7 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       predicted_home: entry.predictedHome,
       predicted_away: entry.predictedAway,
       predicted_winner: entry.predictedWinner,
+      predicted_advancing: entry.predictedAdvancing,
     }));
 
   if (rows.length === 0) {

@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useToast } from "@/components/ui/toast-provider";
 import PlayerPicker from "@/components/picks/player-picker";
 import TeamPicker from "@/components/picks/team-picker";
 import { goalkeepers, players } from "@/lib/player-data";
+import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 export type InitialPicks = {
   champion: string | null;
@@ -51,10 +53,10 @@ function toInputMap(initial: InitialPicks): Record<FieldKey, string> {
 
 export default function PicksForm({ locked, initial }: Props) {
   const t = useTranslations("Picks");
+  const { showToast } = useToast();
   const initialValues = useMemo(() => toInputMap(initial), [initial]);
   const [values, setValues] = useState<Record<FieldKey, string>>(initialValues);
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     setValues(toInputMap(initial));
@@ -70,7 +72,6 @@ export default function PicksForm({ locked, initial }: Props) {
       return;
     }
     setIsSaving(true);
-    setMessage(null);
     try {
       const response = await fetch("./api", {
         method: "POST",
@@ -90,23 +91,23 @@ export default function PicksForm({ locked, initial }: Props) {
       if (response.status === 403) {
         const data = (await response.json().catch(() => ({}))) as { code?: string };
         if (data.code === "PICKS_LOCKED") {
-          setMessage({ type: "error", text: t("locked") });
+          showToast(t("locked"), "error");
         } else {
-          setMessage({ type: "error", text: t("error") });
+          showToast(t("error"), "error");
         }
         setIsSaving(false);
         return;
       }
 
       if (!response.ok) {
-        setMessage({ type: "error", text: t("error") });
+        showToast(t("error"), "error");
         setIsSaving(false);
         return;
       }
 
-      setMessage({ type: "success", text: t("saved") });
+      showToast(t("saved"), "success");
     } catch {
-      setMessage({ type: "error", text: t("error") });
+      showToast(t("error"), "error");
     } finally {
       setIsSaving(false);
     }
@@ -171,21 +172,11 @@ export default function PicksForm({ locked, initial }: Props) {
         />
       </div>
 
-      {message ? (
-        <p
-          className={
-            message.type === "success" ? "text-sm font-medium text-emerald-400" : "text-sm font-medium text-red-400"
-          }
-        >
-          {message.text}
-        </p>
-      ) : null}
-
       {!locked ? (
         <button
           type="submit"
           disabled={disabled}
-          className="w-full min-h-[48px] rounded-lg bg-emerald-600 px-4 py-3 text-base font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          className={`w-full min-h-[48px] rounded-lg bg-emerald-600 px-4 py-3 text-base font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
         >
           {isSaving ? t("saving") : t("save")}
         </button>

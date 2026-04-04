@@ -6,9 +6,18 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type MatchPhase = "group" | "round_of_16" | "quarter" | "semi" | "final";
+export type MatchPhase =
+  | "group"
+  | "round_of_16"
+  | "quarter"
+  | "quarter_final"
+  | "semi"
+  | "semi_final"
+  | "third_place"
+  | "final";
 export type MatchStatus = "scheduled" | "live" | "finished";
 export type TiebreakerRule = "most_exact_scores" | "most_correct_results" | "earliest_submission";
+export type GroupAccessMode = "open" | "protected";
 
 export type Database = {
   public: {
@@ -34,6 +43,8 @@ export type Database = {
           tiebreaker_rule: TiebreakerRule;
           is_public: boolean;
           description: string;
+          access_mode: GroupAccessMode;
+          access_code: string | null;
           created_at: string;
         };
         Insert: {
@@ -56,6 +67,8 @@ export type Database = {
           tiebreaker_rule?: TiebreakerRule;
           is_public?: boolean;
           description?: string;
+          access_mode?: GroupAccessMode;
+          access_code?: string | null;
           created_at?: string;
         };
         Update: {
@@ -78,6 +91,8 @@ export type Database = {
           tiebreaker_rule?: TiebreakerRule;
           is_public?: boolean;
           description?: string;
+          access_mode?: GroupAccessMode;
+          access_code?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -147,6 +162,10 @@ export type Database = {
           ai_home_score: number | null;
           ai_away_score: number | null;
           odds_updated_at: string | null;
+          knockout_label: string | null;
+          home_source: string | null;
+          away_source: string | null;
+          advancing_team: string | null;
           created_at: string;
         };
         Insert: {
@@ -165,6 +184,10 @@ export type Database = {
           ai_home_score?: number | null;
           ai_away_score?: number | null;
           odds_updated_at?: string | null;
+          knockout_label?: string | null;
+          home_source?: string | null;
+          away_source?: string | null;
+          advancing_team?: string | null;
           created_at?: string;
         };
         Update: {
@@ -183,6 +206,10 @@ export type Database = {
           ai_home_score?: number | null;
           ai_away_score?: number | null;
           odds_updated_at?: string | null;
+          knockout_label?: string | null;
+          home_source?: string | null;
+          away_source?: string | null;
+          advancing_team?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -196,6 +223,7 @@ export type Database = {
           predicted_home: number;
           predicted_away: number;
           predicted_winner: "home" | "away" | "draw" | null;
+          predicted_advancing: string | null;
           points_earned: number;
           submitted_at: string;
           updated_at: string;
@@ -208,6 +236,7 @@ export type Database = {
           predicted_home: number;
           predicted_away: number;
           predicted_winner?: "home" | "away" | "draw" | null;
+          predicted_advancing?: string | null;
           points_earned?: number;
           submitted_at?: string;
           updated_at?: string;
@@ -220,6 +249,7 @@ export type Database = {
           predicted_home?: number;
           predicted_away?: number;
           predicted_winner?: "home" | "away" | "draw" | null;
+          predicted_advancing?: string | null;
           points_earned?: number;
           submitted_at?: string;
           updated_at?: string;
@@ -320,6 +350,18 @@ export type Database = {
           admin_id: string;
           created_at: string;
         }[];
+      };
+      verify_group_access_code: {
+        Args: { group_slug: string; entered_code: string };
+        Returns: boolean;
+      };
+      admin_group_access: {
+        Args: { p_group_id: string };
+        Returns: { access_mode: string; access_code: string | null }[];
+      };
+      resolve_knockout_match: {
+        Args: { p_match_id: string; p_home_team: string; p_away_team: string };
+        Returns: undefined;
       };
     };
     Enums: {

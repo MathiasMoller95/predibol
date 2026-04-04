@@ -1,12 +1,25 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
-type MatchPhase = "group" | "round_of_16" | "quarter" | "semi" | "final";
+type MatchPhase =
+  | "group"
+  | "round_of_16"
+  | "quarter"
+  | "quarter_final"
+  | "semi"
+  | "semi_final"
+  | "third_place"
+  | "final";
+
 type MatchRow = {
   id: string;
   phase: MatchPhase;
   home_score: number | null;
   away_score: number | null;
+  home_team: string;
+  away_team: string;
   status: string;
+  knockout_label: string | null;
+  advancing_team: string | null;
 };
 
 type GroupRow = {
@@ -24,6 +37,7 @@ type PredictionRow = {
   predicted_home: number;
   predicted_away: number;
   predicted_winner: "home" | "away" | "draw" | null;
+  predicted_advancing: string | null;
   points_earned: number;
 };
 
@@ -71,6 +85,30 @@ function computePointsForPrediction(
   return pts;
 }
 
+/** Knockout 90-min draw + correct advancing side. Uses points_correct_result as bonus; could be its own column later. */
+function knockoutAdvancingBonus(
+  H: number,
+  A: number,
+  phase: MatchPhase,
+  actualAdvancing: string | null,
+  p: PredictionRow,
+  g: GroupRow
+): number {
+  if (!isKnockoutPhase(phase) || H !== A || !actualAdvancing) return 0;
+  if (p.predicted_home !== p.predicted_away) return 0;
+  const pred = (p.predicted_advancing ?? "").trim();
+  if (!pred || pred !== actualAdvancing.trim()) return 0;
+  return g.points_correct_result;
+}
+
+function resolveActualAdvancingTeam(m: MatchRow, H: number, A: number): string | null {
+  if (H !== A) {
+    return H > A ? m.home_team : m.away_team;
+  }
+  const adv = (m.advancing_team ?? "").trim();
+  return adv.length > 0 ? adv : null;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
@@ -110,7 +148,9 @@ Deno.serve(async (req: Request) => {
 
   const { data: match, error: matchErr } = await supabase
     .from("matches")
-    .select("id, phase, home_score, away_score, status")
+    .select(
+      "id, phase, home_score, away_score, home_team, away_team, status, knockout_label, advancing_team",
+    )
     .eq("id", matchId)
     .maybeSingle();
 
@@ -137,11 +177,12 @@ Deno.serve(async (req: Request) => {
 
   const H = m.home_score;
   const A = m.away_score;
+  const actualAdvancing = resolveActualAdvancingTeam(m, H, A);
 
   const { data: predictions, error: predErr } = await supabase
     .from("predictions")
     .select(
-      "id, user_id, group_id, match_id, predicted_home, predicted_away, predicted_winner, points_earned"
+      "id, user_id, group_id, match_id, predicted_home, predicted_away, predicted_winner, predicted_advancing, points_earned",
     )
     .eq("match_id", matchId);
 
@@ -175,7 +216,7 @@ Deno.serve(async (req: Request) => {
   for (const p of predList) {
     const g = groupMap.get(p.group_id);
     if (!g) continue;
-    const pts = computePointsForPrediction(
+    let pts = computePointsForPrediction(
       H,
       A,
       m.phase,
@@ -184,6 +225,7 @@ Deno.serve(async (req: Request) => {
       p.predicted_winner,
       g
     );
+    pts += knockoutAdvancingBonus(H, A, m.phase, actualAdvancing, p, g);
     const { error: upErr } = await supabase.from("predictions").update({ points_earned: pts }).eq("id", p.id);
     if (upErr) {
       return new Response(JSON.stringify({ error: upErr.message }), {
@@ -193,12 +235,47 @@ Deno.serve(async (req: Request) => {
     }
   }
 
+  if (isKnockoutPhase(m.phase) && m.knockout_label && actualAdvancing && actualAdvancing !== "TBD") {
+    const token = `W-${m.knockout_label}`;
+    const { data: targets, error: tErr } = await supabase
+      .from("matches")
+      .select("id, home_source, away_source")
+      .or(`home_source.eq.${token},away_source.eq.${token}`);
+
+    if (tErr) {
+      return new Response(JSON.stringify({ error: tErr.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    for (const row of targets ?? []) {
+      const r = row as { id: string; home_source: string | null; away_source: string | null };
+      if (r.home_source === token) {
+        const { error: u1 } = await supabase.from("matches").update({ home_team: actualAdvancing }).eq("id", r.id);
+        if (u1) {
+          return new Response(JSON.stringify({ error: u1.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+      if (r.away_source === token) {
+        const { error: u2 } = await supabase.from("matches").update({ away_team: actualAdvancing }).eq("id", r.id);
+        if (u2) {
+          return new Response(JSON.stringify({ error: u2.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+    }
+  }
+
   for (const gid of groupIds) {
     const { data: allPreds, error: apErr } = await supabase
       .from("predictions")
-      .select(
-        "user_id, predicted_home, predicted_away, points_earned, match_id"
-      )
+      .select("user_id, predicted_home, predicted_away, points_earned, match_id")
       .eq("group_id", gid);
     if (apErr) {
       return new Response(JSON.stringify({ error: apErr.message }), {
@@ -207,11 +284,11 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const matchIds = [...new Set((allPreds ?? []).map((row: { match_id: string }) => row.match_id))];
+    const matchIdSet = [...new Set((allPreds ?? []).map((row: { match_id: string }) => row.match_id))];
     const { data: matchesRows, error: mErr } = await supabase
       .from("matches")
       .select("id, home_score, away_score, status")
-      .in("id", matchIds);
+      .in("id", matchIdSet);
     if (mErr) {
       return new Response(JSON.stringify({ error: mErr.message }), {
         status: 500,
@@ -253,12 +330,7 @@ Deno.serve(async (req: Request) => {
       agg.predictions_made += 1;
 
       const mr = matchById.get(mid);
-      if (
-        mr &&
-        mr.status === "finished" &&
-        mr.home_score !== null &&
-        mr.away_score !== null
-      ) {
+      if (mr && mr.status === "finished" && mr.home_score !== null && mr.away_score !== null) {
         const h = mr.home_score;
         const a = mr.away_score;
         if (predHome === h && predAway === a) {

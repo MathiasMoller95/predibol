@@ -1,5 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { ToastProvider } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
 import Navbar from "./components/navbar";
@@ -29,7 +30,9 @@ export default async function DashboardLayout({ children, params }: Props) {
   return (
     <>
       <Navbar displayName={displayName} email={user.email ?? ""} locale={locale} />
-      <div className="pt-14">{children}</div>
+      <ToastProvider>
+        <div className="pt-14">{children}</div>
+      </ToastProvider>
     </>
   );
 }

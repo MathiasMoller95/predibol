@@ -12,6 +12,7 @@ type GroupRecord = {
   id: string;
   name: string;
   slug: string;
+  access_mode: "open" | "protected";
 };
 
 export default async function JoinGroupPage({ params, searchParams }: Props) {
@@ -31,7 +32,7 @@ export default async function JoinGroupPage({ params, searchParams }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,slug")
+    .select("id,name,slug,access_mode")
     .eq("slug", slug)
     .single();
 
@@ -61,7 +62,13 @@ export default async function JoinGroupPage({ params, searchParams }: Props) {
       <section className="mx-auto w-full max-w-md rounded-2xl border border-dark-600 bg-dark-800 p-8">
         <h1 className="text-2xl font-bold text-white">{t("join.title")}</h1>
         <p className="mt-2 text-sm text-slate-400">{t("join.groupNameLabel", { name: typedGroup.name })}</p>
-        <JoinGroupButton groupId={typedGroup.id} slug={typedGroup.slug} autoJoin={autoJoin} isLoggedIn={Boolean(user)} />
+        <JoinGroupButton
+          groupId={typedGroup.id}
+          slug={typedGroup.slug}
+          accessMode={typedGroup.access_mode}
+          autoJoin={autoJoin}
+          isLoggedIn={Boolean(user)}
+        />
       </section>
     </main>
   );

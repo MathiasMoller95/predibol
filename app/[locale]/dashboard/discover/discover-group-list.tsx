@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
+import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 export type DiscoverGroupRow = {
   id: string;
@@ -127,7 +128,7 @@ export default function DiscoverGroupList({ locale, currentUserId, userEmail, gr
                     type="button"
                     disabled={busyId !== null}
                     onClick={() => void onJoin(group)}
-                    className="mt-4 min-h-[44px] w-full rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                    className={`mt-4 min-h-[44px] w-full rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
                   >
                     {t("join")}
                   </button>

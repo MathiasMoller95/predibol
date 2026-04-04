@@ -27,6 +27,7 @@ type MatchRecord = {
   away_win_odds: number | null;
   ai_home_score: number | null;
   ai_away_score: number | null;
+  knockout_label: string | null;
 };
 
 type PredictionRecord = {
@@ -34,6 +35,7 @@ type PredictionRecord = {
   predicted_home: number;
   predicted_away: number;
   predicted_winner: "home" | "away" | "draw" | null;
+  predicted_advancing: string | null;
 };
 
 export default async function GroupPredictPage({ params }: Props) {
@@ -80,7 +82,7 @@ export default async function GroupPredictPage({ params }: Props) {
   const { data: matches } = await supabase
     .from("matches")
     .select(
-      "id,phase,home_team,away_team,match_time,locked_at,status,home_win_odds,draw_odds,away_win_odds,ai_home_score,ai_away_score",
+      "id,phase,home_team,away_team,match_time,locked_at,status,home_win_odds,draw_odds,away_win_odds,ai_home_score,ai_away_score,knockout_label",
     )
     .gte("match_time", nowIso)
     .order("match_time", { ascending: true });
@@ -92,7 +94,7 @@ export default async function GroupPredictPage({ params }: Props) {
   if (matchIds.length > 0) {
     const { data } = await supabase
       .from("predictions")
-      .select("match_id,predicted_home,predicted_away,predicted_winner")
+      .select("match_id,predicted_home,predicted_away,predicted_winner,predicted_advancing")
       .eq("group_id", groupId)
       .eq("user_id", user.id)
       .in("match_id", matchIds);
@@ -101,7 +103,7 @@ export default async function GroupPredictPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-dark-900 px-4 py-8">
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}

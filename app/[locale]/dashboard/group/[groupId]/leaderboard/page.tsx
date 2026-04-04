@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
+import RankingSnapshotShareButton from "@/components/share/ranking-snapshot";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -99,7 +100,7 @@ export default async function GroupLeaderboardPage({ params }: Props) {
   }));
 
   return (
-    <main className="min-h-screen bg-dark-900 px-4 py-8">
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
@@ -108,9 +109,22 @@ export default async function GroupLeaderboardPage({ params }: Props) {
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
-            <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
+          <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+            <div className="min-w-0">
+              <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+              <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
+            </div>
+            {rows.length > 0 ? (
+              <RankingSnapshotShareButton
+                groupName={typedGroup.name}
+                locale={locale}
+                rankings={rows.slice(0, 5).map((r, i) => ({
+                  rank: r.rank ?? i + 1,
+                  name: r.display_name,
+                  points: r.total_points,
+                }))}
+              />
+            ) : null}
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
@@ -144,19 +158,28 @@ export default async function GroupLeaderboardPage({ params }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => {
+                {rows.map((row, index) => {
                   const isSelf = row.user_id === user.id;
                   const r = row.rank;
                   const topThree = r != null && r >= 1 && r <= 3;
                   const medal = r === 1 ? "🥇 " : r === 2 ? "🥈 " : r === 3 ? "🥉 " : "";
+                  const tierBorder =
+                    r === 1
+                      ? "border-l-4 border-yellow-400"
+                      : r === 2
+                        ? "border-l-4 border-slate-300"
+                        : r === 3
+                          ? "border-l-4 border-amber-600"
+                          : "";
+                  const selfBorder = isSelf && !topThree ? "border-l-4 border-l-emerald-500" : "";
+                  const rowBg = isSelf ? "bg-emerald-900/20 ring-1 ring-inset ring-emerald-500/30" : "";
                   return (
                     <tr
                       key={row.user_id}
-                      className={
-                        isSelf
-                          ? "border-b border-dark-600 bg-emerald-900/20 border-l-2 border-l-emerald-500"
-                          : "border-b border-dark-600"
-                      }
+                      style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}
+                      className={["animate-page-in border-b border-dark-600", tierBorder, selfBorder, rowBg]
+                        .filter(Boolean)
+                        .join(" ")}
                     >
                       <td
                         className={`whitespace-nowrap py-3 pl-4 pr-4 font-medium ${
@@ -172,7 +195,9 @@ export default async function GroupLeaderboardPage({ params }: Props) {
                         ) : null}
                       </td>
                       <td className="py-3 pr-4 text-slate-300">{row.display_name}</td>
-                      <td className="py-3 pr-4 text-right tabular-nums font-bold text-emerald-400">{row.total_points}</td>
+                      <td className="py-3 pr-4 text-right font-mono tabular-nums font-bold text-emerald-400">
+                        {row.total_points}
+                      </td>
                       <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.correct_results}</td>
                       <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.exact_scores}</td>
                       <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.predictions_made}</td>

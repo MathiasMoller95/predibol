@@ -2,6 +2,95 @@
   "Home": {
     "welcome": "Bienvenido a Predibol"
   },
+  "LandingPage": {
+    "metaTitle": "Predibol — Predicciones del Mundial 2026",
+    "metaDescription": "Crea tu grupo, predice marcadores y compite en el ranking en vivo. Competición social gratuita para el Mundial 2026.",
+    "header": {
+      "wordmark": "Predibol",
+      "login": "Iniciar sesión"
+    },
+    "hero": {
+      "tagline": "Predice. Compite. Gana.",
+      "subtitle": "La plataforma de predicciones para el Mundial 2026. Crea tu grupo, invita a tus amigos y demuestra quién sabe más de fútbol.",
+      "ctaCreateGroup": "Crear grupo",
+      "ctaLogin": "Iniciar sesión"
+    },
+    "countdown": {
+      "label": "Faltan para el inicio",
+      "days": "Días",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos"
+    },
+    "howItWorks": {
+      "title": "¿Cómo funciona?",
+      "step1": {
+        "title": "Crea tu grupo",
+        "description": "Elige un nombre, personaliza los colores y las reglas de puntuación."
+      },
+      "step2": {
+        "title": "Predice los resultados",
+        "description": "Envía tus predicciones antes de cada partido. Consulta las cuotas y las predicciones de la IA."
+      },
+      "step3": {
+        "title": "Compite en el ranking",
+        "description": "Gana puntos por cada acierto. ¿Quién será el número 1?"
+      }
+    },
+    "features": {
+      "title": "Todo lo que necesitas",
+      "leaderboard": {
+        "title": "Ranking en tiempo real",
+        "emoji": "🏆",
+        "description": "Ve cómo evoluciona la clasificación cuando terminan los partidos."
+      },
+      "odds": {
+        "title": "Cuotas de apuestas",
+        "emoji": "📊",
+        "description": "Consulta las cuotas del mercado para afinar tus pronósticos."
+      },
+      "ai": {
+        "title": "Predicciones de IA",
+        "emoji": "🤖",
+        "description": "Echa un vistazo a los marcadores sugeridos por el modelo."
+      },
+      "groups": {
+        "title": "Grupos públicos y privados",
+        "emoji": "🌍",
+        "description": "Solo invitados o ligas abiertas para descubrir rivales."
+      },
+      "rules": {
+        "title": "Reglas personalizables",
+        "emoji": "⚙️",
+        "description": "Ajusta puntos por resultado, marcador exacto y bonificaciones."
+      },
+      "mobile": {
+        "title": "Optimizado para móvil",
+        "emoji": "📱",
+        "description": "Predice desde el estadio o el sofá sin fricción."
+      }
+    },
+    "stats": {
+      "title": "El Mundial más grande de la historia",
+      "teams": "48 equipos",
+      "matches": "104 partidos",
+      "groups": "12 grupos",
+      "body": "Por primera vez, 48 selecciones competirán en el Mundial. Más partidos, más predicciones, más diversión."
+    },
+    "cta": {
+      "title": "¿Listo para jugar?",
+      "button": "Empieza gratis",
+      "footnote": "Gratis durante la fase de pruebas"
+    },
+    "footer": {
+      "copyright": "© 2026 Predibol",
+      "privacy": "Privacidad",
+      "terms": "Términos",
+      "langEs": "ES",
+      "langEn": "EN",
+      "langPt": "PT"
+    }
+  },
   "Auth": {
     "loginTitle": "Iniciar sesion",
     "loginSubtitle": "Inicia sesion con un enlace magico por correo.",
@@ -94,9 +183,31 @@
     "groupDescriptionPlaceholder": "Describe tu grupo para que otros lo encuentren",
     "groupDescriptionHelp": "Maximo 200 caracteres. Se muestra en la pagina de descubrimiento."
   },
+  "AccessCode": {
+    "title": "Acceso al grupo",
+    "open": "Abierto",
+    "openDescription": "Cualquiera con el enlace puede unirse",
+    "protected": "Protegido",
+    "protectedDescription": "Se requiere codigo de acceso",
+    "generateCode": "Generar codigo",
+    "shareCodeHint": "Comparte este codigo con los miembros de tu grupo",
+    "enterCode": "Introduce el codigo de acceso",
+    "incorrectCode": "Codigo incorrecto",
+    "codeRequired": "Introduce un codigo numerico de 6 digitos",
+    "regenerate": "Regenerar codigo",
+    "confirmOpenSwitch": "¿Seguro? Cualquiera con el enlace podra unirse",
+    "codeCopied": "Codigo copiado",
+    "copyCode": "Copiar codigo",
+    "settingsSaved": "Cambios guardados",
+    "copyFailed": "No se pudo copiar",
+    "linkAndCode": "Enlace + codigo: {code}",
+    "whatsappOpen": "¡Unete a {groupName} en Predibol! {link}",
+    "whatsappProtected": "¡Unete a {groupName} en Predibol! 🔗 {link} 🔑 Codigo: {code}"
+  },
   "GroupHub": {
     "memberCount": "{count} miembros",
     "adminBadge": "Admin",
+    "scoringRules": "{result}-{difference}-{exact} pts",
     "inviteFriends": "Invitar amigos",
     "copyLink": "Copiar enlace",
     "copied": "✓ Copiado!",
@@ -111,7 +222,47 @@
     "picksDescription": "Elige a los campeones del torneo",
     "adminDescription": "Gestionar resultados",
     "members": "Miembros",
-    "noMembers": "Todavia no hay miembros"
+    "noMembers": "Todavia no hay miembros",
+    "nextMatch": {
+      "title": "Próximo partido",
+      "vs": "vs",
+      "locksIn": "Se bloquea en {days}d {hours}h {minutes}m",
+      "yourPrediction": "Tu predicción: {home}-{away}",
+      "predictNow": "Predice ahora →",
+      "noUpcoming": "No hay partidos próximos",
+      "predictionsClosed": "Predicciones cerradas"
+    },
+    "actions": {
+      "ariaLabel": "Accesos rápidos",
+      "predict": "🎯 Predicciones",
+      "leaderboard": "🏆 Ranking",
+      "picks": "⭐ Campeón y más",
+      "admin": "⚙️ Admin",
+      "matchProgress": "{count}/{total} partidos",
+      "yourRank": "Tu posición: #{rank}",
+      "yourRankPending": "Tu posición: —",
+      "completed": "Completado ✓",
+      "pending": "Pendiente",
+      "adminHint": "Gestionar resultados"
+    },
+    "leaderboardPreview": {
+      "title": "Top 5",
+      "seeAll": "Ver todo →",
+      "empty": "Aún no hay clasificación."
+    },
+    "recentResults": {
+      "title": "Últimos resultados",
+      "seeAll": "Ver todos →",
+      "yourPrediction": "Tu predicción: {home}-{away}",
+      "noPrediction": "Sin predicción",
+      "points": "→ +{points} pts",
+      "noResults": "Aún no hay resultados"
+    },
+    "invite": {
+      "title": "Invita a más jugadores",
+      "copied": "Enlace copiado",
+      "copyFailed": "No se pudo copiar"
+    }
   },
   "Discover": {
     "title": "Descubrir grupos",
@@ -219,6 +370,20 @@
     "homeScore": "Goles local",
     "awayScore": "Goles visitante",
     "advancesLabel": "Equipo que avanza",
+    "advancesIfNotDraw": "Equipo que avanza (no hay empate a los 90′)",
+    "whoAdvances": "Quien avanza si el marcador es empate a los 90 minutos?",
+    "teamsTbd": "Equipos por definir — ingresa tu pronostico cuando se conozcan ambos.",
+    "selectAdvances": "Elige que equipo avanza en empates de eliminatoria.",
+    "selectWinnerIfNotDraw": "Elige que equipo avanza cuando el marcador no es empate.",
+    "phase": {
+      "round_of_16": "Octavos de final",
+      "quarter_final": "Cuartos de final",
+      "quarter": "Cuartos de final",
+      "semi_final": "Semifinales",
+      "semi": "Semifinales",
+      "third_place": "Tercer puesto",
+      "final": "Final"
+    },
     "chooseTeam": "Seleccionar equipo",
     "lockedLabel": "Bloqueado",
     "saveButton": "Guardar pronosticos",
@@ -266,7 +431,14 @@
     "error": "No se pudo guardar el resultado. Intentalo de nuevo.",
     "noUpcoming": "No hay partidos proximos",
     "manageResults": "Gestionar resultados",
-    "notAdmin": "No eres administrador de este grupo."
+    "notAdmin": "No eres administrador de este grupo.",
+    "email": {
+      "title": "Herramientas de email",
+      "sendReminders": "Enviar recordatorios ahora (test)",
+      "testNote": "Envia recordatorios a los jugadores con predicciones pendientes",
+      "sent": "Recordatorios enviados",
+      "error": "Error al enviar recordatorios"
+    }
   },
   "Dashboard": {
     "title": "Mis grupos",
@@ -287,7 +459,23 @@
     "leaderboard": "Ranking",
     "picks": "Campeón y más",
     "admin": "Admin",
-    "nextMatchDate": "Proximo: {home} vs {away}"
+    "nextMatchDate": "Proximo: {home} vs {away}",
+    "worldCupCountdown": "Faltan {days, plural, one {1 día} other {# días}} para el Mundial",
+    "worldCupLive": "El Mundial está en juego"
+  },
+  "Share": {
+    "ranking": {
+      "button": "📸 Compartir ranking",
+      "footer": "¿Quién sabe más de fútbol?",
+      "toast": "Imagen lista para compartir",
+      "error": "No se pudo crear la imagen."
+    },
+    "invite": {
+      "button": "🎨 Compartir tarjeta",
+      "joinUs": "¡Únete a nuestro grupo!",
+      "toast": "Tarjeta lista para compartir",
+      "error": "No se pudo crear la imagen."
+    }
   },
   "Common": {
     "backToGroups": "← Mis Grupos",

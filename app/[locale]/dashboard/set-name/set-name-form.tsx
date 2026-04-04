@@ -7,6 +7,7 @@ import TimezoneField from "@/components/timezone-field";
 import { createClient } from "@/lib/supabase/client";
 import { syncGroupMembersDisplayName } from "@/lib/display-name";
 import { DEFAULT_TIMEZONE, getBrowserTimeZone } from "@/lib/format-match-time";
+import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 const MIN = 2;
 const MAX = 30;
@@ -104,7 +105,7 @@ export default function SetNameForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+        className={`min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700 disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
       >
         {submitting ? t("saving") : t("continue")}
       </button>
