@@ -14,10 +14,10 @@
       "login": "Iniciar sesión"
     },
     "hero": {
-      "tagline": "Predice el Mundial con tus amigos",
-      "subtitle": "Crea tu liga privada, envía tus pronósticos para cada partido y compite por ser el número 1 de tu grupo.",
+      "tagline": "Predice el Mundial 2026 con tus amigos",
+      "subtitle": "Crea tu grupo, envía tus pronósticos para cada partido y ve quien es el que realmente sabe de futbol.",
       "pill1": "⚽ 48 equipos · 104 partidos",
-      "pill2": "👥 Ligas privadas y públicas",
+      "pill2": "👥 Grupos privadas y públicas",
       "pill3": "🤖 Predicciones IA incluidas",
       "cta": {
         "createAccount": "Crear cuenta gratis",
@@ -25,7 +25,7 @@
       }
     },
     "countdown": {
-      "urgency": "Crea tu liga antes de que empiece el Mundial",
+      "urgency": "Crea tu grupo antes de que empiece el Mundial",
       "days": "Días",
       "hours": "Horas",
       "minutes": "Minutos",
@@ -39,7 +39,7 @@
       },
       "step2": {
         "title": "Lanza tu predicción",
-        "description": "Envía tus pronósticos antes de cada partido. Sin presión, solo tu instinto — o echa un vistazo a las probabilidades o a la IA si quieres una pista."
+        "description": "Envía tus pronósticos antes de cada partido. Usa tu instinto, echa un vistazo a las probabilidades o a la IA si quieres saber que dice el mercado y la IA."
       },
       "step3": {
         "title": "Sube al podio",
