@@ -1,5 +1,16 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
+const corsHeaders: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+const jsonHeaders: Record<string, string> = {
+  "Content-Type": "application/json",
+  ...corsHeaders,
+};
+
 type MatchPhase =
   | "group"
   | "round_of_16"
@@ -136,10 +147,14 @@ function resolveActualAdvancingTeam(m: MatchRow, H: number, A: number): string |
 }
 
 Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   }
 
@@ -148,7 +163,7 @@ Deno.serve(async (req: Request) => {
   if (!supabaseUrl || !serviceKey) {
     return new Response(JSON.stringify({ error: "Server misconfigured" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   }
 
@@ -158,7 +173,7 @@ Deno.serve(async (req: Request) => {
   } catch {
     return new Response(JSON.stringify({ error: "Invalid JSON" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   }
 
@@ -166,7 +181,7 @@ Deno.serve(async (req: Request) => {
   if (!matchId) {
     return new Response(JSON.stringify({ error: "match_id is required" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   }
 
@@ -183,7 +198,7 @@ Deno.serve(async (req: Request) => {
   if (matchErr || !match) {
     return new Response(JSON.stringify({ error: "Match not found" }), {
       status: 404,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   }
 
@@ -191,13 +206,13 @@ Deno.serve(async (req: Request) => {
   if (m.status !== "finished") {
     return new Response(
       JSON.stringify({ error: "Match must have status finished to score" }),
-      { status: 409, headers: { "Content-Type": "application/json" } }
+      { status: 409, headers: jsonHeaders }
     );
   }
   if (m.home_score === null || m.away_score === null) {
     return new Response(
       JSON.stringify({ error: "Match must have home_score and away_score" }),
-      { status: 409, headers: { "Content-Type": "application/json" } }
+      { status: 409, headers: jsonHeaders }
     );
   }
 
@@ -215,7 +230,7 @@ Deno.serve(async (req: Request) => {
   if (predErr) {
     return new Response(JSON.stringify({ error: predErr.message }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   }
 
@@ -231,7 +246,7 @@ Deno.serve(async (req: Request) => {
     if (gErr) {
       return new Response(JSON.stringify({ error: gErr.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
     for (const row of groups ?? []) {
@@ -256,7 +271,7 @@ Deno.serve(async (req: Request) => {
     if (upErr) {
       return new Response(JSON.stringify({ error: upErr.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
   }
@@ -271,7 +286,7 @@ Deno.serve(async (req: Request) => {
     if (tErr) {
       return new Response(JSON.stringify({ error: tErr.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
 
@@ -282,7 +297,7 @@ Deno.serve(async (req: Request) => {
         if (u1) {
           return new Response(JSON.stringify({ error: u1.message }), {
             status: 500,
-            headers: { "Content-Type": "application/json" },
+            headers: jsonHeaders,
           });
         }
       }
@@ -291,7 +306,7 @@ Deno.serve(async (req: Request) => {
         if (u2) {
           return new Response(JSON.stringify({ error: u2.message }), {
             status: 500,
-            headers: { "Content-Type": "application/json" },
+            headers: jsonHeaders,
           });
         }
       }
@@ -306,7 +321,7 @@ Deno.serve(async (req: Request) => {
     if (apErr) {
       return new Response(JSON.stringify({ error: apErr.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
 
@@ -318,7 +333,7 @@ Deno.serve(async (req: Request) => {
     if (mErr) {
       return new Response(JSON.stringify({ error: mErr.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
 
@@ -426,7 +441,7 @@ Deno.serve(async (req: Request) => {
       if (lbErr) {
         return new Response(JSON.stringify({ error: lbErr.message }), {
           status: 500,
-          headers: { "Content-Type": "application/json" },
+          headers: jsonHeaders,
         });
       }
     }
@@ -438,7 +453,7 @@ Deno.serve(async (req: Request) => {
     if (lbSelErr) {
       return new Response(JSON.stringify({ error: lbSelErr.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
 
@@ -457,7 +472,7 @@ Deno.serve(async (req: Request) => {
       if (rankErr) {
         return new Response(JSON.stringify({ error: rankErr.message }), {
           status: 500,
-          headers: { "Content-Type": "application/json" },
+          headers: jsonHeaders,
         });
       }
       r += 1;
@@ -466,6 +481,6 @@ Deno.serve(async (req: Request) => {
 
   return new Response(
     JSON.stringify({ ok: true, scored: predList.length, groups_updated: groupIds.length }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: jsonHeaders }
   );
 });
