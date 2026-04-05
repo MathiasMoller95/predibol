@@ -27,6 +27,8 @@ export type RecentResultRow = {
   predHome: number | null;
   predAway: number | null;
   pointsEarned: number;
+  /** Virtual €1 1X2 P&L; null if no prediction or odds missing */
+  virtualPnl: number | null;
 };
 
 export type GroupHubData = {
@@ -105,6 +107,7 @@ function useLockCountdown(lockedAtIso: string | null, tickMs: number) {
 
 export default function GroupHubClient({ data }: { data: GroupHubData }) {
   const t = useTranslations("GroupHub");
+  const tVirtual = useTranslations("VirtualBets");
   const tAccess = useTranslations("AccessCode");
   const { showToast } = useToast();
   const accent = data.primaryColor ?? "#10b981";
@@ -456,6 +459,24 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                   >
                     {t("recentResults.points", { points: row.pointsEarned })}
                   </span>
+                  {row.virtualPnl != null ? (
+                    <span
+                      className={`ml-1.5 font-mono tabular-nums ${
+                        row.virtualPnl > 0
+                          ? "text-emerald-400"
+                          : row.virtualPnl < 0
+                            ? "text-red-400"
+                            : "text-slate-500"
+                      }`}
+                    >
+                      💰{" "}
+                      {row.virtualPnl > 0
+                        ? tVirtual("profit", { amount: row.virtualPnl.toFixed(2) })
+                        : row.virtualPnl < 0
+                          ? tVirtual("loss", { amount: Math.abs(row.virtualPnl).toFixed(2) })
+                          : tVirtual("profit", { amount: "0.00" })}
+                    </span>
+                  ) : null}
                 </p>
               </li>
             ))}

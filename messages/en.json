@@ -4,7 +4,7 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — World Cup 2026 predictions",
-    "metaDescription": "Free World Cup 2026 score predictions with friends — bragging rights, leaderboards, and private groups. No real-money wagering.",
+    "metaDescription": "The social score-prediction game for the 2026 World Cup — groups, banter, bragging rights, and live leaderboards with friends.",
     "theme": {
       "toggleLight": "Switch to light theme",
       "toggleDark": "Switch to dark theme"
@@ -14,9 +14,11 @@
       "login": "Log in"
     },
     "hero": {
-      "tagline": "Predict. Compete. Win.",
-      "subtitle": "Bragging rights, not bankrolls. Make score picks with friends for the 2026 World Cup — create a group and climb the leaderboard.",
-      "safeBadge": "For fun only — no real-money wagering",
+      "linePrefix": "The best platform to ",
+      "lineStrike": "bet on ",
+      "lineEmphasis": "play ",
+      "lineSuffix": " the 2026 World Cup",
+      "subTagline": "Let's get back to basics: talking football for fun, not for profit. Create your group, invite your friends, and prove who knows best.",
       "cta": {
         "createAccount": "Create free account",
         "login": "Log in"
@@ -32,16 +34,16 @@
     "howItWorks": {
       "title": "How does it work?",
       "step1": {
-        "title": "Create your group",
-        "description": "Choose a name, customize colors, and scoring rules."
+        "title": "Build your squad",
+        "description": "Pick a name, customize colors and rules. Your league, your rules!"
       },
       "step2": {
-        "title": "Predict the scores",
-        "description": "Lock in your picks before kickoff. Peek at odds or AI suggestions for a second opinion."
+        "title": "Call your shots",
+        "description": "Submit your predictions before each match. No pressure, just your football instincts — or peek at probabilities or the model if you want a nudge."
       },
       "step3": {
-        "title": "Climb the leaderboard",
-        "description": "Earn points for every correct call. Who will be number one?"
+        "title": "Claim the throne",
+        "description": "Earn points for every correct prediction and climb the ranking. Who'll be the group legend?"
       }
     },
     "features": {
@@ -52,14 +54,14 @@
         "description": "Watch rankings update as matches finish."
       },
       "odds": {
-        "title": "Market context",
+        "title": "Expert context — check the probabilities before you decide",
         "emoji": "📊",
-        "description": "See how bookmakers frame the match — context for your picks, not for staking."
+        "description": "See matchup probabilities at a glance so your gut (and your group chat) has something to argue about."
       },
       "ai": {
-        "title": "AI predictions",
+        "title": "AI as your rival — can you beat the machine?",
         "emoji": "🤖",
-        "description": "Glance at model scores before you commit."
+        "description": "Stack your instincts against model picks and see who comes out looking smart."
       },
       "groups": {
         "title": "Public & private groups",
@@ -79,16 +81,19 @@
     },
     "stats": {
       "title": "48 nations. One trophy. Endless bragging.",
-      "teams": "48 teams",
-      "matches": "104 matches",
-      "groups": "12 groups",
-      "body": "For the first time, 48 nations will compete. More matches, more predictions, more fun."
+      "teamsNumber": "48",
+      "teamsLabel": "teams",
+      "matchesNumber": "104",
+      "matchesLabel": "matches",
+      "groupsNumber": "12",
+      "groupsLabel": "groups",
+      "body": "For the first time, 48 nations step up. More matches, more banter, more room to prove your friends wrong."
     },
     "cta": {
-      "title": "Ready to join the fun?",
-      "subtitle": "Create an account in seconds — free and built for friendly rivalry.",
+      "title": "Who knows football best in your group?",
+      "subtitle": "There's only one way to find out.",
       "button": "Create free account",
-      "footnote": "Free during beta"
+      "footnote": "Free. No bets. No excuses."
     },
     "footer": {
       "copyright": "© 2026 Predibol",
@@ -147,7 +152,13 @@
     "genericError": "Something went wrong. Please try again.",
     "successTitle": "Check your email",
     "successMessage": "We've sent you a verification email. Click the link to activate your account.",
-    "checkSpam": "Check your spam/junk folder if you don't see it."
+    "checkSpam": "Check your spam/junk folder if you don't see it.",
+    "consent": {
+      "label": "I accept the <privacy>Privacy Policy</privacy> and the <terms>Terms of Service</terms>.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "required": "You must accept the privacy policy and terms."
+    }
   },
   "Navbar": {
     "logout": "Log out",
@@ -364,6 +375,21 @@
     "colExactScores": "Exact scores",
     "colPredictionsMade": "Predictions"
   },
+  "VirtualBets": {
+    "tab": {
+      "points": "🏆 Points",
+      "virtualBets": "💰 Virtual bets"
+    },
+    "disclaimer": "🎮 Simulation with a virtual €1 bet per match. No real money.",
+    "profit": "+€{amount}",
+    "loss": "-€{amount}",
+    "record": "{won}-{lost}",
+    "winRate": "{rate}%",
+    "pnl": "P&L",
+    "colRecord": "Record",
+    "colWinRate": "Win rate",
+    "noBets": "No results yet"
+  },
   "Picks": {
     "title": "Champion & More",
     "subtitle": "Pick your tournament winners before it starts",
@@ -388,6 +414,9 @@
     "title": "Match predictions",
     "subtitle": "Submit your picks for {groupName}.",
     "empty": "No upcoming matches available.",
+    "settledTitle": "Settled predictions",
+    "noUpcoming": "No upcoming matches right now.",
+    "yourPick": "Your prediction: {home}-{away}",
     "homeScore": "Home score",
     "awayScore": "Away score",
     "advancesLabel": "Team that advances",
@@ -529,6 +558,99 @@
   },
   "Common": {
     "backToGroups": "← My Groups",
-    "backToGroup": "← Back to {groupName}"
+    "backToGroup": "← Back to {groupName}",
+    "legalBackHome": "← Back to home",
+    "footerPrivacy": "Privacy",
+    "footerTerms": "Terms"
+  },
+  "Privacy": {
+    "metaTitle": "Privacy Policy — Predibol",
+    "metaDescription": "How Predibol collects, uses, and stores your personal data (GDPR).",
+    "title": "Privacy Policy",
+    "lawyerNote": "Important: Mathias should have a qualified lawyer review this policy before public launch. The text below is plain-language guidance, not legal advice.",
+    "lastUpdated": "Last updated: April 2026",
+    "sections": {
+      "whoWeAre": {
+        "title": "Who we are",
+        "content": "Predibol is operated by {{Company Name TBD}}, based in {{Location TBD}}.\n\nFor privacy questions or requests, contact: {{contact.email@TBD}}."
+      },
+      "dataWeCollect": {
+        "title": "What data we collect",
+        "content": "We collect the following when you use Predibol:\n\n• Email address — account creation, sign-in, and essential emails (e.g. verification).\n\n• Display name — chosen by you; visible to other members of your groups.\n\n• Timezone — so match times can be shown usefully for you.\n\n• Match predictions and pre-tournament picks — your in-game entries.\n\n• Group membership — which groups you belong to and related play data.\n\n• Usage data — pages visited and actions in the app (basic operational needs). Mathias should confirm: we currently describe this as standard web analytics only if that is accurate; if you use none beyond essentials, adjust this bullet."
+      },
+      "whyWeCollect": {
+        "title": "Why we collect it (legal basis)",
+        "content": "We process data on the following bases where applicable:\n\n• Performance of a contract — to run accounts, predictions, groups, and scoring.\n\n• Legitimate interests — security, abuse prevention, and proportionate service improvement; emails strictly related to your account or gameplay where appropriate.\n\n• Consent — marketing communications only if you clearly opt in.\n\nWithdrawing consent may limit optional features; core gameplay may require certain data."
+      },
+      "whoWeShare": {
+        "title": "Who we share data with",
+        "content": "Other members of a group can see your display name, predictions, points, and ranking as part of the game.\n\nWe use service providers: Supabase (auth/database — {{EU region TBD, e.g. Frankfurt; verify in project}}), Vercel (hosting/CDN), and an email provider such as Resend (transactional mail).\n\nWe do not sell personal data. We do not share data with advertisers for tracking or profiling."
+      },
+      "whereStored": {
+        "title": "Where data is stored",
+        "content": "Primary data is stored with Supabase. {{Confirm exact region in the Supabase dashboard and replace this sentence.}} The site is delivered via Vercel’s global network, which may route traffic through various locations."
+      },
+      "howLong": {
+        "title": "How long we keep data",
+        "content": "We keep account and game data while your account exists.\n\nYou can request erasure; we will respond to verifiable requests and delete or anonymise data unless a narrow legal exception applies."
+      },
+      "yourRights": {
+        "title": "Your rights (GDPR)",
+        "content": "If GDPR applies, you may have the right to: access your data; rectify inaccuracies; erase your account and associated data in many cases; receive a portable copy where applicable; object to processing based on legitimate interests; and lodge a complaint with a supervisory authority.\n\nTo exercise these rights, contact: {{contact.email@TBD}}."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "content": "We use essential cookies/session storage needed for authentication and core site operation.\n\nMathias should confirm: as of this draft we state there are no advertising cookies and no non-essential analytics cookies — update if you add analytics or marketing scripts."
+      },
+      "children": {
+        "title": "Children",
+        "content": "Predibol is not directed at children under 16. We do not knowingly collect personal data from anyone under 16. If you believe we have, contact us and we will take appropriate steps."
+      },
+      "changes": {
+        "title": "Changes to this policy",
+        "content": "We may update this policy from time to time. The latest version will always be published on this page with an updated date."
+      }
+    }
+  },
+  "Terms": {
+    "metaTitle": "Terms of Service — Predibol",
+    "metaDescription": "Terms of use for the Predibol social prediction game.",
+    "title": "Terms of Service",
+    "lawyerNote": "Important: Mathias should have a qualified lawyer review these terms before public launch. This is plain-language guidance, not legal advice.",
+    "lastUpdated": "Last updated: April 2026",
+    "sections": {
+      "whatPredibolIs": {
+        "title": "What Predibol is",
+        "content": "Predibol is a social prediction game built around the FIFA World Cup 2026. You predict match outcomes, earn points in private or public groups, and compare results with friends.\n\nPredibol is not a gambling or betting platform. No real money is wagered, paid out, or processed through Predibol. Any reference to “virtual” stakes in the product is purely for entertainment and has no monetary value.\n\nThe service is provided for entertainment only."
+      },
+      "accounts": {
+        "title": "Accounts",
+        "content": "You must be at least 16 years old to create an account.\n\nYou are responsible for keeping your login credentials secure and for activity under your account.\n\nOne account per person unless we explicitly allow otherwise in writing."
+      },
+      "groups": {
+        "title": "Groups",
+        "content": "Group administrators manage membership and settings for their groups within the product.\n\nPredibol does not organise, facilitate, or encourage real-money betting between users. Any private arrangements between group members are solely between those individuals and are outside Predibol’s responsibility."
+      },
+      "acceptableUse": {
+        "title": "Acceptable use",
+        "content": "You agree not to use offensive display names, harass other users, attempt to disrupt the service, or misuse the platform.\n\nWe may suspend or terminate accounts that violate these terms or put the community at risk."
+      },
+      "intellectualProperty": {
+        "title": "Intellectual property",
+        "content": "Predibol branding, UI, and original content are owned by {{Company Name TBD}} or its licensors.\n\nFIFA, World Cup marks, team names, and logos belong to their respective owners. Predibol does not claim ownership of third-party marks; they are used for descriptive, informational purposes only."
+      },
+      "limitationOfLiability": {
+        "title": "Limitation of liability",
+        "content": "Predibol is provided “as is” without warranties of any kind, to the fullest extent permitted by law.\n\nWe are not liable for incorrect match data, scoring or leaderboard errors, downtime, or third-party service outages. Our aggregate liability for claims relating to the free service is limited to zero where no fees are paid; {{adjust if you later charge fees}}."
+      },
+      "governingLaw": {
+        "title": "Governing law",
+        "content": "These terms are governed by the laws of {{Jurisdiction TBD}}, without regard to conflict-of-law rules."
+      },
+      "contact": {
+        "title": "Contact",
+        "content": "Questions about these terms: {{contact.email@TBD}}."
+      }
+    }
   }
 }

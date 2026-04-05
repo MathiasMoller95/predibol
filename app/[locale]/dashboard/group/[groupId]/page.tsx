@@ -11,6 +11,7 @@ import GroupHubClient, {
 } from "./group-hub";
 import type { GroupAccessMode } from "@/types/supabase";
 import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
+import { virtualBetPnlForMatch } from "@/lib/virtual-bet-pnl";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -131,7 +132,7 @@ export default async function GroupHubPage({ params }: Props) {
       .maybeSingle(),
     supabase
       .from("matches")
-      .select("id,home_team,away_team,home_score,away_score,match_time")
+      .select("id,home_team,away_team,home_score,away_score,match_time,home_win_odds,draw_odds,away_win_odds")
       .eq("status", "finished")
       .order("match_time", { ascending: false })
       .limit(3),
@@ -248,6 +249,9 @@ export default async function GroupHubPage({ params }: Props) {
     away_team: string;
     home_score: number | null;
     away_score: number | null;
+    home_win_odds: number | null;
+    draw_odds: number | null;
+    away_win_odds: number | null;
   }[];
   const finishedIds = finished.map((m) => m.id);
 
@@ -268,15 +272,30 @@ export default async function GroupHubPage({ params }: Props) {
 
   const recentResults: RecentResultRow[] = finished.map((m) => {
     const pr = predByMatch.get(m.id);
+    const hs = m.home_score ?? 0;
+    const as = m.away_score ?? 0;
+    const virtualPnl =
+      pr != null && m.home_score != null && m.away_score != null
+        ? virtualBetPnlForMatch(
+            pr.predicted_home,
+            pr.predicted_away,
+            hs,
+            as,
+            m.home_win_odds,
+            m.draw_odds,
+            m.away_win_odds
+          )
+        : null;
     return {
       matchId: m.id,
       homeTeam: m.home_team,
       awayTeam: m.away_team,
-      homeScore: m.home_score ?? 0,
-      awayScore: m.away_score ?? 0,
+      homeScore: hs,
+      awayScore: as,
       predHome: pr?.predicted_home ?? null,
       predAway: pr?.predicted_away ?? null,
       pointsEarned: pr?.points_earned ?? 0,
+      virtualPnl,
     };
   });
 

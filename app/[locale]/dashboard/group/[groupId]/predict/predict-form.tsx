@@ -8,6 +8,7 @@ import { formatGroupOddsCompactLine } from "@/lib/group-match-odds";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 import { getFlag, getGroup } from "@/lib/team-metadata";
+import { virtualBetPnlForMatch } from "@/lib/virtual-bet-pnl";
 
 const SCORE_INPUT_CLASS =
   "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50";
@@ -62,10 +63,18 @@ function phaseOrderIndex(phase: string) {
   return i === -1 ? 999 : i;
 }
 
+type FinishedPickRow = MatchRecord & {
+  home_score: number;
+  away_score: number;
+  predicted_home: number;
+  predicted_away: number;
+};
+
 type Props = {
   matches: MatchRecord[];
   initialPredictions: PredictionRecord[];
   profileTimeZone: string | null;
+  finishedPicks: FinishedPickRow[];
 };
 
 type PredictionInput = {
@@ -174,9 +183,10 @@ function validateKnockoutNeedsWinner(match: MatchRecord, input: PredictionInput 
   return input.predictedWinner !== "home" && input.predictedWinner !== "away";
 }
 
-export default function PredictForm({ matches, initialPredictions, profileTimeZone }: Props) {
+export default function PredictForm({ matches, initialPredictions, profileTimeZone, finishedPicks }: Props) {
   const locale = useLocale();
   const t = useTranslations("Predictions");
+  const tVirtual = useTranslations("VirtualBets");
   const { showToast } = useToast();
   const effectiveTz = useEffectiveTimeZone(profileTimeZone);
   const [isSaving, setIsSaving] = useState(false);
@@ -352,12 +362,72 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
   const showGlobalSave =
     !expandedGroup && (knockoutMatches.length > 0 || (groupCards.length === 0 && groupedMatches.length > 0));
 
+  const settledBlock =
+    finishedPicks.length > 0 ? (
+      <section className="mt-6 space-y-3 rounded-xl border border-dark-600 bg-dark-900/40 p-4">
+        <h2 className="text-sm font-semibold text-white">{t("settledTitle")}</h2>
+        <p className="text-xs text-slate-500">{tVirtual("disclaimer")}</p>
+        <ul className="space-y-3">
+          {finishedPicks.map((m) => {
+            const pnl = virtualBetPnlForMatch(
+              m.predicted_home,
+              m.predicted_away,
+              m.home_score,
+              m.away_score,
+              m.home_win_odds,
+              m.draw_odds,
+              m.away_win_odds
+            );
+            return (
+              <li key={m.id} className="rounded-lg border border-dark-600 bg-dark-800 px-3 py-3 text-sm text-slate-300">
+                <p className="font-medium text-white">
+                  <span aria-hidden>{getFlag(m.home_team)}</span> {m.home_team}{" "}
+                  <span className="tabular-nums text-emerald-300">
+                    {m.home_score}-{m.away_score}
+                  </span>{" "}
+                  {m.away_team} <span aria-hidden>{getFlag(m.away_team)}</span>
+                </p>
+                <p className="mt-1 text-xs text-slate-400">
+                  {t("yourPick", { home: m.predicted_home, away: m.predicted_away })}
+                </p>
+                {pnl != null ? (
+                  <p
+                    className={`mt-1 text-[11px] font-mono tabular-nums ${
+                      pnl > 0 ? "text-emerald-400" : pnl < 0 ? "text-red-400" : "text-slate-500"
+                    }`}
+                  >
+                    💰{" "}
+                    {pnl > 0
+                      ? tVirtual("profit", { amount: pnl.toFixed(2) })
+                      : pnl < 0
+                        ? tVirtual("loss", { amount: Math.abs(pnl).toFixed(2) })
+                        : tVirtual("profit", { amount: "0.00" })}
+                  </p>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ) : null;
+
   if (matches.length === 0) {
-    return <p className="mt-6 text-sm text-slate-400">{t("empty")}</p>;
+    return (
+      <div className="mt-2 space-y-4">
+        {settledBlock}
+        {finishedPicks.length === 0 ? (
+          <p className="mt-6 text-sm text-slate-400">{t("empty")}</p>
+        ) : (
+          <p className="text-sm text-slate-500">{t("noUpcoming")}</p>
+        )}
+      </div>
+    );
   }
 
   return (
-    <form className="mt-6 space-y-6" onSubmit={onSubmit}>
+    <div className="mt-2 space-y-6">
+      {settledBlock}
+      <form className="mt-6 space-y-6" onSubmit={onSubmit}>
       {groupCards.length > 0 ? (
         expandedGroup ? (
           <div key={`expand-${expandedGroup}`} className="animate-page-in">
@@ -1004,5 +1074,6 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
         </button>
       ) : null}
     </form>
+    </div>
   );
 }

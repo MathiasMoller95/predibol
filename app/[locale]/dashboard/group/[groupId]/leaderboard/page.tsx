@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
-import RankingSnapshotShareButton from "@/components/share/ranking-snapshot";
+import LeaderboardBoard, { type LeaderboardBoardRow } from "./leaderboard-board";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -22,6 +22,9 @@ type LeaderboardRow = {
   correct_results: number;
   exact_scores: number;
   predictions_made: number;
+  virtual_pnl: number | null;
+  virtual_bets_won: number | null;
+  virtual_bets_lost: number | null;
 };
 
 type MemberRow = {
@@ -71,7 +74,9 @@ export default async function GroupLeaderboardPage({ params }: Props) {
   const [{ data: boardRows }, { data: members }] = await Promise.all([
     supabase
       .from("leaderboard")
-      .select("user_id,rank,total_points,correct_results,exact_scores,predictions_made")
+      .select(
+        "user_id,rank,total_points,correct_results,exact_scores,predictions_made,virtual_pnl,virtual_bets_won,virtual_bets_lost"
+      )
       .eq("group_id", groupId)
       .order("rank", { ascending: true, nullsFirst: false }),
     supabase.from("group_members").select("user_id,display_name").eq("group_id", groupId),
@@ -90,8 +95,16 @@ export default async function GroupLeaderboardPage({ params }: Props) {
     );
   }
 
-  const rows = ((boardRows ?? []) as LeaderboardRow[]).map((row) => ({
-    ...row,
+  const rows: LeaderboardBoardRow[] = ((boardRows ?? []) as LeaderboardRow[]).map((row) => ({
+    user_id: row.user_id,
+    rank: row.rank,
+    total_points: row.total_points,
+    correct_results: row.correct_results,
+    exact_scores: row.exact_scores,
+    predictions_made: row.predictions_made,
+    virtual_pnl: row.virtual_pnl ?? 0,
+    virtual_bets_won: row.virtual_bets_won ?? 0,
+    virtual_bets_lost: row.virtual_bets_lost ?? 0,
     display_name: resolveDisplayName(
       profileByUserId.get(row.user_id),
       memberByUser.get(row.user_id),
@@ -109,22 +122,9 @@ export default async function GroupLeaderboardPage({ params }: Props) {
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
-            <div className="min-w-0">
-              <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
-              <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
-            </div>
-            {rows.length > 0 ? (
-              <RankingSnapshotShareButton
-                groupName={typedGroup.name}
-                locale={locale}
-                rankings={rows.slice(0, 5).map((r, i) => ({
-                  rank: r.rank ?? i + 1,
-                  name: r.display_name,
-                  points: r.total_points,
-                }))}
-              />
-            ) : null}
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+            <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
@@ -145,68 +145,12 @@ export default async function GroupLeaderboardPage({ params }: Props) {
         {rows.length === 0 ? (
           <p className="mt-8 text-sm text-slate-400">{t("empty")}</p>
         ) : (
-          <div className="mt-8 overflow-x-auto rounded-xl border border-dark-600">
-            <table className="min-w-full border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-b border-dark-600 bg-dark-700 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  <th className="whitespace-nowrap py-3 pl-4 pr-4">{t("colRank")}</th>
-                  <th className="whitespace-nowrap py-3 pr-4">{t("colName")}</th>
-                  <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colPoints")}</th>
-                  <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colCorrectResults")}</th>
-                  <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colExactScores")}</th>
-                  <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colPredictionsMade")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, index) => {
-                  const isSelf = row.user_id === user.id;
-                  const r = row.rank;
-                  const topThree = r != null && r >= 1 && r <= 3;
-                  const medal = r === 1 ? "🥇 " : r === 2 ? "🥈 " : r === 3 ? "🥉 " : "";
-                  const tierBorder =
-                    r === 1
-                      ? "border-l-4 border-yellow-400"
-                      : r === 2
-                        ? "border-l-4 border-slate-300"
-                        : r === 3
-                          ? "border-l-4 border-amber-600"
-                          : "";
-                  const selfBorder = isSelf && !topThree ? "border-l-4 border-l-emerald-500" : "";
-                  const rowBg = isSelf ? "bg-emerald-900/20 ring-1 ring-inset ring-emerald-500/30" : "";
-                  return (
-                    <tr
-                      key={row.user_id}
-                      style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}
-                      className={["animate-page-in border-b border-dark-600", tierBorder, selfBorder, rowBg]
-                        .filter(Boolean)
-                        .join(" ")}
-                    >
-                      <td
-                        className={`whitespace-nowrap py-3 pl-4 pr-4 font-medium ${
-                          topThree ? "text-gold" : "text-slate-200"
-                        }`}
-                      >
-                        <span aria-hidden>{medal}</span>
-                        {row.rank ?? "—"}
-                        {isSelf ? (
-                          <span className="ml-2 rounded-full bg-emerald-900/50 px-2 py-0.5 text-xs font-medium text-emerald-300 ring-1 ring-emerald-700/50">
-                            {t("youBadge")}
-                          </span>
-                        ) : null}
-                      </td>
-                      <td className="py-3 pr-4 text-slate-300">{row.display_name}</td>
-                      <td className="py-3 pr-4 text-right font-mono tabular-nums font-bold text-emerald-400">
-                        {row.total_points}
-                      </td>
-                      <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.correct_results}</td>
-                      <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.exact_scores}</td>
-                      <td className="py-3 pr-4 text-right tabular-nums text-slate-400">{row.predictions_made}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <LeaderboardBoard
+            groupName={typedGroup.name}
+            locale={locale}
+            currentUserId={user.id}
+            rows={rows}
+          />
         )}
       </section>
     </main>

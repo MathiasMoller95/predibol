@@ -328,12 +328,107 @@ body {
 }
 
 .landing-hero-football {
-  animation: landing-football-y 5s ease-in-out infinite;
+  animation: landing-football-y 4s ease-in-out infinite;
 }
 
 .landing-hero-football-inner {
-  animation: landing-football-rotate 24s linear infinite;
+  animation: landing-football-rotate 30s linear infinite;
   transform-origin: center;
+}
+
+/* Mini decorative balls — same float, staggered via duration/delay utility classes */
+.landing-mini-ball {
+  animation: landing-football-y 4.5s ease-in-out infinite;
+}
+
+.landing-mini-ball--b {
+  animation-duration: 5.5s;
+  animation-delay: -0.8s;
+}
+
+.landing-mini-ball--c {
+  animation-duration: 6s;
+  animation-delay: -2s;
+}
+
+.landing-mini-ball--d {
+  animation-duration: 4.8s;
+  animation-delay: -3.2s;
+}
+
+/* Hero trophy outline — diagonal gleam (~6s) */
+.landing-hero-trophy-gleam {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.landing-hero-trophy-gleam::after {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 58%
+  );
+  animation: landing-hero-trophy-sweep 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-root[data-theme="light"] .landing-hero-trophy-gleam::after {
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(16, 185, 129, 0.22) 50%,
+    transparent 58%
+  );
+}
+
+@keyframes landing-hero-trophy-sweep {
+  0% {
+    transform: translateX(-35%) translateY(-35%) rotate(12deg);
+  }
+  100% {
+    transform: translateX(35%) translateY(35%) rotate(12deg);
+  }
+}
+
+/* How it works — subtle net / mesh */
+.landing-how-pattern {
+  position: relative;
+}
+
+.landing-how-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M14 1 L27 14 L14 27 L1 14 Z' fill='none' stroke='%2310b981' stroke-width='0.6' opacity='0.35'/%3E%3C/svg%3E");
+  background-size: 28px 28px;
+  opacity: 0.045;
+}
+
+.landing-root[data-theme="light"] .landing-how-pattern::before {
+  opacity: 0.035;
+}
+
+/* Bottom CTA — grass tint along bottom edge */
+.landing-cta-grass {
+  position: relative;
+}
+
+.landing-cta-grass::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(16, 185, 129, 0.07), transparent 72%);
 }
 
 @keyframes landing-trophy-gleam {
@@ -405,8 +500,17 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .landing-hero-football,
-  .landing-hero-football-inner {
+  .landing-hero-football-inner,
+  .landing-mini-ball,
+  .landing-mini-ball--b,
+  .landing-mini-ball--c,
+  .landing-mini-ball--d {
     animation: none !important;
+  }
+
+  .landing-hero-trophy-gleam::after {
+    animation: none !important;
+    opacity: 0;
   }
 
   .landing-stats-trophy-wrap {

@@ -47,6 +47,32 @@ function outcome(h: number, a: number): "home" | "away" | "draw" {
   return "draw";
 }
 
+/** Virtual €1 bet on predicted 1X2 — skip match if odds for that arm are missing. */
+function virtualBetDelta(
+  predHome: number,
+  predAway: number,
+  H: number,
+  A: number,
+  homeWinOdds: number | null,
+  drawOdds: number | null,
+  awayWinOdds: number | null
+): { pnl: number; won: number; lost: number } | null {
+  const predictedOutcome = outcome(predHome, predAway);
+  const actualOutcome = outcome(H, A);
+  const oddsMap = {
+    home: homeWinOdds,
+    draw: drawOdds,
+    away: awayWinOdds,
+  } as const;
+  const selectedOdds = oddsMap[predictedOutcome];
+  if (selectedOdds == null || Number.isNaN(Number(selectedOdds))) return null;
+  const odds = Number(selectedOdds);
+  if (predictedOutcome === actualOutcome) {
+    return { pnl: parseFloat((odds - 1).toFixed(2)), won: 1, lost: 0 };
+  }
+  return { pnl: -1, won: 0, lost: 1 };
+}
+
 function isKnockoutPhase(phase: MatchPhase): boolean {
   return phase !== "group";
 }
@@ -287,7 +313,7 @@ Deno.serve(async (req: Request) => {
     const matchIdSet = [...new Set((allPreds ?? []).map((row: { match_id: string }) => row.match_id))];
     const { data: matchesRows, error: mErr } = await supabase
       .from("matches")
-      .select("id, home_score, away_score, status")
+      .select("id, home_score, away_score, status, home_win_odds, draw_odds, away_win_odds")
       .in("id", matchIdSet);
     if (mErr) {
       return new Response(JSON.stringify({ error: mErr.message }), {
@@ -296,18 +322,39 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const matchById = new Map<string, { home_score: number | null; away_score: number | null; status: string }>();
+    const matchById = new Map<
+      string,
+      {
+        home_score: number | null;
+        away_score: number | null;
+        status: string;
+        home_win_odds: number | null;
+        draw_odds: number | null;
+        away_win_odds: number | null;
+      }
+    >();
     for (const row of matchesRows ?? []) {
       matchById.set(row.id as string, {
         home_score: row.home_score as number | null,
         away_score: row.away_score as number | null,
         status: row.status as string,
+        home_win_odds: row.home_win_odds as number | null,
+        draw_odds: row.draw_odds as number | null,
+        away_win_odds: row.away_win_odds as number | null,
       });
     }
 
     const byUser = new Map<
       string,
-      { total_points: number; predictions_made: number; exact_scores: number; correct_results: number }
+      {
+        total_points: number;
+        predictions_made: number;
+        exact_scores: number;
+        correct_results: number;
+        virtual_pnl: number;
+        virtual_bets_won: number;
+        virtual_bets_lost: number;
+      }
     >();
 
     for (const row of allPreds ?? []) {
@@ -323,6 +370,9 @@ Deno.serve(async (req: Request) => {
           predictions_made: 0,
           exact_scores: 0,
           correct_results: 0,
+          virtual_pnl: 0,
+          virtual_bets_won: 0,
+          virtual_bets_lost: 0,
         });
       }
       const agg = byUser.get(uid)!;
@@ -339,6 +389,20 @@ Deno.serve(async (req: Request) => {
         if (outcome(predHome, predAway) === outcome(h, a)) {
           agg.correct_results += 1;
         }
+        const vb = virtualBetDelta(
+          predHome,
+          predAway,
+          h,
+          a,
+          mr.home_win_odds,
+          mr.draw_odds,
+          mr.away_win_odds
+        );
+        if (vb) {
+          agg.virtual_pnl = parseFloat((agg.virtual_pnl + vb.pnl).toFixed(2));
+          agg.virtual_bets_won += vb.won;
+          agg.virtual_bets_lost += vb.lost;
+        }
       }
     }
 
@@ -349,6 +413,9 @@ Deno.serve(async (req: Request) => {
       predictions_made: agg.predictions_made,
       exact_scores: agg.exact_scores,
       correct_results: agg.correct_results,
+      virtual_pnl: agg.virtual_pnl,
+      virtual_bets_won: agg.virtual_bets_won,
+      virtual_bets_lost: agg.virtual_bets_lost,
       rank: null as number | null,
     }));
 

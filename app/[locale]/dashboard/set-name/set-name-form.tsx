@@ -52,15 +52,29 @@ export default function SetNameForm() {
     }
 
     const now = new Date().toISOString();
-    const { error: upsertError } = await supabase.from("profiles").upsert(
-      {
-        id: user.id,
-        display_name: trimmed,
-        timezone,
-        updated_at: now,
-      },
-      { onConflict: "id" }
-    );
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("gdpr_consent_at")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const patch: {
+      id: string;
+      display_name: string;
+      timezone: string;
+      updated_at: string;
+      gdpr_consent_at?: string;
+    } = {
+      id: user.id,
+      display_name: trimmed,
+      timezone,
+      updated_at: now,
+    };
+    if (existingProfile && !existingProfile.gdpr_consent_at) {
+      patch.gdpr_consent_at = now;
+    }
+
+    const { error: upsertError } = await supabase.from("profiles").upsert(patch, { onConflict: "id" });
 
     if (upsertError) {
       setError(upsertError.message);

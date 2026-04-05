@@ -4,7 +4,7 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — Palpites da Copa do Mundo 2026",
-    "metaDescription": "Palpites de placar grátis com amigos na Copa 2026 — ranking e grupos privados, sem dinheiro real.",
+    "metaDescription": "O jogo social de palpites para a Copa 2026 — grupos, zoeira, ranking ao vivo e quem manda no futebol.",
     "theme": {
       "toggleLight": "Usar tema claro",
       "toggleDark": "Usar tema escuro"
@@ -14,9 +14,11 @@
       "login": "Entrar"
     },
     "hero": {
-      "tagline": "Preveja. Compita. Vença.",
-      "subtitle": "Orgulho de acertar, não de apostar. Faça palpites com amigos na Copa 2026 — crie um grupo e suba no ranking.",
-      "safeBadge": "Só diversão — sem apostas com dinheiro real",
+      "linePrefix": "A melhor plataforma para ",
+      "lineStrike": "apostar ",
+      "lineEmphasis": "jogar",
+      "lineSuffix": " a Copa do Mundo 2026",
+      "subTagline": "Voltemos ao básico: falar de futebol por diversão, não como negócio. Crie seu grupo, chame os amigos e veja quem entende mesmo.",
       "cta": {
         "createAccount": "Criar conta grátis",
         "login": "Entrar"
@@ -32,16 +34,16 @@
     "howItWorks": {
       "title": "Como funciona?",
       "step1": {
-        "title": "Crie seu grupo",
-        "description": "Escolha um nome, personalize cores e regras de pontuação."
+        "title": "Monte seu time",
+        "description": "Escolha um nome, personalize cores e regras. É a sua liga, as suas regras!"
       },
       "step2": {
-        "title": "Preveja os resultados",
-        "description": "Feche seus palpites antes do apito. Veja odds ou sugestões da IA se quiser uma segunda opinião."
+        "title": "Chute seu palpite",
+        "description": "Envie seus palpites antes do apito. Sem pressão, só instinto — ou dá uma olhada nas probabilidades ou na IA se quiser uma dica."
       },
       "step3": {
-        "title": "Suba no ranking",
-        "description": "Ganhe pontos a cada acerto. Quem será o número 1?"
+        "title": "Sobe no pódio",
+        "description": "Ganhe pontos a cada acerto e suba no ranking. Quem vai ser a lenda do grupo?"
       }
     },
     "features": {
@@ -52,14 +54,14 @@
         "description": "Acompanhe a classificação quando os jogos terminam."
       },
       "odds": {
-        "title": "Contexto de mercado",
+        "title": "Contexto de quem entende — veja as probabilidades antes de decidir",
         "emoji": "📊",
-        "description": "Como as casas enquadram o jogo — contexto pros palpites, não pra colocar grana."
+        "description": "Veja as probabilidades do jogo num relance e dê pano pra manga no grupo."
       },
       "ai": {
-        "title": "Previsões de IA",
+        "title": "IA como rival — você ganha da máquina?",
         "emoji": "🤖",
-        "description": "Confira placares sugeridos pelo modelo antes de cravar."
+        "description": "Teste seu instinto contra os palpites do modelo e veja quem manda mais."
       },
       "groups": {
         "title": "Grupos públicos e privados",
@@ -79,16 +81,19 @@
     },
     "stats": {
       "title": "48 seleções. Uma taça. Peito estufado à vontade.",
-      "teams": "48 equipes",
-      "matches": "104 jogos",
-      "groups": "12 grupos",
-      "body": "Pela primeira vez, 48 seleções disputarão a Copa. Mais jogos, mais palpites, mais diversão."
+      "teamsNumber": "48",
+      "teamsLabel": "equipes",
+      "matchesNumber": "104",
+      "matchesLabel": "jogos",
+      "groupsNumber": "12",
+      "groupsLabel": "grupos",
+      "body": "Pela primeira vez, 48 seleções. Mais jogos, mais resenha e mais chance de provar que você tinha razão."
     },
     "cta": {
-      "title": "Pronto pra entrar na brincadeira?",
-      "subtitle": "Crie sua conta em segundos — grátis e feito pra rivalidade de boteco.",
+      "title": "Quem manda mais em futebol no seu grupo?",
+      "subtitle": "Só tem um jeito de descobrir.",
       "button": "Criar conta grátis",
-      "footnote": "Grátis durante o beta"
+      "footnote": "Grátis. Sem apostas. Sem desculpas."
     },
     "footer": {
       "copyright": "© 2026 Predibol",
@@ -147,7 +152,13 @@
     "genericError": "Algo deu errado. Tente novamente.",
     "successTitle": "Verifique seu e-mail",
     "successMessage": "Enviamos um e-mail de verificacao. Clique no link para ativar sua conta.",
-    "checkSpam": "Verifique spam ou lixo eletronico se nao encontrar."
+    "checkSpam": "Verifique spam ou lixo eletronico se nao encontrar.",
+    "consent": {
+      "label": "Aceito a <privacy>Política de Privacidade</privacy> e os <terms>Termos de Serviço</terms>.",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço",
+      "required": "Você deve aceitar a política de privacidade e os termos."
+    }
   },
   "Navbar": {
     "logout": "Sair",
@@ -364,6 +375,21 @@
     "colExactScores": "Placares exatos",
     "colPredictionsMade": "Palpites"
   },
+  "VirtualBets": {
+    "tab": {
+      "points": "🏆 Pontos",
+      "virtualBets": "💰 Aposta virtual"
+    },
+    "disclaimer": "🎮 Simulação com aposta virtual de €1 por jogo. Sem dinheiro real.",
+    "profit": "+€{amount}",
+    "loss": "-€{amount}",
+    "record": "{won}-{lost}",
+    "winRate": "{rate}%",
+    "pnl": "P&L",
+    "colRecord": "Placar",
+    "colWinRate": "Aproveitamento",
+    "noBets": "Ainda sem resultados"
+  },
   "Picks": {
     "title": "Campeão e mais",
     "subtitle": "Escolha os vencedores do torneio antes de comecar",
@@ -388,6 +414,9 @@
     "title": "Palpites de partidas",
     "subtitle": "Envie seus palpites para {groupName}.",
     "empty": "Nao ha partidas futuras disponiveis.",
+    "settledTitle": "Partidas encerradas",
+    "noUpcoming": "Não há partidas futuras no momento.",
+    "yourPick": "Seu palpite: {home}-{away}",
     "homeScore": "Gols do mandante",
     "awayScore": "Gols do visitante",
     "advancesLabel": "Time que avanca",
@@ -529,6 +558,99 @@
   },
   "Common": {
     "backToGroups": "← Meus Grupos",
-    "backToGroup": "← Voltar para {groupName}"
+    "backToGroup": "← Voltar para {groupName}",
+    "legalBackHome": "← Voltar ao início",
+    "footerPrivacy": "Privacidade",
+    "footerTerms": "Termos"
+  },
+  "Privacy": {
+    "metaTitle": "Política de Privacidade — Predibol",
+    "metaDescription": "Como a Predibol trata os seus dados pessoais (RGPD).",
+    "title": "Política de Privacidade",
+    "lawyerNote": "Importante: o Mathias deve fazer rever esta política por um advogado qualificado antes do lançamento público. O texto abaixo é orientação em linguagem simples, não aconselhamento jurídico.",
+    "lastUpdated": "Última atualização: abril de 2026",
+    "sections": {
+      "whoWeAre": {
+        "title": "Quem somos",
+        "content": "A Predibol é operada por {{Nome da empresa TBD}}, com sede em {{Localização TBD}}.\n\nPara questões de privacidade: {{contact.email@TBD}}."
+      },
+      "dataWeCollect": {
+        "title": "Que dados recolhemos",
+        "content": "Recolhemos:\n\n• Email — criação de conta, login e emails essenciais (p. ex. verificação).\n\n• Nome de exibição — escolhido por ti; visível a outros membros dos teus grupos.\n\n• Fuso horário — para mostrar horários dos jogos de forma útil.\n\n• Palpites e escolhas pré-torneio — dados do jogo.\n\n• Filiação em grupos — grupos a que pertences e participação.\n\n• Dados de uso — páginas e ações na app (operação básica). O Mathias deve confirmar se há analytics extra e ajustar."
+      },
+      "whyWeCollect": {
+        "title": "Por que os tratamos (base legal)",
+        "content": "Tratamos dados com base em:\n\n• Execução de contrato — contas, palpites, grupos e pontuações.\n\n• Interesse legítimo — segurança, prevenção de abusos e melhoria proporcional do serviço; emails estritamente relacionados com a conta ou o jogo quando adequado.\n\n• Consentimento — marketing só com opt-in claro.\n\nRetirar consentimento pode limitar funcionalidades opcionais."
+      },
+      "whoWeShare": {
+        "title": "Com quem partilhamos",
+        "content": "Outros membros do mesmo grupo podem ver o teu nome, palpites, pontos e ranking.\n\nFornecedores: Supabase (auth/base de dados — {{região TBD}}), Vercel (alojamento/CDN) e email transacional (p. ex. Resend).\n\nNão vendemos dados. Não partilhamos com anunciantes para tracking."
+      },
+      "whereStored": {
+        "title": "Onde os dados ficam",
+        "content": "Dados principais na Supabase. {{Confirma a região no painel.}} O site é entregue via rede global da Vercel."
+      },
+      "howLong": {
+        "title": "Por quanto tempo os guardamos",
+        "content": "Guardamos dados de conta e jogo enquanto a conta existir.\n\nPodes pedir eliminação; cumprimos pedidos verificáveis salvo exceções legais estreitas."
+      },
+      "yourRights": {
+        "title": "Os teus direitos (RGPD)",
+        "content": "Podes ter direito a: acesso; retificação; apagar conta e dados em muitos casos; portabilidade; opor-te a tratamentos por interesse legítimo; reclamar junto de autoridade.\n\nContacto: {{contact.email@TBD}}."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "content": "Usamos cookies/armazenamento essencial para autenticação e funcionamento básico.\n\nO Mathias deve confirmar se não há cookies de publicidade nem analytics não essenciais — atualiza se adicionares."
+      },
+      "children": {
+        "title": "Crianças",
+        "content": "A Predibol não é destinada a menores de 16 anos. Não recolhemos conscientemente dados de menores de 16. Contacta-nos se acreditares o contrário."
+      },
+      "changes": {
+        "title": "Alterações a esta política",
+        "content": "Podemos atualizar esta política. A versão mais recente será publicada aqui com data atualizada."
+      }
+    }
+  },
+  "Terms": {
+    "metaTitle": "Termos de Serviço — Predibol",
+    "metaDescription": "Condições de uso do jogo social de palpites Predibol.",
+    "title": "Termos de Serviço",
+    "lawyerNote": "Importante: o Mathias deve fazer rever estes termos por um advogado antes do lançamento. Texto orientativo, não aconselhamento jurídico.",
+    "lastUpdated": "Última atualização: abril de 2026",
+    "sections": {
+      "whatPredibolIs": {
+        "title": "O que é a Predibol",
+        "content": "A Predibol é um jogo social de palpites à volta do Campeonato do Mundo FIFA 2026. Palpitas resultados, ganhas pontos em grupos e comparas com amigos.\n\nA Predibol não é plataforma de apostas a dinheiro. Não processamos pagamentos reais. Qualquer “aposta virtual” é só entretenimento.\n\nO serviço é apenas recreativo."
+      },
+      "accounts": {
+        "title": "Contas",
+        "content": "Tens de ter pelo menos 16 anos para criar conta.\n\nÉs responsável pela segurança das credenciais e pela atividade na conta.\n\nUma conta por pessoa salvo autorização escrita."
+      },
+      "groups": {
+        "title": "Grupos",
+        "content": "Admins gerem o grupo na aplicação.\n\nA Predibol não organiza apostas a dinheiro real entre utilizadores. Acordos privados são alheios à Predibol."
+      },
+      "acceptableUse": {
+        "title": "Uso aceitável",
+        "content": "Proibido assédio, nomes ofensivos ou abuso do serviço.\n\nPodemos suspender contas infratoras."
+      },
+      "intellectualProperty": {
+        "title": "Propriedade intelectual",
+        "content": "Marca e conteúdos originais: {{Nome da empresa TBD}}. Marcas FIFA, Copa, equipas: respetivos titulares."
+      },
+      "limitationOfLiability": {
+        "title": "Limitação de responsabilidade",
+        "content": "Serviço “como está”, na medida legal.\n\nNão respondemos por dados incorretos, erros de pontuação ou indisponibilidade. Se for gratuito, responsabilidade agregada pode ser zero {{ajustar}}."
+      },
+      "governingLaw": {
+        "title": "Lei aplicável",
+        "content": "Estes termos regem-se pela lei de {{Jurisdição TBD}}."
+      },
+      "contact": {
+        "title": "Contacto",
+        "content": "Dúvidas: {{contact.email@TBD}}."
+      }
+    }
   }
 }

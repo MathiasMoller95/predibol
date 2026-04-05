@@ -23,6 +23,10 @@ function splitRemaining(ms: number) {
   return { days, hours, minutes, seconds };
 }
 
+function easeOutCubic(t: number) {
+  return 1 - (1 - t) ** 3;
+}
+
 function IconSun({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden>
@@ -47,44 +51,113 @@ function IconMoon({ className }: { className?: string }) {
   );
 }
 
-function IconShield({ className }: { className?: string }) {
+function PentagonBallSvg({ className }: { className?: string }) {
+  const pentFill = "rgba(16, 185, 129, 0.15)";
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
+    <svg className={className} viewBox="0 0 100 100" aria-hidden>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="#1e293b" strokeWidth="1.4" />
       <path
-        strokeLinecap="round"
+        fill={pentFill}
+        stroke="#1e293b"
+        strokeWidth="0.55"
         strokeLinejoin="round"
-        d="M12 3L4 6v5.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V6l-8-3z"
+        d="M50 28 L61.76 40.34 L57.64 55.91 L42.36 55.91 L38.24 40.34 Z"
+      />
+      <path fill={pentFill} stroke="#1e293b" strokeWidth="0.45" strokeLinejoin="round" d="M50 6 L54 19 L46 19 Z" />
+      <path fill={pentFill} stroke="#1e293b" strokeWidth="0.45" strokeLinejoin="round" d="M88 36 L75 42 L78 32 Z" />
+      <path fill={pentFill} stroke="#1e293b" strokeWidth="0.45" strokeLinejoin="round" d="M72 78 L62 66 L71 60 Z" />
+      <path fill={pentFill} stroke="#1e293b" strokeWidth="0.45" strokeLinejoin="round" d="M28 78 L38 66 L29 60 Z" />
+      <path fill={pentFill} stroke="#1e293b" strokeWidth="0.45" strokeLinejoin="round" d="M12 36 L25 42 L22 32 Z" />
+      <path
+        fill="none"
+        stroke="#1e293b"
+        strokeWidth="0.4"
+        opacity="0.35"
+        d="M50 28 L50 6 M61.76 40.34 L88 36 M57.64 55.91 L72 78 M42.36 55.91 L28 78 M38.24 40.34 L12 36"
       />
     </svg>
   );
 }
 
-function HeroFootballDecor({ className }: { className?: string }) {
+function HeroTrophyOutline({ className }: { className?: string }) {
   return (
-    <div className={`landing-hero-football pointer-events-none ${className ?? ""}`} aria-hidden>
-      <div className="landing-hero-football-inner opacity-[var(--landing-football-opacity,0.2)]">
-        <svg viewBox="0 0 100 100" className="h-20 w-20 text-[var(--landing-text-muted)] sm:h-[120px] sm:w-[120px]" aria-hidden>
-          <circle cx="50" cy="50" r="46" fill="currentColor" opacity="0.25" />
-          <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
-          <path
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            d="M50 6 L62 34 L92 34 L68 52 L78 88 L50 70 L22 88 L32 52 L8 34 L38 34 Z"
-            opacity="0.45"
-          />
-          <path
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            strokeLinecap="round"
-            d="M50 10v80M10 50h80M18 18l64 64M82 18L18 82"
-            opacity="0.25"
-          />
-        </svg>
-      </div>
-    </div>
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="rgba(16, 185, 129, 0.35)"
+      strokeWidth={1.35}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M6 4h12M6 4v4a6 6 0 0 0 12 0V4M6 4H4m14 0h2m-2 0v4a6 6 0 0 1-12 0V4m6 16v-4m0 4H9m3 0h3m-6 0h6" />
+    </svg>
+  );
+}
+
+function HowIconJersey({ bright }: { bright?: boolean }) {
+  return (
+    <svg
+      className={`h-16 w-16 shrink-0 ${bright ? "text-emerald-600" : "text-emerald-400"}`}
+      viewBox="0 0 64 64"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.65"
+      aria-hidden
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M22 14 L14 24v34h36V24L46 14 32 20 22 14z M16 26c4-4 10-6 16-6s12 2 16 6"
+      />
+      <text x="32" y="45" textAnchor="middle" fontSize="15" fontWeight="700" fill="currentColor" stroke="none">
+        10
+      </text>
+    </svg>
+  );
+}
+
+function HowIconBallGoal({ bright }: { bright?: boolean }) {
+  return (
+    <svg
+      className={`h-16 w-16 shrink-0 ${bright ? "text-emerald-600" : "text-emerald-400"}`}
+      viewBox="0 0 64 64"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.65"
+      aria-hidden
+    >
+      <path strokeLinecap="round" d="M36 46h20M36 46V20M56 20v26" />
+      <path strokeLinecap="round" d="M40 24h12M40 30h12M40 36h8" opacity="0.85" />
+      <circle cx="22" cy="42" r="11" />
+      <path
+        strokeLinecap="round"
+        strokeWidth="1.35"
+        d="M22 33v18M13 42h18M15.5 35.5l13 13M28.5 35.5l-13 13"
+        opacity="0.65"
+      />
+    </svg>
+  );
+}
+
+function HowIconTrophyStar({ bright }: { bright?: boolean }) {
+  return (
+    <svg
+      className={`h-16 w-16 shrink-0 ${bright ? "text-emerald-600" : "text-emerald-400"}`}
+      viewBox="0 0 64 64"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.65"
+      aria-hidden
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M22 38v-6h20v6M22 38h20M26 32v-6h12v6M24 20h16v6H24z M21 20h-3v3a3 3 0 006 0v-3h-3 M43 20h3v3a3 3 0 01-6 0v-3h3"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M32 8l2.6 5.8 6.3 1.2-4.8 4.2 1.3 6.5L32 23l-5.4 2.7 1.3-6.5-4.8-4.2 6.3-1.2L32 8z" />
+    </svg>
   );
 }
 
@@ -141,62 +214,6 @@ function CountdownUnit({
   );
 }
 
-function IconUsers({ bright }: { bright?: boolean }) {
-  return (
-    <svg
-      className={`h-12 w-12 ${bright ? "text-emerald-600" : "text-emerald-400"}`}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden
-    >
-      <circle cx="9" cy="7" r="3" strokeWidth="1.5" />
-      <circle cx="16" cy="9" r="2.5" strokeWidth="1.5" />
-      <path strokeLinecap="round" strokeWidth="1.5" d="M3 20c0-3.5 3.5-6 8-6 1.2 0 2.3.2 3.3.5" />
-      <path strokeLinecap="round" strokeWidth="1.5" d="M21 20c0-2.8-2.2-5-5-5-1 0-1.9.3-2.7.8" />
-    </svg>
-  );
-}
-
-function IconBall({ bright }: { bright?: boolean }) {
-  return (
-    <svg
-      className={`h-12 w-12 ${bright ? "text-emerald-600" : "text-emerald-400"}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-    >
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"
-      />
-      <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  );
-}
-
-function IconTrophy({ bright }: { bright?: boolean }) {
-  return (
-    <svg
-      className={`h-12 w-12 ${bright ? "text-gold" : "text-gold"}`}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M6 4h12M6 4v4a6 6 0 0 0 12 0V4M6 4H4m14 0h2m-2 0v4a6 6 0 0 1-12 0V4m6 16v-4m0 4H9m3 0h3m-6 0h6"
-      />
-    </svg>
-  );
-}
-
 function TrophyWatermark() {
   return (
     <svg
@@ -213,6 +230,100 @@ function TrophyWatermark() {
         d="M6 4h12M6 4v4a6 6 0 0 0 12 0V4M6 4H4m14 0h2m-2 0v4a6 6 0 0 1-12 0V4m6 16v-4m0 4H9m3 0h3m-6 0h6"
       />
     </svg>
+  );
+}
+
+function LandingStatsGrid({ locale }: { locale: string }) {
+  const t = useTranslations("LandingPage");
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [teams, setTeams] = useState(0);
+  const [matches, setMatches] = useState(0);
+  const [groups, setGroups] = useState(0);
+  const ran = useRef(false);
+
+  useEffect(() => {
+    ran.current = false;
+    setTeams(0);
+    setMatches(0);
+    setGroups(0);
+  }, [locale]);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+
+    const targetTeams = Number.parseInt(t("stats.teamsNumber"), 10);
+    const targetMatches = Number.parseInt(t("stats.matchesNumber"), 10);
+    const targetGroups = Number.parseInt(t("stats.groupsNumber"), 10);
+
+    if (Number.isNaN(targetTeams) || Number.isNaN(targetMatches) || Number.isNaN(targetGroups)) {
+      setTeams(targetTeams);
+      setMatches(targetMatches);
+      setGroups(targetGroups);
+      return;
+    }
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setTeams(targetTeams);
+      setMatches(targetMatches);
+      setGroups(targetGroups);
+      return;
+    }
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || ran.current) return;
+        ran.current = true;
+        obs.disconnect();
+
+        const durationMs = 1500;
+        const t0 = performance.now();
+
+        const frame = (now: number) => {
+          const p = Math.min(1, (now - t0) / durationMs);
+          const e = easeOutCubic(p);
+          setTeams(Math.round(targetTeams * e));
+          setMatches(Math.round(targetMatches * e));
+          setGroups(Math.round(targetGroups * e));
+          if (p < 1) requestAnimationFrame(frame);
+          else {
+            setTeams(targetTeams);
+            setMatches(targetMatches);
+            setGroups(targetGroups);
+          }
+        };
+        requestAnimationFrame(frame);
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.12 }
+    );
+
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [t, locale]);
+
+  return (
+    <div ref={gridRef} className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
+      <div className="relative flex min-h-[5rem] flex-col items-center justify-center">
+        <TrophyWatermark />
+        <p className="relative z-[1] flex flex-col items-center sm:block">
+          <span className="text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{teams}</span>
+          <span className="mt-0.5 block text-sm font-semibold text-emerald-500/90 sm:mt-1 sm:text-base">{t("stats.teamsLabel")}</span>
+        </p>
+      </div>
+      <div className="flex flex-col items-center justify-center">
+        <p className="flex flex-col items-center sm:block">
+          <span className="text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{matches}</span>
+          <span className="mt-0.5 block text-sm font-semibold text-emerald-500/90 sm:mt-1 sm:text-base">{t("stats.matchesLabel")}</span>
+        </p>
+      </div>
+      <div className="flex flex-col items-center justify-center">
+        <p className="flex flex-col items-center sm:block">
+          <span className="text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{groups}</span>
+          <span className="mt-0.5 block text-sm font-semibold text-emerald-500/90 sm:mt-1 sm:text-base">{t("stats.groupsLabel")}</span>
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -282,7 +393,6 @@ export default function LandingPage({ locale }: Props) {
       style={{
         backgroundColor: "var(--landing-bg)",
         color: "var(--landing-text)",
-        // football opacity: slightly lower on light per spec
         ["--landing-football-opacity" as string]: isLight ? "0.1" : "0.2",
       }}
     >
@@ -321,76 +431,42 @@ export default function LandingPage({ locale }: Props) {
       <main>
         {/* Hero */}
         <section className="relative overflow-x-hidden px-4 pb-20 pt-12 sm:pt-16 md:pb-28 md:pt-20">
-          <div
-            className="landing-hero-ambient pointer-events-none absolute -left-1/4 top-0 h-[480px] w-[480px] rounded-full blur-3xl"
-            style={{ background: "var(--landing-blob-1)" }}
-            aria-hidden
-          />
-          <div
-            className="landing-blob pointer-events-none absolute -right-1/4 top-1/4 h-72 w-72 rounded-full blur-3xl"
-            style={{ background: "var(--landing-blob-2)" }}
-            aria-hidden
-          />
-          <div
-            className="landing-blob-delayed pointer-events-none absolute bottom-0 left-1/3 h-64 w-64 rounded-full blur-2xl"
-            style={{ background: "var(--landing-blob-3)" }}
-            aria-hidden
-          />
+          <div className="landing-hero-football pointer-events-none absolute -left-[30px] top-[18%] z-0 sm:top-[20%]" aria-hidden>
+            <div className="landing-hero-football-inner opacity-20">
+              <PentagonBallSvg className="h-20 w-20 sm:h-[150px] sm:w-[150px]" />
+            </div>
+          </div>
 
-          <HeroFootballDecor className="absolute -right-4 top-24 z-0 sm:right-0 sm:top-20 md:top-28" />
-
-          <svg
-            className="landing-blob pointer-events-none absolute left-[6%] top-[18%] hidden h-28 w-28 sm:block md:h-32 md:w-32"
-            style={{ color: "var(--landing-blob-svg)" }}
-            viewBox="0 0 100 100"
-            aria-hidden
-          >
-            <circle cx="50" cy="50" r="40" fill="currentColor" opacity="0.2" />
-          </svg>
-          <svg
-            className="landing-blob-delayed pointer-events-none absolute bottom-[20%] left-[8%] h-20 w-20 sm:h-24 sm:w-24"
-            style={{ color: "var(--landing-blob-dot)" }}
-            viewBox="0 0 100 100"
-            aria-hidden
-          >
-            <circle cx="50" cy="50" r="38" fill="currentColor" opacity="0.35" />
-            <circle cx="50" cy="50" r="16" fill="none" stroke="var(--landing-blob-dot-stroke)" strokeWidth="1" opacity="0.4" />
-          </svg>
+          <div className="pointer-events-none absolute -right-10 top-16 z-0 sm:-right-6 md:top-24" aria-hidden>
+            <div className="landing-hero-trophy-gleam opacity-[0.2] sm:opacity-25">
+              <HeroTrophyOutline className="h-28 w-28 sm:h-[180px] sm:w-[180px]" />
+            </div>
+          </div>
 
           <div className="relative z-10 mx-auto max-w-6xl text-center">
             <p className="mb-4 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl" style={{ color: "var(--landing-text-heading)" }}>
               {wordmarkPredi}
               {wordmarkBol}
             </p>
+
             <h1
-              className="text-balance text-2xl font-bold sm:text-3xl md:text-4xl"
-              style={{
-                backgroundImage: `linear-gradient(to right, var(--landing-tagline-from), var(--landing-tagline-via), var(--landing-tagline-to))`,
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
+              className="mx-auto mt-6 flex max-w-3xl flex-col flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-balance text-lg font-semibold leading-snug sm:inline-flex sm:max-w-4xl sm:flex-row sm:text-xl md:text-2xl lg:text-3xl"
+              style={{ color: "var(--landing-text-heading)" }}
             >
-              {t("hero.tagline")}
+              <span className="inline text-center sm:inline">{t("hero.linePrefix")}</span>
+              <span className="-rotate-2 inline-block text-center text-red-400/70 line-through decoration-red-400/50 dark:text-slate-500 dark:decoration-slate-500/60">
+                {t("hero.lineStrike")}
+              </span>
+              <span className="text-center font-bold text-emerald-400 no-underline">{t("hero.lineEmphasis")}</span>
+              <span className="inline text-center sm:inline">{t("hero.lineSuffix")}</span>
             </h1>
+
             <p
               className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed sm:text-lg"
               style={{ color: "var(--landing-text-muted)" }}
             >
-              {t("hero.subtitle")}
+              {t("hero.subTagline")}
             </p>
-
-            <div
-              className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm"
-              style={{
-                backgroundColor: "var(--landing-safe-bg)",
-                borderColor: "var(--landing-safe-border)",
-                color: "var(--landing-safe-text)",
-              }}
-            >
-              <IconShield className="h-4 w-4 shrink-0" />
-              <span>{t("hero.safeBadge")}</span>
-            </div>
 
             <p className="mt-10 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--landing-text-subtle)" }}>
               {t("countdown.label")}
@@ -432,27 +508,29 @@ export default function LandingPage({ locale }: Props) {
         <section
           id="how-it-works"
           data-landing-reveal
-          className="landing-reveal border-t px-4 py-16 sm:py-20"
+          className="landing-reveal relative overflow-hidden border-t px-4 py-16 sm:py-20"
           style={{ borderColor: "var(--landing-border-subtle)" }}
         >
-          <div className="mx-auto max-w-6xl">
+          <div className="landing-how-pattern pointer-events-none absolute inset-0" aria-hidden />
+          <div className="landing-mini-ball pointer-events-none absolute right-[6%] top-[14%] opacity-[0.09]" aria-hidden>
+            <PentagonBallSvg className="h-9 w-9 sm:h-10 sm:w-10" />
+          </div>
+          <div className="landing-mini-ball landing-mini-ball--b pointer-events-none absolute bottom-[18%] left-[4%] opacity-[0.07]" aria-hidden>
+            <PentagonBallSvg className="h-10 w-10" />
+          </div>
+          <div className="relative mx-auto max-w-6xl">
             <h2 className="text-center text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
               {t("howItWorks.title")}
             </h2>
             <div className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
               {[
-                { Icon: IconUsers, step: "step1" as const },
-                { Icon: IconBall, step: "step2" as const },
-                { Icon: IconTrophy, step: "step3" as const },
+                { Icon: HowIconJersey, step: "step1" as const },
+                { Icon: HowIconBallGoal, step: "step2" as const },
+                { Icon: HowIconTrophyStar, step: "step3" as const },
               ].map(({ Icon, step }) => (
                 <div key={step} className="flex flex-col items-center text-center">
-                  <div
-                    className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border"
-                    style={{ borderColor: "var(--landing-icon-border)", backgroundColor: "var(--landing-icon-bg)" }}
-                  >
-                    <Icon bright={iconBright} />
-                  </div>
-                  <h3 className="text-lg font-semibold" style={{ color: "var(--landing-text-heading)" }}>
+                  <Icon bright={iconBright} />
+                  <h3 className="mt-5 text-lg font-semibold" style={{ color: "var(--landing-text-heading)" }}>
                     {t(`howItWorks.${step}.title`)}
                   </h3>
                   <p className="mt-2 max-w-sm text-sm leading-relaxed" style={{ color: "var(--landing-text-muted)" }}>
@@ -465,8 +543,14 @@ export default function LandingPage({ locale }: Props) {
         </section>
 
         {/* Features */}
-        <section id="features" data-landing-reveal className="landing-reveal px-4 py-16 sm:py-20">
-          <div className="mx-auto max-w-6xl">
+        <section id="features" data-landing-reveal className="landing-reveal relative overflow-hidden px-4 py-16 sm:py-20">
+          <div className="landing-mini-ball landing-mini-ball--c pointer-events-none absolute right-[3%] top-[22%] opacity-[0.08]" aria-hidden>
+            <PentagonBallSvg className="h-8 w-8" />
+          </div>
+          <div className="landing-mini-ball landing-mini-ball--d pointer-events-none absolute bottom-[30%] left-[8%] opacity-[0.06]" aria-hidden>
+            <PentagonBallSvg className="h-10 w-10" />
+          </div>
+          <div className="relative mx-auto max-w-6xl">
             <h2 className="text-center text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
               {t("features.title")}
             </h2>
@@ -499,25 +583,17 @@ export default function LandingPage({ locale }: Props) {
         <section
           id="stats"
           data-landing-reveal
-          className="landing-reveal border-t px-4 py-16 sm:py-20"
+          className="landing-reveal relative overflow-hidden border-t px-4 py-16 sm:py-20"
           style={{ borderColor: "var(--landing-border-subtle)" }}
         >
-          <div className="mx-auto max-w-6xl text-center">
+          <div className="landing-mini-ball pointer-events-none absolute right-[12%] top-[20%] opacity-[0.07]" aria-hidden>
+            <PentagonBallSvg className="h-9 w-9" />
+          </div>
+          <div className="relative mx-auto max-w-6xl text-center">
             <h2 className="text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
               {t("stats.title")}
             </h2>
-            <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
-              <div className="relative flex min-h-[5rem] flex-col items-center justify-center">
-                <TrophyWatermark />
-                <p className="relative z-[1] text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{t("stats.teams")}</p>
-              </div>
-              <div>
-                <p className="text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{t("stats.matches")}</p>
-              </div>
-              <div>
-                <p className="text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{t("stats.groups")}</p>
-              </div>
-            </div>
+            <LandingStatsGrid locale={locale} />
             <p className="mx-auto mt-10 max-w-2xl text-pretty text-sm leading-relaxed sm:text-base" style={{ color: "var(--landing-text-muted)" }}>
               {t("stats.body")}
             </p>
@@ -528,7 +604,7 @@ export default function LandingPage({ locale }: Props) {
         <section id="cta" data-landing-reveal className="landing-reveal px-4 py-16 sm:py-20">
           <div className="mx-auto max-w-3xl">
             <div
-              className="rounded-2xl border border-emerald-500/40 p-8 sm:p-10"
+              className="landing-cta-grass overflow-hidden rounded-2xl border border-emerald-500/40 p-8 sm:p-10"
               style={{
                 backgroundColor: "var(--landing-cta-card)",
                 boxShadow: "var(--landing-gradient-cta)",
@@ -568,20 +644,20 @@ export default function LandingPage({ locale }: Props) {
             {t("footer.copyright")}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
-            <a
-              href="#"
+            <Link
+              href={`/${locale}/privacy`}
               className="underline-offset-2 transition hover:underline"
               style={{ color: "var(--landing-text-muted)" }}
             >
               {t("footer.privacy")}
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href={`/${locale}/terms`}
               className="underline-offset-2 transition hover:underline"
               style={{ color: "var(--landing-text-muted)" }}
             >
               {t("footer.terms")}
-            </a>
+            </Link>
           </div>
           <nav className="flex items-center gap-2" aria-label="Language">
             {LOCALES.map((loc) => (

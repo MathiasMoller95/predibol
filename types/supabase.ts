@@ -128,6 +128,7 @@ export type Database = {
           timezone: string;
           created_at: string;
           updated_at: string;
+          gdpr_consent_at: string | null;
         };
         Insert: {
           id: string;
@@ -135,6 +136,7 @@ export type Database = {
           timezone?: string;
           created_at?: string;
           updated_at?: string;
+          gdpr_consent_at?: string | null;
         };
         Update: {
           id?: string;
@@ -142,6 +144,7 @@ export type Database = {
           timezone?: string;
           created_at?: string;
           updated_at?: string;
+          gdpr_consent_at?: string | null;
         };
         Relationships: [];
       };
@@ -308,6 +311,9 @@ export type Database = {
           exact_scores: number;
           correct_results: number;
           rank: number | null;
+          virtual_pnl: number;
+          virtual_bets_won: number;
+          virtual_bets_lost: number;
           updated_at: string;
         };
         Insert: {
@@ -319,6 +325,9 @@ export type Database = {
           exact_scores?: number;
           correct_results?: number;
           rank?: number | null;
+          virtual_pnl?: number;
+          virtual_bets_won?: number;
+          virtual_bets_lost?: number;
           updated_at?: string;
         };
         Update: {
@@ -330,6 +339,9 @@ export type Database = {
           exact_scores?: number;
           correct_results?: number;
           rank?: number | null;
+          virtual_pnl?: number;
+          virtual_bets_won?: number;
+          virtual_bets_lost?: number;
           updated_at?: string;
         };
         Relationships: [];

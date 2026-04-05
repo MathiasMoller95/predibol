@@ -78,6 +78,15 @@ export default async function GroupPredictPage({ params }: Props) {
   const { data: profileRow } = await supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle();
   const profileTimeZone = ((profileRow?.timezone as string | undefined) ?? "").trim() || null;
 
+  const { data: allUserPredictions } = await supabase
+    .from("predictions")
+    .select("match_id,predicted_home,predicted_away,predicted_winner,predicted_advancing")
+    .eq("group_id", groupId)
+    .eq("user_id", user.id);
+
+  const allPredList = (allUserPredictions ?? []) as PredictionRecord[];
+  const predByMatchId = new Map(allPredList.map((p) => [p.match_id, p]));
+
   const nowIso = new Date().toISOString();
   const { data: matches } = await supabase
     .from("matches")
@@ -92,14 +101,49 @@ export default async function GroupPredictPage({ params }: Props) {
 
   let predictions: PredictionRecord[] = [];
   if (matchIds.length > 0) {
-    const { data } = await supabase
-      .from("predictions")
-      .select("match_id,predicted_home,predicted_away,predicted_winner,predicted_advancing")
-      .eq("group_id", groupId)
-      .eq("user_id", user.id)
-      .in("match_id", matchIds);
+    predictions = allPredList.filter((p) => matchIds.includes(p.match_id));
+  }
 
-    predictions = (data ?? []) as PredictionRecord[];
+  type FinishedPick = MatchRecord & {
+    home_score: number;
+    away_score: number;
+    predicted_home: number;
+    predicted_away: number;
+  };
+
+  let finishedPicks: FinishedPick[] = [];
+  const allPredMatchIds = Array.from(new Set(allPredList.map((p) => p.match_id)));
+  if (allPredMatchIds.length > 0) {
+    const { data: finRows } = await supabase
+      .from("matches")
+      .select(
+        "id,phase,home_team,away_team,match_time,locked_at,status,home_win_odds,draw_odds,away_win_odds,ai_home_score,ai_away_score,knockout_label,home_score,away_score",
+      )
+      .in("id", allPredMatchIds)
+      .eq("status", "finished")
+      .order("match_time", { ascending: false })
+      .limit(48);
+
+    finishedPicks = (finRows ?? [])
+      .map((row) => {
+        const rec = row as MatchRecord & { home_score: number | null; away_score: number | null };
+        const pr = predByMatchId.get(rec.id);
+        if (
+          pr == null ||
+          rec.home_score == null ||
+          rec.away_score == null
+        ) {
+          return null;
+        }
+        return {
+          ...rec,
+          home_score: rec.home_score,
+          away_score: rec.away_score,
+          predicted_home: pr.predicted_home,
+          predicted_away: pr.predicted_away,
+        } as FinishedPick;
+      })
+      .filter((x): x is FinishedPick => x != null);
   }
 
   return (
@@ -114,7 +158,12 @@ export default async function GroupPredictPage({ params }: Props) {
         <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
         <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
 
-        <PredictForm matches={typedMatches} initialPredictions={predictions} profileTimeZone={profileTimeZone} />
+        <PredictForm
+          matches={typedMatches}
+          initialPredictions={predictions}
+          profileTimeZone={profileTimeZone}
+          finishedPicks={finishedPicks}
+        />
       </section>
     </main>
   );

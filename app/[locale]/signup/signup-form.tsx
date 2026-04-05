@@ -49,6 +49,7 @@ export function SignupForm() {
   const [confirmEmail, setConfirmEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [consentAccepted, setConsentAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -80,6 +81,11 @@ export function SignupForm() {
       return;
     }
 
+    if (!consentAccepted) {
+      setError(t("consent.required"));
+      return;
+    }
+
     setIsSubmitting(true);
 
     const callbackUrl = new URL(`/${locale}/auth/callback`, window.location.origin);
@@ -94,6 +100,9 @@ export function SignupForm() {
       password,
       options: {
         emailRedirectTo: callbackUrl.toString(),
+        data: {
+          gdpr_consent_at: new Date().toISOString(),
+        },
       },
     });
 
@@ -210,14 +219,69 @@ export function SignupForm() {
             />
           </div>
 
+          <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-400 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-emerald-500/40 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-dark-800 rounded-md">
+            <input
+              type="checkbox"
+              checked={consentAccepted}
+              onChange={(event) => {
+                setConsentAccepted(event.target.checked);
+                if (error) setError(null);
+              }}
+              className="sr-only"
+              aria-describedby="signup-consent-label"
+            />
+            <span
+              className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border bg-dark-900 ${
+                consentAccepted ? "border-emerald-500" : "border-dark-500"
+              }`}
+              aria-hidden
+            >
+              <svg
+                className={`h-3.5 w-3.5 text-emerald-500 ${consentAccepted ? "block" : "hidden"}`}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+            </span>
+            <span id="signup-consent-label">
+              {t.rich("consent.label", {
+                privacy: (chunks) => (
+                  <a
+                    href={`/${locale}/privacy`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-emerald-400 underline-offset-2 hover:text-emerald-300 hover:underline"
+                  >
+                    {chunks}
+                  </a>
+                ),
+                terms: (chunks) => (
+                  <a
+                    href={`/${locale}/terms`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-emerald-400 underline-offset-2 hover:text-emerald-300 hover:underline"
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </span>
+          </label>
+
           {error ? (
             <div className="rounded-lg border border-red-800 bg-red-900/30 px-3 py-3 text-sm text-red-300">{error}</div>
           ) : null}
 
           <button
             type="submit"
-            disabled={isSubmitting}
-            className={`min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700 disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
+            disabled={isSubmitting || !consentAccepted}
+            className={`min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
           >
             {isSubmitting ? t("creatingButton") : t("signupButton")}
           </button>
