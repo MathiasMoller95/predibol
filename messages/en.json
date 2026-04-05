@@ -4,7 +4,7 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — World Cup 2026 predictions",
-    "metaDescription": "The social score-prediction game for the 2026 World Cup — groups, banter, bragging rights, and live leaderboards with friends.",
+    "metaDescription": "Predict World Cup matches with friends — private leagues, live rankings, and AI picks for the 2026 tournament.",
     "theme": {
       "toggleLight": "Switch to light theme",
       "toggleDark": "Switch to dark theme"
@@ -14,18 +14,18 @@
       "login": "Log in"
     },
     "hero": {
-      "linePrefix": "The best platform to ",
-      "lineStrike": "bet on ",
-      "lineEmphasis": "play ",
-      "lineSuffix": " the 2026 World Cup",
-      "subTagline": "Let's get back to basics: talking football for fun, not for profit. Create your group, invite your friends, and prove who knows best.",
+      "tagline": "Predict the World Cup with your friends",
+      "subtitle": "Create your private league, submit your predictions for every match, and compete to be #1 in your group.",
+      "pill1": "⚽ 48 teams · 104 matches",
+      "pill2": "👥 Private & public leagues",
+      "pill3": "🤖 AI predictions included",
       "cta": {
         "createAccount": "Create free account",
         "login": "Log in"
       }
     },
     "countdown": {
-      "label": "Kickoff in",
+      "urgency": "Create your league before the World Cup starts",
       "days": "Days",
       "hours": "Hours",
       "minutes": "Minutes",
@@ -93,7 +93,7 @@
       "title": "Who knows football best in your group?",
       "subtitle": "There's only one way to find out.",
       "button": "Create free account",
-      "footnote": "Free. No bets. No excuses."
+      "belowButton": "100% free · Less than 1 minute"
     },
     "footer": {
       "copyright": "© 2026 Predibol",

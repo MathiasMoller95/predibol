@@ -4,7 +4,7 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — Palpites da Copa do Mundo 2026",
-    "metaDescription": "O jogo social de palpites para a Copa 2026 — grupos, zoeira, ranking ao vivo e quem manda no futebol.",
+    "metaDescription": "Preveja a Copa com amigos — ligas privadas, ranking ao vivo e palpites IA em 2026.",
     "theme": {
       "toggleLight": "Usar tema claro",
       "toggleDark": "Usar tema escuro"
@@ -14,18 +14,18 @@
       "login": "Entrar"
     },
     "hero": {
-      "linePrefix": "A melhor plataforma para ",
-      "lineStrike": "apostar ",
-      "lineEmphasis": "jogar",
-      "lineSuffix": " a Copa do Mundo 2026",
-      "subTagline": "Voltemos ao básico: falar de futebol por diversão, não como negócio. Crie seu grupo, chame os amigos e veja quem entende mesmo.",
+      "tagline": "Preveja a Copa com seus amigos",
+      "subtitle": "Crie sua liga privada, envie seus palpites para cada jogo e dispute o primeiro lugar do seu grupo.",
+      "pill1": "⚽ 48 seleções · 104 jogos",
+      "pill2": "👥 Ligas privadas e públicas",
+      "pill3": "🤖 Previsões IA incluídas",
       "cta": {
         "createAccount": "Criar conta grátis",
         "login": "Entrar"
       }
     },
     "countdown": {
-      "label": "Falta para a abertura",
+      "urgency": "Crie sua liga antes que a Copa comece",
       "days": "Dias",
       "hours": "Horas",
       "minutes": "Minutos",
@@ -38,7 +38,7 @@
         "description": "Escolha um nome, personalize cores e regras. É a sua liga, as suas regras!"
       },
       "step2": {
-        "title": "Chute seu palpite",
+        "title": "Faça sua previsão",
         "description": "Envie seus palpites antes do apito. Sem pressão, só instinto — ou dá uma olhada nas probabilidades ou na IA se quiser uma dica."
       },
       "step3": {
@@ -90,10 +90,10 @@
       "body": "Pela primeira vez, 48 seleções. Mais jogos, mais resenha e mais chance de provar que você tinha razão."
     },
     "cta": {
-      "title": "Quem manda mais em futebol no seu grupo?",
-      "subtitle": "Só tem um jeito de descobrir.",
+      "title": "Quem entende mais de futebol no seu grupo?",
+      "subtitle": "Só há uma maneira de descobrir.",
       "button": "Criar conta grátis",
-      "footnote": "Grátis. Sem apostas. Sem desculpas."
+      "belowButton": "100% grátis · Menos de 1 minuto"
     },
     "footer": {
       "copyright": "© 2026 Predibol",

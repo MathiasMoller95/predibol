@@ -336,6 +336,73 @@ body {
   transform-origin: center;
 }
 
+/* Hero — minimalist dashed ring + emoji (Option A). Option B: remove these and rely on typography + radial gradient only. */
+@keyframes landing-hero-dash-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes landing-hero-dash-counter {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.landing-hero-dash-wrap {
+  animation: landing-football-y 4s ease-in-out infinite;
+}
+
+.landing-hero-dash-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px dashed rgba(16, 185, 129, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(16, 185, 129, 0.06),
+    0 0 48px -10px rgba(16, 185, 129, 0.18);
+  animation: landing-hero-dash-rotate 20s linear infinite;
+}
+
+.landing-root[data-theme="light"] .landing-hero-dash-circle {
+  border-color: rgba(16, 185, 129, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(16, 185, 129, 0.08),
+    0 0 40px -12px rgba(16, 185, 129, 0.14);
+}
+
+.landing-hero-dash-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 0.4;
+  animation: landing-hero-dash-counter 20s linear infinite;
+  user-select: none;
+}
+
+@media (min-width: 640px) {
+  .landing-hero-dash-emoji {
+    font-size: 2.25rem;
+  }
+}
+
+.landing-hero-trophy-emoji {
+  animation: landing-football-y 5.5s ease-in-out infinite;
+  user-select: none;
+  line-height: 1;
+}
+
 /* Mini decorative balls — same float, staggered via duration/delay utility classes */
 .landing-mini-ball {
   animation: landing-football-y 4.5s ease-in-out infinite;
@@ -354,45 +421,6 @@ body {
 .landing-mini-ball--d {
   animation-duration: 4.8s;
   animation-delay: -3.2s;
-}
-
-/* Hero trophy outline — diagonal gleam (~6s) */
-.landing-hero-trophy-gleam {
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-}
-
-.landing-hero-trophy-gleam::after {
-  content: "";
-  position: absolute;
-  inset: -60%;
-  background: linear-gradient(
-    115deg,
-    transparent 42%,
-    rgba(255, 255, 255, 0.12) 50%,
-    transparent 58%
-  );
-  animation: landing-hero-trophy-sweep 6s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.landing-root[data-theme="light"] .landing-hero-trophy-gleam::after {
-  background: linear-gradient(
-    115deg,
-    transparent 42%,
-    rgba(16, 185, 129, 0.22) 50%,
-    transparent 58%
-  );
-}
-
-@keyframes landing-hero-trophy-sweep {
-  0% {
-    transform: translateX(-35%) translateY(-35%) rotate(12deg);
-  }
-  100% {
-    transform: translateX(35%) translateY(35%) rotate(12deg);
-  }
 }
 
 /* How it works — subtle net / mesh */
@@ -508,9 +536,11 @@ body {
     animation: none !important;
   }
 
-  .landing-hero-trophy-gleam::after {
+  .landing-hero-dash-wrap,
+  .landing-hero-dash-circle,
+  .landing-hero-dash-emoji,
+  .landing-hero-trophy-emoji {
     animation: none !important;
-    opacity: 0;
   }
 
   .landing-stats-trophy-wrap {

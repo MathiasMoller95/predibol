@@ -4,7 +4,7 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — Predicciones del Mundial 2026",
-    "metaDescription": "El juego social de pronósticos para el Mundial 2026 — grupos, cachondeo, ranking en vivo y quién sabe más.",
+    "metaDescription": "Predice el Mundial con amigos — ligas privadas, ranking en vivo y predicciones IA para 2026.",
     "theme": {
       "toggleLight": "Cambiar a tema claro",
       "toggleDark": "Cambiar a tema oscuro"
@@ -14,18 +14,18 @@
       "login": "Iniciar sesión"
     },
     "hero": {
-      "linePrefix": "La mejor plataforma para ",
-      "lineStrike": "apostar ",
-      "lineEmphasis": "jugar",
-      "lineSuffix": " al Mundial 2026",
-      "subTagline": "Volvamos a lo de siempre: hablar de fútbol por diversión, no como negocio. Crea tu grupo, invita a tus amigos y demuestra quién sabe más.",
+      "tagline": "Predice el Mundial con tus amigos",
+      "subtitle": "Crea tu liga privada, envía tus pronósticos para cada partido y compite por ser el número 1 de tu grupo.",
+      "pill1": "⚽ 48 equipos · 104 partidos",
+      "pill2": "👥 Ligas privadas y públicas",
+      "pill3": "🤖 Predicciones IA incluidas",
       "cta": {
         "createAccount": "Crear cuenta gratis",
         "login": "Iniciar sesión"
       }
     },
     "countdown": {
-      "label": "Faltan para el inicio",
+      "urgency": "Crea tu liga antes de que empiece el Mundial",
       "days": "Días",
       "hours": "Horas",
       "minutes": "Minutos",
@@ -93,7 +93,7 @@
       "title": "¿Quién sabe más de fútbol en tu grupo?",
       "subtitle": "Solo hay una forma de descubrirlo.",
       "button": "Crear cuenta gratis",
-      "footnote": "Gratis. Sin apuestas. Sin excusas."
+      "belowButton": "100% gratis · Menos de 1 minuto"
     },
     "footer": {
       "copyright": "© 2026 Predibol",
