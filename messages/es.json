@@ -494,6 +494,11 @@
     "cancel": "Cancelar",
     "success": "Resultado guardado. Se estan calculando los puntajes.",
     "error": "No se pudo guardar el resultado. Intentalo de nuevo.",
+    "scoring": {
+      "success": "¡Puntos calculados!",
+      "error": "Error al calcular puntos",
+      "calculating": "Calculando puntos..."
+    },
     "noUpcoming": "No hay partidos proximos",
     "manageResults": "Gestionar resultados",
     "notAdmin": "No eres administrador de este grupo.",

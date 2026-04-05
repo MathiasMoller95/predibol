@@ -494,6 +494,11 @@
     "cancel": "Cancelar",
     "success": "Resultado salvo. Os pontos estao sendo calculados.",
     "error": "Nao foi possivel salvar o resultado. Tente novamente.",
+    "scoring": {
+      "success": "Pontos calculados!",
+      "error": "Erro ao calcular pontos",
+      "calculating": "Calculando pontos..."
+    },
     "noUpcoming": "Nao ha partidas futuras",
     "manageResults": "Gerenciar resultados",
     "notAdmin": "Voce nao e o administrador deste grupo.",

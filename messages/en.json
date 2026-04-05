@@ -494,6 +494,11 @@
     "cancel": "Cancel",
     "success": "Match result saved. Scores are being calculated.",
     "error": "Failed to save result. Please try again.",
+    "scoring": {
+      "success": "Points calculated!",
+      "error": "Error calculating points",
+      "calculating": "Calculating points..."
+    },
     "noUpcoming": "No upcoming matches",
     "manageResults": "Manage Results",
     "notAdmin": "You are not the admin of this group.",

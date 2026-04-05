@@ -245,24 +245,63 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
 
     setIsSavingByMatch((prev) => ({ ...prev, [match.id]: true }));
 
-    const { error } = await supabase
-      .from("matches")
-      .update({ home_score: homeScore, away_score: awayScore, status: "finished", ...advancingPayload })
-      .eq("id", match.id);
+    try {
+      const { error } = await supabase
+        .from("matches")
+        .update({ home_score: homeScore, away_score: awayScore, status: "finished", ...advancingPayload })
+        .eq("id", match.id);
 
-    if (error) {
-      showToast(t("error"), "error");
+      if (error) {
+        showToast(t("error"), "error");
+        return;
+      }
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+      if (token && supabaseUrl) {
+        try {
+          const scoreRes = await fetch(`${supabaseUrl}/functions/v1/score-match`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ match_id: match.id }),
+          });
+
+          if (!scoreRes.ok) {
+            const errText = await scoreRes.text();
+            console.error("score-match error:", errText);
+            showToast(t("scoring.error"), "error");
+          } else {
+            let result: unknown = null;
+            try {
+              result = await scoreRes.json();
+            } catch {
+              /* non-JSON body */
+            }
+            console.log("score-match result:", result);
+            if (isKnockoutPhase(match.phase)) {
+              showToast(`${t("scoring.success")} — ${t("knockout.bracketUpdated")}`, "success");
+            } else {
+              showToast(t("scoring.success"), "success");
+            }
+          }
+        } catch (err) {
+          console.error("score-match fetch error:", err);
+          showToast(t("scoring.error"), "error");
+        }
+      } else {
+        console.error("score-match: missing session or NEXT_PUBLIC_SUPABASE_URL");
+        showToast(t("scoring.error"), "error");
+      }
+
+      router.refresh();
+    } finally {
       setIsSavingByMatch((prev) => ({ ...prev, [match.id]: false }));
-      return;
     }
-
-    if (isKnockoutPhase(match.phase)) {
-      showToast(`${t("success")} — ${t("knockout.bracketUpdated")}`, "success");
-    } else {
-      showToast(t("success"), "success");
-    }
-    setIsSavingByMatch((prev) => ({ ...prev, [match.id]: false }));
-    router.refresh();
   }
 
   function openResolve(match: AdminMatch) {
@@ -530,7 +569,7 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
                                 onClick={() => void markAsFinished(match)}
                                 className={`inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60 ${PRIMARY_BUTTON_CLASSES}`}
                               >
-                                {t("markFinished")}
+                                {isSaving ? t("scoring.calculating") : t("markFinished")}
                               </button>
                             </div>
                           ) : null}
@@ -618,7 +657,7 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
                               onClick={() => void markAsFinished(match)}
                               className={`inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60 ${PRIMARY_BUTTON_CLASSES}`}
                             >
-                              {t("markFinished")}
+                              {isSaving ? t("scoring.calculating") : t("markFinished")}
                             </button>
                           </div>
                         )}
