@@ -56,7 +56,7 @@ VALUES
 
 INSERT INTO public.matches (phase, home_team, away_team, match_time, locked_at, status, knockout_label, home_source, away_source)
 VALUES
-  ('final', 'TBD', 'TBD', '2026-07-19 20:00:00+00', '2026-07-18 20:00:00+00', 'scheduled', 'F', 'W-SF-A', 'W-SF-B');
+  ('final', 'TBD', 'TBD', '2026-07-19 20:00:00+00', '2026-07-18 20:00:00+00', 'scheduled', 'F', 'W-SF-1', 'W-SF-3');
 
 CREATE OR REPLACE FUNCTION public.resolve_knockout_match(
   p_match_id uuid,

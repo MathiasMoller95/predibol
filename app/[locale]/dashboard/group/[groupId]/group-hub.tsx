@@ -9,6 +9,7 @@ import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import InviteCardShareButton from "@/components/share/invite-card";
 import { getFlag } from "@/lib/team-metadata";
 import type { GroupAccessMode } from "@/types/supabase";
+import type { BracketHubStatusKey } from "@/lib/knockout-bracket-utils";
 
 export type LeaderboardPreviewRow = {
   userId: string;
@@ -58,10 +59,32 @@ export type GroupHubData = {
   recentResults: RecentResultRow[];
   accessMode: GroupAccessMode;
   accessCode: string | null;
+  bracketStatus: BracketHubStatusKey;
 };
 
 function pad2(n: number) {
   return n.toString().padStart(2, "0");
+}
+
+function bracketCardMeta(t: ReturnType<typeof useTranslations<"GroupHub">>, status: BracketHubStatusKey): string {
+  switch (status) {
+    case "comingSoon":
+      return t("actions.bracketStatus.comingSoon");
+    case "roundOf16":
+      return t("actions.bracketStatus.roundOf16");
+    case "quarterFinal":
+      return t("actions.bracketStatus.quarterFinal");
+    case "semiFinal":
+      return t("actions.bracketStatus.semiFinal");
+    case "final":
+      return t("actions.bracketStatus.final");
+    case "thirdPlace":
+      return t("actions.bracketStatus.thirdPlace");
+    case "complete":
+      return t("actions.bracketStatus.complete");
+    default:
+      return t("actions.bracketStatus.comingSoon");
+  }
 }
 
 function useLockCountdown(lockedAtIso: string | null, tickMs: number) {
@@ -132,10 +155,19 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
     exact: data.pointsExact,
   });
 
-  const matchProgress = t("actions.matchProgress", {
-    count: data.predictionsMadeCount,
-    total: data.totalMatches,
-  });
+  const predictionsMeta = useMemo(() => {
+    const { totalMatches, predictionsMadeCount } = data;
+    if (totalMatches <= 0) {
+      return t("actions.matchProgress", { count: predictionsMadeCount, total: totalMatches });
+    }
+    if (predictionsMadeCount >= totalMatches) {
+      return t("actions.predictionsComplete");
+    }
+    if (predictionsMadeCount === 0) {
+      return t("actions.predictionsStart");
+    }
+    return `${predictionsMadeCount}/${totalMatches} — ${t("actions.predictionsKeepGoing")}`;
+  }, [data, t]);
 
   const rankLabel =
     data.userRank != null ? t("actions.yourRank", { rank: data.userRank }) : t("actions.yourRankPending");
@@ -233,28 +265,38 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
 
 
       <section aria-label={t("actions.ariaLabel")}>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
           {(
             [
               {
+                variant: "predict" as const,
                 href: `/${data.locale}/dashboard/group/${data.groupId}/predict`,
                 title: t("actions.predict"),
-                meta: matchProgress,
                 show: true,
               },
               {
+                variant: "default" as const,
                 href: `/${data.locale}/dashboard/group/${data.groupId}/leaderboard`,
                 title: t("actions.leaderboard"),
                 meta: rankLabel,
                 show: true,
               },
               {
+                variant: "default" as const,
                 href: `/${data.locale}/dashboard/group/${data.groupId}/picks`,
                 title: t("actions.picks"),
                 meta: data.picksComplete ? t("actions.completed") : t("actions.pending"),
                 show: true,
               },
               {
+                variant: "default" as const,
+                href: `/${data.locale}/dashboard/group/${data.groupId}/bracket`,
+                title: t("actions.bracket"),
+                meta: bracketCardMeta(t, data.bracketStatus),
+                show: true,
+              },
+              {
+                variant: "default" as const,
                 href: `/${data.locale}/dashboard/group/${data.groupId}/admin`,
                 title: t("actions.admin"),
                 meta: t("actions.adminHint"),
@@ -263,17 +305,61 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
             ] as const
           )
             .filter((c) => c.show)
-            .map((card, index) => (
-              <Link
-                key={card.href}
-                href={card.href}
-                style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}
-                className="animate-page-in flex min-h-[100px] flex-col rounded-xl border border-dark-600 bg-dark-800 p-4 transition-all duration-200 hover:scale-[1.02] hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10 motion-reduce:animate-none motion-reduce:transition-none motion-reduce:hover:scale-100"
-              >
-                <span className="text-sm font-semibold text-white">{card.title}</span>
-                <span className="mt-2 text-xs leading-snug text-slate-400">{card.meta}</span>
-              </Link>
-            ))}
+            .map((card, index) => {
+              const delayMs = Math.min(index * 80, 500);
+              const delayStyle = { animationDelay: `${delayMs}ms` };
+              const baseMotion =
+                "animate-page-in motion-reduce:animate-none motion-reduce:transition-none motion-reduce:hover:scale-100";
+
+              if (card.variant === "predict") {
+                const predictLabel = card.title.replace(/^🎯\s*/, "");
+                const showPulse =
+                  data.totalMatches > 0 && data.predictionsMadeCount < data.totalMatches;
+                return (
+                  <Link
+                    key={card.href}
+                    href={card.href}
+                    style={delayStyle}
+                    className={`block rounded-xl ${baseMotion} transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-emerald-500/15`}
+                  >
+                    <div className="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 p-[2px] shadow-lg shadow-emerald-500/20">
+                      <div className="relative flex min-h-[120px] flex-col rounded-[10px] bg-dark-800 p-6 transition-colors duration-200 hover:bg-dark-800">
+                        {showPulse ? (
+                          <span
+                            className="pointer-events-none absolute right-2 top-2 flex h-3 w-3"
+                            aria-hidden
+                          >
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/50 motion-reduce:animate-none" />
+                            <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
+                          </span>
+                        ) : null}
+                        <div className="flex items-start gap-2 pr-4">
+                          <span className="text-3xl leading-none" aria-hidden>
+                            🎯
+                          </span>
+                          <span className="text-sm font-semibold text-white">{predictLabel}</span>
+                        </div>
+                        <span className="mt-2 text-xs leading-snug text-slate-400">
+                          {predictionsMeta}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              }
+
+              return (
+                <Link
+                  key={card.href}
+                  href={card.href}
+                  style={delayStyle}
+                  className={`${baseMotion} flex min-h-[100px] flex-col rounded-xl border border-dark-600 bg-dark-800 p-4 transition-all duration-200 hover:scale-[1.02] hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10`}
+                >
+                  <span className="text-sm font-semibold text-white">{card.title}</span>
+                  <span className="mt-2 text-xs leading-snug text-slate-400">{card.meta}</span>
+                </Link>
+              );
+            })}
         </div>
       </section>
 

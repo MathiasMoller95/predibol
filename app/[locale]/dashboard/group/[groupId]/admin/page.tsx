@@ -67,7 +67,9 @@ export default async function GroupAdminResultsPage({ params }: Props) {
   const [{ data: matches }, { data: predictions }, { data: members }] = await Promise.all([
     supabase
       .from("matches")
-      .select("id,phase,home_team,away_team,match_time,home_score,away_score,status")
+      .select(
+        "id,phase,home_team,away_team,match_time,home_score,away_score,status,knockout_label,home_source,away_source,advancing_team",
+      )
       .order("match_time", { ascending: true }),
     supabase.from("predictions").select("match_id,user_id").eq("group_id", groupId),
     supabase.from("group_members").select("user_id,display_name").eq("group_id", groupId),
@@ -107,6 +109,10 @@ export default async function GroupAdminResultsPage({ params }: Props) {
             ...match,
             home_score: match.home_score ?? null,
             away_score: match.away_score ?? null,
+            knockout_label: match.knockout_label ?? null,
+            home_source: match.home_source ?? null,
+            away_source: match.away_source ?? null,
+            advancing_team: match.advancing_team ?? null,
           }))}
           predictions={(predictions ?? []) as PredictionLite[]}
           totalMembers={((members ?? []) as MemberRecord[]).length}

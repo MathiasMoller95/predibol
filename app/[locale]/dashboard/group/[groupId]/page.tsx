@@ -10,6 +10,7 @@ import GroupHubClient, {
   type RecentResultRow,
 } from "./group-hub";
 import type { GroupAccessMode } from "@/types/supabase";
+import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -89,6 +90,7 @@ export default async function GroupHubPage({ params }: Props) {
     topBoardRes,
     myBoardRes,
     finishedRes,
+    knockoutRes,
   ] = await Promise.all([
     supabase
       .from("group_members")
@@ -133,6 +135,18 @@ export default async function GroupHubPage({ params }: Props) {
       .eq("status", "finished")
       .order("match_time", { ascending: false })
       .limit(3),
+    supabase
+      .from("matches")
+      .select("phase,home_team,away_team,status")
+      .in("phase", [
+        "round_of_16",
+        "quarter_final",
+        "quarter",
+        "semi_final",
+        "semi",
+        "third_place",
+        "final",
+      ]),
   ]);
 
   const memberCount = memberCountRes.count ?? 0;
@@ -250,6 +264,8 @@ export default async function GroupHubPage({ params }: Props) {
   }
   const predByMatch = new Map(predsForFinished.map((p) => [p.match_id, p]));
 
+  const bracketStatus = computeBracketHubStatus((knockoutRes.data ?? []) as { phase: string; home_team: string; away_team: string; status: string }[]);
+
   const recentResults: RecentResultRow[] = finished.map((m) => {
     const pr = predByMatch.get(m.id);
     return {
@@ -296,6 +312,7 @@ export default async function GroupHubPage({ params }: Props) {
     recentResults,
     accessMode: hubAccessMode,
     accessCode: hubAccessCode,
+    bracketStatus,
   };
 
   return (

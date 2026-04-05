@@ -4,16 +4,23 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — Predicciones del Mundial 2026",
-    "metaDescription": "Crea tu grupo, predice marcadores y compite en el ranking en vivo. Competición social gratuita para el Mundial 2026.",
+    "metaDescription": "Predicciones de marcadores gratis con amigos para el Mundial 2026 — ranking y grupos privados, sin dinero real.",
+    "theme": {
+      "toggleLight": "Cambiar a tema claro",
+      "toggleDark": "Cambiar a tema oscuro"
+    },
     "header": {
       "wordmark": "Predibol",
       "login": "Iniciar sesión"
     },
     "hero": {
       "tagline": "Predice. Compite. Gana.",
-      "subtitle": "La plataforma de predicciones para el Mundial 2026. Crea tu grupo, invita a tus amigos y demuestra quién sabe más de fútbol.",
-      "ctaCreateGroup": "Crear grupo",
-      "ctaLogin": "Iniciar sesión"
+      "subtitle": "Presumir, no apostar. Haz tus pronósticos con amigos para el Mundial 2026 — crea un grupo y sube en el ranking.",
+      "safeBadge": "Solo por diversión — sin apuestas con dinero real",
+      "cta": {
+        "createAccount": "Crear cuenta gratis",
+        "login": "Iniciar sesión"
+      }
     },
     "countdown": {
       "label": "Faltan para el inicio",
@@ -30,7 +37,7 @@
       },
       "step2": {
         "title": "Predice los resultados",
-        "description": "Envía tus predicciones antes de cada partido. Consulta las cuotas y las predicciones de la IA."
+        "description": "Confirma tus pronósticos antes del pitido inicial. Mira cuotas o sugerencias de IA si quieres otra opinión."
       },
       "step3": {
         "title": "Compite en el ranking",
@@ -45,9 +52,9 @@
         "description": "Ve cómo evoluciona la clasificación cuando terminan los partidos."
       },
       "odds": {
-        "title": "Cuotas de apuestas",
+        "title": "Contexto del mercado",
         "emoji": "📊",
-        "description": "Consulta las cuotas del mercado para afinar tus pronósticos."
+        "description": "Cómo enmarcan el partido las casas — contexto para tus picks, no para apostar dinero."
       },
       "ai": {
         "title": "Predicciones de IA",
@@ -71,15 +78,16 @@
       }
     },
     "stats": {
-      "title": "El Mundial más grande de la historia",
+      "title": "48 selecciones. Un trofeo. Presumir sin parar.",
       "teams": "48 equipos",
       "matches": "104 partidos",
       "groups": "12 grupos",
       "body": "Por primera vez, 48 selecciones competirán en el Mundial. Más partidos, más predicciones, más diversión."
     },
     "cta": {
-      "title": "¿Listo para jugar?",
-      "button": "Empieza gratis",
+      "title": "¿Listo para unirte?",
+      "subtitle": "Crea tu cuenta en segundos — gratis y pensado para la rivalidad amistosa.",
+      "button": "Crear cuenta gratis",
       "footnote": "Gratis durante la fase de pruebas"
     },
     "footer": {
@@ -239,11 +247,24 @@
       "picks": "⭐ Campeón y más",
       "admin": "⚙️ Admin",
       "matchProgress": "{count}/{total} partidos",
+      "predictionsKeepGoing": "¡Sigue prediciendo!",
+      "predictionsStart": "¡Empieza a predecir!",
+      "predictionsComplete": "✅ Todos predichos",
       "yourRank": "Tu posición: #{rank}",
       "yourRankPending": "Tu posición: —",
       "completed": "Completado ✓",
       "pending": "Pendiente",
-      "adminHint": "Gestionar resultados"
+      "adminHint": "Gestionar resultados",
+      "bracket": "🏟️ Cuadro",
+      "bracketStatus": {
+        "comingSoon": "Próximamente",
+        "roundOf16": "Octavos de final",
+        "quarterFinal": "Cuartos de final",
+        "semiFinal": "Semifinales",
+        "final": "Final",
+        "thirdPlace": "Tercer puesto",
+        "complete": "Completo"
+      }
     },
     "leaderboardPreview": {
       "title": "Top 5",
@@ -411,6 +432,21 @@
     "draw": "Empate",
     "groupFavorite": "Fav"
   },
+  "Bracket": {
+    "title": "Bracket del Mundial",
+    "comingSoon": "Próximamente",
+    "winner": "Ganador",
+    "loser": "Perdedor",
+    "teamsTbd": "Por determinar",
+    "live": "EN VIVO",
+    "yourPrediction": "Tu predicción",
+    "thirdPlace": "Tercer puesto",
+    "final": "Final",
+    "scrollHint": "Desplázate en horizontal para ver el cuadro completo.",
+    "phaseRoundOf16": "Octavos de final",
+    "phaseQuarter": "Cuartos de final",
+    "phaseSemi": "Semifinales"
+  },
   "AdminPage": {
     "title": "Panel de administracion",
     "pendingPredictions": "Pronosticos pendientes",
@@ -438,6 +474,20 @@
       "testNote": "Envia recordatorios a los jugadores con predicciones pendientes",
       "sent": "Recordatorios enviados",
       "error": "Error al enviar recordatorios"
+    },
+    "knockout": {
+      "sectionTitle": "Eliminatoria",
+      "sectionHint": "Los ganadores (W-…) actualizan el siguiente partido al guardar. El tercer puesto (L-…) se define con Definir equipos.",
+      "resolveTeams": "Definir equipos",
+      "advancingTeam": "Equipo que avanza",
+      "selectAdvancing": "Selecciona quién avanza antes de marcar finalizado.",
+      "resolved": "Equipos definidos",
+      "bracketUpdated": "El siguiente partido del bracket se ha actualizado automáticamente.",
+      "pickTeam": "Elegir equipo",
+      "homeTeam": "Equipo local",
+      "awayTeam": "Equipo visitante",
+      "saveTeams": "Guardar equipos",
+      "drawPickAdvancing": "Empate — elige quién avanza (prórroga / penales)."
     }
   },
   "Dashboard": {

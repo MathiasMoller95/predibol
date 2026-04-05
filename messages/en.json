@@ -4,16 +4,23 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — World Cup 2026 predictions",
-    "metaDescription": "Create your group, predict match scores, and compete on the live leaderboard. Free social competition for the 2026 World Cup.",
+    "metaDescription": "Free World Cup 2026 score predictions with friends — bragging rights, leaderboards, and private groups. No real-money wagering.",
+    "theme": {
+      "toggleLight": "Switch to light theme",
+      "toggleDark": "Switch to dark theme"
+    },
     "header": {
       "wordmark": "Predibol",
       "login": "Log in"
     },
     "hero": {
       "tagline": "Predict. Compete. Win.",
-      "subtitle": "The prediction platform for the 2026 World Cup. Create your group, invite your friends, and prove who knows football best.",
-      "ctaCreateGroup": "Create group",
-      "ctaLogin": "Log in"
+      "subtitle": "Bragging rights, not bankrolls. Make score picks with friends for the 2026 World Cup — create a group and climb the leaderboard.",
+      "safeBadge": "For fun only — no real-money wagering",
+      "cta": {
+        "createAccount": "Create free account",
+        "login": "Log in"
+      }
     },
     "countdown": {
       "label": "Kickoff in",
@@ -30,7 +37,7 @@
       },
       "step2": {
         "title": "Predict the scores",
-        "description": "Submit your predictions before each match. Check odds and AI picks."
+        "description": "Lock in your picks before kickoff. Peek at odds or AI suggestions for a second opinion."
       },
       "step3": {
         "title": "Climb the leaderboard",
@@ -45,9 +52,9 @@
         "description": "Watch rankings update as matches finish."
       },
       "odds": {
-        "title": "Betting odds info",
+        "title": "Market context",
         "emoji": "📊",
-        "description": "See market odds to inform your picks."
+        "description": "See how bookmakers frame the match — context for your picks, not for staking."
       },
       "ai": {
         "title": "AI predictions",
@@ -71,15 +78,16 @@
       }
     },
     "stats": {
-      "title": "The biggest World Cup in history",
+      "title": "48 nations. One trophy. Endless bragging.",
       "teams": "48 teams",
       "matches": "104 matches",
       "groups": "12 groups",
       "body": "For the first time, 48 nations will compete. More matches, more predictions, more fun."
     },
     "cta": {
-      "title": "Ready to play?",
-      "button": "Start for free",
+      "title": "Ready to join the fun?",
+      "subtitle": "Create an account in seconds — free and built for friendly rivalry.",
+      "button": "Create free account",
       "footnote": "Free during beta"
     },
     "footer": {
@@ -239,11 +247,24 @@
       "picks": "⭐ Champion & more",
       "admin": "⚙️ Admin",
       "matchProgress": "{count}/{total} matches",
+      "predictionsKeepGoing": "Keep predicting!",
+      "predictionsStart": "Start predicting!",
+      "predictionsComplete": "✅ All predicted",
       "yourRank": "Your rank: #{rank}",
       "yourRankPending": "Your rank: —",
       "completed": "Completed ✓",
       "pending": "Pending",
-      "adminHint": "Manage results"
+      "adminHint": "Manage results",
+      "bracket": "🏟️ Bracket",
+      "bracketStatus": {
+        "comingSoon": "Coming soon",
+        "roundOf16": "Round of 16",
+        "quarterFinal": "Quarter-finals",
+        "semiFinal": "Semi-finals",
+        "final": "Final",
+        "thirdPlace": "Third place",
+        "complete": "Complete"
+      }
     },
     "leaderboardPreview": {
       "title": "Top 5",
@@ -411,6 +432,21 @@
     "draw": "Draw",
     "groupFavorite": "Fav"
   },
+  "Bracket": {
+    "title": "World Cup Bracket",
+    "comingSoon": "Coming soon",
+    "winner": "Winner",
+    "loser": "Loser",
+    "teamsTbd": "TBD",
+    "live": "LIVE",
+    "yourPrediction": "Your prediction",
+    "thirdPlace": "Third place",
+    "final": "Final",
+    "scrollHint": "Scroll sideways to see the full bracket on desktop.",
+    "phaseRoundOf16": "Round of 16",
+    "phaseQuarter": "Quarter-finals",
+    "phaseSemi": "Semi-finals"
+  },
   "AdminPage": {
     "title": "Admin Panel",
     "pendingPredictions": "Pending Predictions",
@@ -438,6 +474,20 @@
       "testNote": "Sends reminders to players with pending predictions",
       "sent": "Reminders sent",
       "error": "Error sending reminders"
+    },
+    "knockout": {
+      "sectionTitle": "Knockout bracket",
+      "sectionHint": "Winner tokens (W-…) update the next match automatically after you save a result. Third place (L-…) must be set with Resolve teams.",
+      "resolveTeams": "Resolve teams",
+      "advancingTeam": "Advancing team",
+      "selectAdvancing": "Select who advances before marking finished.",
+      "resolved": "Teams resolved",
+      "bracketUpdated": "The next bracket match was updated automatically.",
+      "pickTeam": "Select team",
+      "homeTeam": "Home team",
+      "awayTeam": "Away team",
+      "saveTeams": "Save teams",
+      "drawPickAdvancing": "Draw — pick which team advances (ET / pens)."
     }
   },
   "Dashboard": {

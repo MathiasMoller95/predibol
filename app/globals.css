@@ -232,3 +232,193 @@ body {
     box-shadow: none;
   }
 }
+
+/* Landing page theme — scoped to .landing-root only */
+.landing-root[data-theme="dark"] {
+  --landing-bg: #0a0e14;
+  --landing-text: #f1f5f9;
+  --landing-text-heading: #ffffff;
+  --landing-text-muted: #94a3b8;
+  --landing-text-subtle: #64748b;
+  --landing-card: #1e293b;
+  --landing-header-bg: rgba(10, 14, 20, 0.85);
+  --landing-footer-bg: transparent;
+  --landing-countdown-inner: #1e293b;
+  --landing-countdown-border: rgba(71, 85, 105, 0.8);
+  --landing-countdown-label: #64748b;
+  --landing-countdown-num: #ffffff;
+  --landing-cta-card: #1e293b;
+  --landing-safe-bg: rgba(16, 185, 129, 0.1);
+  --landing-safe-border: rgba(16, 185, 129, 0.2);
+  --landing-safe-text: #34d399;
+  --landing-icon-bg: #1e293b;
+  --landing-icon-border: #475569;
+  --landing-border-subtle: rgba(71, 85, 105, 0.45);
+  --landing-blob-1: rgba(16, 185, 129, 0.15);
+  --landing-blob-2: rgba(245, 158, 11, 0.1);
+  --landing-blob-3: rgba(5, 150, 105, 0.1);
+  --landing-blob-svg: rgba(71, 85, 105, 0.35);
+  --landing-blob-dot: rgba(71, 85, 105, 0.3);
+  --landing-blob-dot-stroke: #0a0e14;
+  --landing-tagline-from: #ffffff;
+  --landing-tagline-via: #f1f5f9;
+  --landing-tagline-to: #94a3b8;
+  --landing-gradient-cta: 0 0 40px -8px rgba(16, 185, 129, 0.35);
+  --landing-secondary-border: #64748b;
+  --landing-secondary-bg: rgba(30, 41, 59, 0.95);
+  --landing-secondary-text: #e2e8f0;
+  --landing-link-hover: #ffffff;
+  --landing-header-login: #cbd5e1;
+}
+
+.landing-root[data-theme="light"] {
+  --landing-bg: #f8fafc;
+  --landing-text: #1e293b;
+  --landing-text-heading: #1e293b;
+  --landing-text-muted: #64748b;
+  --landing-text-subtle: #64748b;
+  --landing-card: #ffffff;
+  --landing-header-bg: rgba(255, 255, 255, 0.85);
+  --landing-footer-bg: #f1f5f9;
+  --landing-countdown-inner: #ffffff;
+  --landing-countdown-border: #e2e8f0;
+  --landing-countdown-label: #64748b;
+  --landing-countdown-num: #1e293b;
+  --landing-cta-card: #ffffff;
+  --landing-safe-bg: #ecfdf5;
+  --landing-safe-border: #a7f3d0;
+  --landing-safe-text: #047857;
+  --landing-icon-bg: #ffffff;
+  --landing-icon-border: #e2e8f0;
+  --landing-border-subtle: #e2e8f0;
+  --landing-blob-1: rgba(16, 185, 129, 0.08);
+  --landing-blob-2: rgba(245, 158, 11, 0.06);
+  --landing-blob-3: rgba(16, 185, 129, 0.06);
+  --landing-blob-svg: rgba(100, 116, 139, 0.12);
+  --landing-blob-dot: rgba(100, 116, 139, 0.1);
+  --landing-blob-dot-stroke: #e2e8f0;
+  --landing-tagline-from: #0f172a;
+  --landing-tagline-via: #1e293b;
+  --landing-tagline-to: #64748b;
+  --landing-gradient-cta: 0 0 32px -8px rgba(16, 185, 129, 0.2);
+  --landing-secondary-border: #cbd5e1;
+  --landing-secondary-bg: #ffffff;
+  --landing-secondary-text: #1e293b;
+  --landing-link-hover: #0f172a;
+  --landing-header-login: #475569;
+}
+
+@keyframes landing-football-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes landing-football-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.landing-hero-football {
+  animation: landing-football-y 5s ease-in-out infinite;
+}
+
+.landing-hero-football-inner {
+  animation: landing-football-rotate 24s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes landing-trophy-gleam {
+  0%,
+  100% {
+    opacity: 0.1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.16;
+    filter: brightness(1.15);
+  }
+}
+
+.landing-root[data-theme="light"] .landing-stats-trophy-wrap {
+  --landing-trophy-base: 0.08;
+}
+
+.landing-stats-trophy-wrap {
+  animation: landing-trophy-gleam 4s ease-in-out infinite;
+}
+
+.landing-root[data-theme="light"] .landing-stats-trophy-wrap {
+  animation: landing-trophy-gleam-light 4s ease-in-out infinite;
+}
+
+@keyframes landing-trophy-gleam-light {
+  0%,
+  100% {
+    opacity: 0.06;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.11;
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes landing-countdown-border-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.landing-countdown-border-spin {
+  position: absolute;
+  inset: -45%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(16, 185, 129, 0.22) 90deg,
+    transparent 180deg,
+    rgba(16, 185, 129, 0.12) 270deg,
+    transparent 360deg
+  );
+  animation: landing-countdown-border-spin 10s linear infinite;
+}
+
+.landing-root[data-theme="light"] .landing-countdown-border-spin {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(16, 185, 129, 0.32) 90deg,
+    transparent 180deg,
+    rgba(16, 185, 129, 0.18) 270deg,
+    transparent 360deg
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero-football,
+  .landing-hero-football-inner {
+    animation: none !important;
+  }
+
+  .landing-stats-trophy-wrap {
+    animation: none !important;
+    opacity: 0.1;
+  }
+
+  .landing-root[data-theme="light"] .landing-stats-trophy-wrap {
+    opacity: 0.08;
+  }
+
+  .landing-countdown-border-spin {
+    animation: none !important;
+  }
+}

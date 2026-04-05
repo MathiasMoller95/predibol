@@ -4,16 +4,23 @@
   },
   "LandingPage": {
     "metaTitle": "Predibol — Palpites da Copa do Mundo 2026",
-    "metaDescription": "Crie seu grupo, palpite placares e dispute o ranking ao vivo. Competição social gratuita na Copa 2026.",
+    "metaDescription": "Palpites de placar grátis com amigos na Copa 2026 — ranking e grupos privados, sem dinheiro real.",
+    "theme": {
+      "toggleLight": "Usar tema claro",
+      "toggleDark": "Usar tema escuro"
+    },
     "header": {
       "wordmark": "Predibol",
       "login": "Entrar"
     },
     "hero": {
       "tagline": "Preveja. Compita. Vença.",
-      "subtitle": "A plataforma de previsões para a Copa do Mundo 2026. Crie seu grupo, convide seus amigos e prove quem entende mais de futebol.",
-      "ctaCreateGroup": "Criar grupo",
-      "ctaLogin": "Entrar"
+      "subtitle": "Orgulho de acertar, não de apostar. Faça palpites com amigos na Copa 2026 — crie um grupo e suba no ranking.",
+      "safeBadge": "Só diversão — sem apostas com dinheiro real",
+      "cta": {
+        "createAccount": "Criar conta grátis",
+        "login": "Entrar"
+      }
     },
     "countdown": {
       "label": "Falta para a abertura",
@@ -30,7 +37,7 @@
       },
       "step2": {
         "title": "Preveja os resultados",
-        "description": "Envie seus palpites antes de cada jogo. Veja odds e palpites de IA."
+        "description": "Feche seus palpites antes do apito. Veja odds ou sugestões da IA se quiser uma segunda opinião."
       },
       "step3": {
         "title": "Suba no ranking",
@@ -45,9 +52,9 @@
         "description": "Acompanhe a classificação quando os jogos terminam."
       },
       "odds": {
-        "title": "Odds das casas",
+        "title": "Contexto de mercado",
         "emoji": "📊",
-        "description": "Use as cotações do mercado para refinar seus palpites."
+        "description": "Como as casas enquadram o jogo — contexto pros palpites, não pra colocar grana."
       },
       "ai": {
         "title": "Previsões de IA",
@@ -71,15 +78,16 @@
       }
     },
     "stats": {
-      "title": "A maior Copa de todos os tempos",
+      "title": "48 seleções. Uma taça. Peito estufado à vontade.",
       "teams": "48 equipes",
       "matches": "104 jogos",
       "groups": "12 grupos",
       "body": "Pela primeira vez, 48 seleções disputarão a Copa. Mais jogos, mais palpites, mais diversão."
     },
     "cta": {
-      "title": "Pronto para jogar?",
-      "button": "Comece grátis",
+      "title": "Pronto pra entrar na brincadeira?",
+      "subtitle": "Crie sua conta em segundos — grátis e feito pra rivalidade de boteco.",
+      "button": "Criar conta grátis",
       "footnote": "Grátis durante o beta"
     },
     "footer": {
@@ -239,11 +247,24 @@
       "picks": "⭐ Campeão e mais",
       "admin": "⚙️ Admin",
       "matchProgress": "{count}/{total} jogos",
+      "predictionsKeepGoing": "Continue prevendo!",
+      "predictionsStart": "Comece a prever!",
+      "predictionsComplete": "✅ Todos previstos",
       "yourRank": "Sua posição: #{rank}",
       "yourRankPending": "Sua posição: —",
       "completed": "Concluído ✓",
       "pending": "Pendente",
-      "adminHint": "Gerenciar resultados"
+      "adminHint": "Gerenciar resultados",
+      "bracket": "🏟️ Chave",
+      "bracketStatus": {
+        "comingSoon": "Em breve",
+        "roundOf16": "Oitavas de final",
+        "quarterFinal": "Quartas de final",
+        "semiFinal": "Semifinais",
+        "final": "Final",
+        "thirdPlace": "Terceiro lugar",
+        "complete": "Concluído"
+      }
     },
     "leaderboardPreview": {
       "title": "Top 5",
@@ -411,6 +432,21 @@
     "draw": "Empate",
     "groupFavorite": "Fav"
   },
+  "Bracket": {
+    "title": "Chave do Mundial",
+    "comingSoon": "Em breve",
+    "winner": "Vencedor",
+    "loser": "Perdedor",
+    "teamsTbd": "A definir",
+    "live": "AO VIVO",
+    "yourPrediction": "Sua previsão",
+    "thirdPlace": "Terceiro lugar",
+    "final": "Final",
+    "scrollHint": "Role na horizontal para ver a chave completa.",
+    "phaseRoundOf16": "Oitavas de final",
+    "phaseQuarter": "Quartas de final",
+    "phaseSemi": "Semifinais"
+  },
   "AdminPage": {
     "title": "Painel administrativo",
     "pendingPredictions": "Palpites pendentes",
@@ -438,6 +474,20 @@
       "testNote": "Envia lembretes para jogadores com previsoes pendentes",
       "sent": "Lembretes enviados",
       "error": "Erro ao enviar lembretes"
+    },
+    "knockout": {
+      "sectionTitle": "Chave eliminatória",
+      "sectionHint": "Vencedores (W-…) atualizam o próximo jogo ao salvar. Terceiro lugar (L-…) use Definir equipes.",
+      "resolveTeams": "Definir equipes",
+      "advancingTeam": "Equipe que avança",
+      "selectAdvancing": "Selecione quem avança antes de marcar finalizada.",
+      "resolved": "Equipes definidas",
+      "bracketUpdated": "Chave atualizada automaticamente.",
+      "pickTeam": "Selecionar time",
+      "homeTeam": "Time mandante",
+      "awayTeam": "Time visitante",
+      "saveTeams": "Salvar equipes",
+      "drawPickAdvancing": "Empate — escolha quem avança (prorrogação / pênaltis)."
     }
   },
   "Dashboard": {
