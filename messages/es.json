@@ -362,13 +362,16 @@
     "picks": {
       "title": "⭐ Campeón y más",
       "description": "Antes del torneo puedes elegir ganadores en varias categorías. Los puntos se asignan al final del torneo.",
-      "tbd": "Puntos por categoría: por confirmar",
-      "champion": "🏆 Campeón — quién gana el Mundial",
-      "runnerUp": "🥈 Subcampeón — el finalista",
-      "thirdPlace": "🥉 Tercer lugar",
-      "topScorer": "⚽ Máximo goleador",
-      "bestPlayer": "🌟 Mejor jugador",
-      "bestGoalkeeper": "🧤 Mejor portero"
+      "points": "{points} pts",
+      "maxBonus": "Máximo bonus total: {total} puntos",
+      "categories": {
+        "champion": "🏆 Campeón",
+        "runnerUp": "🥈 Subcampeón",
+        "thirdPlace": "🥉 Tercer lugar",
+        "topScorer": "⚽ Máximo goleador",
+        "bestPlayer": "🌟 Mejor jugador",
+        "bestGoalkeeper": "🧤 Mejor portero"
+      }
     },
     "tiebreakers": {
       "title": "⚖️ Desempate",

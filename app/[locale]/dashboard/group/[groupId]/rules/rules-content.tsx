@@ -21,7 +21,21 @@ type Props = {
   pointsResult: number;
   pointsDiff: number;
   pointsExact: number;
+  bonusChampion: number;
+  bonusRunnerUp: number;
+  bonusThirdPlace: number;
+  bonusTopScorer: number;
+  bonusBestPlayer: number;
+  bonusBestGoalkeeper: number;
 };
+
+type PickCategoryKey =
+  | "champion"
+  | "runnerUp"
+  | "thirdPlace"
+  | "topScorer"
+  | "bestPlayer"
+  | "bestGoalkeeper";
 
 type ExampleRowDef = {
   predHome: number;
@@ -58,9 +72,39 @@ export default function RulesContent({
   pointsResult,
   pointsDiff,
   pointsExact,
+  bonusChampion,
+  bonusRunnerUp,
+  bonusThirdPlace,
+  bonusTopScorer,
+  bonusBestPlayer,
+  bonusBestGoalkeeper,
 }: Props) {
   const t = useTranslations("Rules");
   const tv = useTranslations("VirtualBets");
+
+  const pickCategories: { key: PickCategoryKey; points: number }[] = useMemo(
+    () => [
+      { key: "champion", points: bonusChampion },
+      { key: "runnerUp", points: bonusRunnerUp },
+      { key: "thirdPlace", points: bonusThirdPlace },
+      { key: "topScorer", points: bonusTopScorer },
+      { key: "bestPlayer", points: bonusBestPlayer },
+      { key: "bestGoalkeeper", points: bonusBestGoalkeeper },
+    ],
+    [
+      bonusChampion,
+      bonusRunnerUp,
+      bonusThirdPlace,
+      bonusTopScorer,
+      bonusBestPlayer,
+      bonusBestGoalkeeper,
+    ]
+  );
+
+  const maxPickBonus = useMemo(
+    () => pickCategories.reduce((s, row) => s + row.points, 0),
+    [pickCategories]
+  );
 
   const config: GroupScoringConfig = useMemo(
     () => ({
@@ -285,15 +329,22 @@ export default function RulesContent({
         <section className="rounded-xl border border-dark-600 bg-[#111720] p-5 sm:p-6">
           <h2 className="text-lg font-semibold text-white">{t("picks.title")}</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-300">{t("picks.description")}</p>
-          <ul className="mt-4 list-inside list-disc space-y-2 text-sm text-slate-300">
-            <li>{t("picks.champion")}</li>
-            <li>{t("picks.runnerUp")}</li>
-            <li>{t("picks.thirdPlace")}</li>
-            <li>{t("picks.topScorer")}</li>
-            <li>{t("picks.bestPlayer")}</li>
-            <li>{t("picks.bestGoalkeeper")}</li>
-          </ul>
-          <p className="mt-4 text-sm text-amber-200/80">{t("picks.tbd")}</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {pickCategories.map((row) => (
+              <div
+                key={row.key}
+                className="rounded-lg border border-dark-600 bg-dark-900/50 p-4"
+              >
+                <p className="text-sm font-semibold text-white">{t(`picks.categories.${row.key}`)}</p>
+                <p className="mt-2 font-mono text-lg font-bold text-emerald-400">
+                  {t("picks.points", { points: row.points })}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-base font-bold text-emerald-400">
+            {t("picks.maxBonus", { total: maxPickBonus })}
+          </p>
         </section>
 
         {/* Tiebreakers */}

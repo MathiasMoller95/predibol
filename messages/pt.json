@@ -362,13 +362,16 @@
     "picks": {
       "title": "⭐ Campeão e mais",
       "description": "Antes do torneio você pode escolher vencedores em várias categorias. Os pontos são atribuídos no final do torneio.",
-      "tbd": "Pontos por categoria: a confirmar",
-      "champion": "🏆 Campeão — quem vence a Copa",
-      "runnerUp": "🥈 Vice-campeão — o finalista",
-      "thirdPlace": "🥉 Terceiro lugar",
-      "topScorer": "⚽ Artilheiro",
-      "bestPlayer": "🌟 Melhor jogador",
-      "bestGoalkeeper": "🧤 Melhor goleiro"
+      "points": "{points} pts",
+      "maxBonus": "Bônus máximo total: {total} pontos",
+      "categories": {
+        "champion": "🏆 Campeão",
+        "runnerUp": "🥈 Vice-campeão",
+        "thirdPlace": "🥉 Terceiro lugar",
+        "topScorer": "⚽ Artilheiro",
+        "bestPlayer": "🌟 Melhor jogador",
+        "bestGoalkeeper": "🧤 Melhor goleiro"
+      }
     },
     "tiebreakers": {
       "title": "⚖️ Desempate",

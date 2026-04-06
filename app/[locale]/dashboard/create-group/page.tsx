@@ -47,12 +47,12 @@ const initialState: GroupFormState = {
   pointsCorrectResult: 1,
   pointsCorrectDifference: 2,
   pointsExactScore: 3,
-  bonusChampion: 0,
-  bonusRunnerUp: 0,
-  bonusThirdPlace: 0,
-  bonusTopScorer: 0,
-  bonusBestPlayer: 0,
-  bonusBestGoalkeeper: 0,
+  bonusChampion: 40,
+  bonusRunnerUp: 15,
+  bonusThirdPlace: 7,
+  bonusTopScorer: 30,
+  bonusBestPlayer: 30,
+  bonusBestGoalkeeper: 30,
   tiebreakerRule: "most_exact_scores",
 };
 
