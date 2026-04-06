@@ -256,34 +256,39 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
         return;
       }
 
+      await supabase.auth.refreshSession();
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData?.session?.access_token;
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const scoreUrl = supabaseUrl ? `${supabaseUrl}/functions/v1/score-match` : "";
 
-      if (token && supabaseUrl) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("score-match request:", {
+          url: scoreUrl,
+          hasToken: !!token,
+          hasApikey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+          matchId: match.id,
+        });
+        console.log("Token prefix:", token?.substring(0, 20));
+        console.log("Apikey prefix:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20));
+        console.log("URL:", scoreUrl);
+      }
+
+      if (!token || !supabaseUrl) {
+        console.error("score-match: missing session or NEXT_PUBLIC_SUPABASE_URL");
+        showToast(t("scoring.error"), "error");
+      } else {
         try {
-          const scoreRes = await fetch(`${supabaseUrl}/functions/v1/score-match`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ match_id: match.id }),
+          const { data: scoreData, error: scoreError } = await supabase.functions.invoke("score-match", {
+            body: { match_id: match.id },
           });
 
-          if (!scoreRes.ok) {
-            const errText = await scoreRes.text();
-            console.error("score-match error:", errText);
+          if (scoreError) {
+            const errCtx = "context" in scoreError ? (scoreError as { context?: unknown }).context : undefined;
+            console.error("score-match response:", "error", scoreError.message, errCtx ?? scoreError);
             showToast(t("scoring.error"), "error");
           } else {
-            let result: unknown = null;
-            try {
-              result = await scoreRes.json();
-            } catch {
-              /* non-JSON body */
-            }
-            console.log("score-match result:", result);
+            console.log("score-match response:", "ok", scoreData);
             if (isKnockoutPhase(match.phase)) {
               showToast(`${t("scoring.success")} — ${t("knockout.bracketUpdated")}`, "success");
             } else {
@@ -291,12 +296,9 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
             }
           }
         } catch (err) {
-          console.error("score-match fetch error:", err);
+          console.error("score-match invoke error:", err);
           showToast(t("scoring.error"), "error");
         }
-      } else {
-        console.error("score-match: missing session or NEXT_PUBLIC_SUPABASE_URL");
-        showToast(t("scoring.error"), "error");
       }
 
       router.refresh();
