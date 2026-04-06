@@ -266,6 +266,7 @@ export default function AdminMatchPanel({ profileTimeZone, matches, predictions,
             method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,
+              apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ match_id: match.id }),
