@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import RankingSnapshotShareButton from "@/components/share/ranking-snapshot";
+import { AI_PLAYER_ID } from "@/lib/constants";
 
 export type LeaderboardBoardRow = {
   user_id: string;
@@ -124,12 +125,14 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
           <tbody>
             {tab === "points"
               ? rows.map((row, index) => {
-                  const isSelf = row.user_id === currentUserId;
+                  const isAI = row.user_id === AI_PLAYER_ID;
+                  const isSelf = !isAI && row.user_id === currentUserId;
                   const r = row.rank;
                   const topThree = r != null && r >= 1 && r <= 3;
                   const medal = r === 1 ? "🥇 " : r === 2 ? "🥈 " : r === 3 ? "🥉 " : "";
-                  const tierBorder =
-                    r === 1
+                  const tierBorder = isAI
+                    ? "border-l-4 border-purple-500"
+                    : r === 1
                       ? "border-l-4 border-yellow-400"
                       : r === 2
                         ? "border-l-4 border-slate-300"
@@ -159,7 +162,14 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                           </span>
                         ) : null}
                       </td>
-                      <td className="py-3 pr-4 text-slate-300">{row.display_name}</td>
+                      <td className="py-3 pr-4 text-slate-300">
+                        {row.display_name}
+                        {isAI ? (
+                          <span className="ml-1.5 rounded bg-purple-500/20 px-1.5 py-0.5 text-xs font-medium text-purple-400">
+                            IA
+                          </span>
+                        ) : null}
+                      </td>
                       <td className="py-3 pr-4 text-right font-mono tabular-nums font-bold text-emerald-400">
                         {row.total_points}
                       </td>
@@ -174,18 +184,21 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                   );
                 })
               : pnlRows.map((row, index) => {
-                  const isSelf = row.user_id === currentUserId;
+                  const isAI = row.user_id === AI_PLAYER_ID;
+                  const isSelf = !isAI && row.user_id === currentUserId;
                   const pr = row.pnl_rank;
                   const topThree = pr >= 1 && pr <= 3;
                   const medal = pr === 1 ? "🥇 " : pr === 2 ? "🥈 " : pr === 3 ? "🥉 " : "";
                   const pnlVal = parseFloat(Number(row.virtual_pnl).toFixed(2));
                   const pnlPositive = pnlVal > 0;
                   const pnlNegative = pnlVal < 0;
-                  const pnlBorder = pnlPositive
-                    ? "border-l-2 border-emerald-500"
-                    : pnlNegative
-                      ? "border-l-2 border-red-500"
-                      : "";
+                  const pnlBorder = isAI
+                    ? "border-l-4 border-purple-500"
+                    : pnlPositive
+                      ? "border-l-2 border-emerald-500"
+                      : pnlNegative
+                        ? "border-l-2 border-red-500"
+                        : "";
                   const rowBg = isSelf ? "bg-emerald-900/20 ring-1 ring-inset ring-emerald-500/30" : "";
                   const won = row.virtual_bets_won;
                   const lost = row.virtual_bets_lost;
@@ -210,7 +223,14 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                           </span>
                         ) : null}
                       </td>
-                      <td className="py-3 pr-4 text-slate-300">{row.display_name}</td>
+                      <td className="py-3 pr-4 text-slate-300">
+                        {row.display_name}
+                        {isAI ? (
+                          <span className="ml-1.5 rounded bg-purple-500/20 px-1.5 py-0.5 text-xs font-medium text-purple-400">
+                            IA
+                          </span>
+                        ) : null}
+                      </td>
                       <td
                         className={`py-3 pr-4 text-right font-mono tabular-nums font-bold ${
                           pnlPositive ? "text-emerald-400" : pnlNegative ? "text-red-400" : "text-slate-300"

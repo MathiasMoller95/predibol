@@ -11,7 +11,6 @@ import GroupHubClient, {
 } from "./group-hub";
 import type { GroupAccessMode } from "@/types/supabase";
 import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
-import { virtualBetPnlForMatch } from "@/lib/virtual-bet-pnl";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -274,18 +273,6 @@ export default async function GroupHubPage({ params }: Props) {
     const pr = predByMatch.get(m.id);
     const hs = m.home_score ?? 0;
     const as = m.away_score ?? 0;
-    const virtualPnl =
-      pr != null && m.home_score != null && m.away_score != null
-        ? virtualBetPnlForMatch(
-            pr.predicted_home,
-            pr.predicted_away,
-            hs,
-            as,
-            m.home_win_odds,
-            m.draw_odds,
-            m.away_win_odds
-          )
-        : null;
     return {
       matchId: m.id,
       homeTeam: m.home_team,
@@ -295,7 +282,7 @@ export default async function GroupHubPage({ params }: Props) {
       predHome: pr?.predicted_home ?? null,
       predAway: pr?.predicted_away ?? null,
       pointsEarned: pr?.points_earned ?? 0,
-      virtualPnl,
+      virtualPnl: null,
     };
   });
 

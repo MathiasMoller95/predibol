@@ -8,7 +8,6 @@ import { formatGroupOddsCompactLine } from "@/lib/group-match-odds";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 import { getFlag, getGroup } from "@/lib/team-metadata";
-import { virtualBetPnlForMatch } from "@/lib/virtual-bet-pnl";
 
 const SCORE_INPUT_CLASS =
   "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50";
@@ -186,7 +185,6 @@ function validateKnockoutNeedsWinner(match: MatchRecord, input: PredictionInput 
 export default function PredictForm({ matches, initialPredictions, profileTimeZone, finishedPicks }: Props) {
   const locale = useLocale();
   const t = useTranslations("Predictions");
-  const tVirtual = useTranslations("VirtualBets");
   const { showToast } = useToast();
   const effectiveTz = useEffectiveTimeZone(profileTimeZone);
   const [isSaving, setIsSaving] = useState(false);
@@ -366,19 +364,8 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
     finishedPicks.length > 0 ? (
       <section className="mt-6 space-y-3 rounded-xl border border-dark-600 bg-dark-900/40 p-4">
         <h2 className="text-sm font-semibold text-white">{t("settledTitle")}</h2>
-        <p className="text-xs text-slate-500">{tVirtual("disclaimer")}</p>
         <ul className="space-y-3">
-          {finishedPicks.map((m) => {
-            const pnl = virtualBetPnlForMatch(
-              m.predicted_home,
-              m.predicted_away,
-              m.home_score,
-              m.away_score,
-              m.home_win_odds,
-              m.draw_odds,
-              m.away_win_odds
-            );
-            return (
+          {finishedPicks.map((m) => (
               <li key={m.id} className="rounded-lg border border-dark-600 bg-dark-800 px-3 py-3 text-sm text-slate-300">
                 <p className="font-medium text-white">
                   <span aria-hidden>{getFlag(m.home_team)}</span> {m.home_team}{" "}
@@ -390,23 +377,8 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                 <p className="mt-1 text-xs text-slate-400">
                   {t("yourPick", { home: m.predicted_home, away: m.predicted_away })}
                 </p>
-                {pnl != null ? (
-                  <p
-                    className={`mt-1 text-[11px] font-mono tabular-nums ${
-                      pnl > 0 ? "text-emerald-400" : pnl < 0 ? "text-red-400" : "text-slate-500"
-                    }`}
-                  >
-                    💰{" "}
-                    {pnl > 0
-                      ? tVirtual("profit", { amount: pnl.toFixed(2) })
-                      : pnl < 0
-                        ? tVirtual("loss", { amount: Math.abs(pnl).toFixed(2) })
-                        : tVirtual("profit", { amount: "0.00" })}
-                  </p>
-                ) : null}
               </li>
-            );
-          })}
+          ))}
         </ul>
       </section>
     ) : null;

@@ -266,6 +266,10 @@
       "completed": "Concluído ✓",
       "pending": "Pendente",
       "adminHint": "Gerenciar resultados",
+      "rules": "📋 Regras",
+      "rulesResult": "Resultado: {points} pts",
+      "rulesDifference": "Diferença: {points} pts",
+      "rulesExact": "Exato: {points} pts",
       "bracket": "🏟️ Chave",
       "bracketStatus": {
         "comingSoon": "Em breve",
@@ -378,7 +382,7 @@
   "VirtualBets": {
     "tab": {
       "points": "🏆 Pontos",
-      "virtualBets": "💰 Aposta virtual"
+      "virtualBets": "💰 Trader virtual"
     },
     "disclaimer": "🎮 Simulação com aposta virtual de €1 por jogo. Sem dinheiro real.",
     "profit": "+€{amount}",

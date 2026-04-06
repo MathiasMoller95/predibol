@@ -107,7 +107,6 @@ function useLockCountdown(lockedAtIso: string | null, tickMs: number) {
 
 export default function GroupHubClient({ data }: { data: GroupHubData }) {
   const t = useTranslations("GroupHub");
-  const tVirtual = useTranslations("VirtualBets");
   const tAccess = useTranslations("AccessCode");
   const { showToast } = useToast();
   const accent = data.primaryColor ?? "#10b981";
@@ -268,7 +267,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
 
 
       <section aria-label={t("actions.ariaLabel")}>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           {(
             [
               {
@@ -289,6 +288,13 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                 href: `/${data.locale}/dashboard/group/${data.groupId}/picks`,
                 title: t("actions.picks"),
                 meta: data.picksComplete ? t("actions.completed") : t("actions.pending"),
+                show: true,
+              },
+              {
+                variant: "info" as const,
+                href: "",
+                title: t("actions.rules"),
+                meta: "",
                 show: true,
               },
               {
@@ -313,6 +319,27 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
               const delayStyle = { animationDelay: `${delayMs}ms` };
               const baseMotion =
                 "animate-page-in motion-reduce:animate-none motion-reduce:transition-none motion-reduce:hover:scale-100";
+
+              if (card.variant === "info") {
+                return (
+                  <div
+                    key="rules-info"
+                    style={delayStyle}
+                    className={`${baseMotion} flex min-h-[100px] flex-col rounded-xl border border-dark-600 bg-dark-800 p-4 opacity-90`}
+                  >
+                    <span className="text-sm font-semibold text-white">{card.title}</span>
+                    <span className="mt-2 text-xs leading-snug text-slate-400">
+                      {t("actions.rulesResult", { points: data.pointsResult })}
+                    </span>
+                    <span className="text-xs leading-snug text-slate-400">
+                      {t("actions.rulesDifference", { points: data.pointsDiff })}
+                    </span>
+                    <span className="text-xs leading-snug text-slate-400">
+                      {t("actions.rulesExact", { points: data.pointsExact })}
+                    </span>
+                  </div>
+                );
+              }
 
               if (card.variant === "predict") {
                 const predictLabel = card.title.replace(/^🎯\s*/, "");
@@ -459,24 +486,6 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                   >
                     {t("recentResults.points", { points: row.pointsEarned })}
                   </span>
-                  {row.virtualPnl != null ? (
-                    <span
-                      className={`ml-1.5 font-mono tabular-nums ${
-                        row.virtualPnl > 0
-                          ? "text-emerald-400"
-                          : row.virtualPnl < 0
-                            ? "text-red-400"
-                            : "text-slate-500"
-                      }`}
-                    >
-                      💰{" "}
-                      {row.virtualPnl > 0
-                        ? tVirtual("profit", { amount: row.virtualPnl.toFixed(2) })
-                        : row.virtualPnl < 0
-                          ? tVirtual("loss", { amount: Math.abs(row.virtualPnl).toFixed(2) })
-                          : tVirtual("profit", { amount: "0.00" })}
-                    </span>
-                  ) : null}
                 </p>
               </li>
             ))}

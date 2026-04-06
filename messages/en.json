@@ -266,6 +266,10 @@
       "completed": "Completed ✓",
       "pending": "Pending",
       "adminHint": "Manage results",
+      "rules": "📋 Rules",
+      "rulesResult": "Result: {points} pts",
+      "rulesDifference": "Difference: {points} pts",
+      "rulesExact": "Exact: {points} pts",
       "bracket": "🏟️ Bracket",
       "bracketStatus": {
         "comingSoon": "Coming soon",
@@ -378,7 +382,7 @@
   "VirtualBets": {
     "tab": {
       "points": "🏆 Points",
-      "virtualBets": "💰 Virtual bets"
+      "virtualBets": "💰 Virtual trader"
     },
     "disclaimer": "🎮 Simulation with a virtual €1 bet per match. No real money.",
     "profit": "+€{amount}",

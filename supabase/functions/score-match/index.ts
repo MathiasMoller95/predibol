@@ -31,7 +31,11 @@ type MatchRow = {
   status: string;
   knockout_label: string | null;
   advancing_team: string | null;
+  ai_home_score: number | null;
+  ai_away_score: number | null;
 };
+
+const AI_PLAYER_ID = "00000000-0000-0000-0000-000000000001";
 
 type GroupRow = {
   id: string;
@@ -190,7 +194,7 @@ Deno.serve(async (req: Request) => {
   const { data: match, error: matchErr } = await supabase
     .from("matches")
     .select(
-      "id, phase, home_score, away_score, home_team, away_team, status, knockout_label, advancing_team",
+      "id, phase, home_score, away_score, home_team, away_team, status, knockout_label, advancing_team, ai_home_score, ai_away_score",
     )
     .eq("id", matchId)
     .maybeSingle();
@@ -310,6 +314,52 @@ Deno.serve(async (req: Request) => {
           });
         }
       }
+    }
+  }
+
+  // --- AI Player: auto-insert predictions for every group ---
+  if (m.ai_home_score != null && m.ai_away_score != null) {
+    const aiHome = m.ai_home_score;
+    const aiAway = m.ai_away_score;
+
+    for (const gid of groupIds) {
+      const g = groupMap.get(gid);
+      if (!g) continue;
+
+      // Ensure AI player is a member of this group
+      await supabase.from("group_members").upsert(
+        { group_id: gid, user_id: AI_PLAYER_ID, role: "member" },
+        { onConflict: "group_id,user_id" }
+      );
+
+      // Calculate AI points for this match
+      let aiPts = computePointsForPrediction(H, A, m.phase, aiHome, aiAway, null, g);
+      aiPts += knockoutAdvancingBonus(H, A, m.phase, actualAdvancing, {
+        id: "",
+        user_id: AI_PLAYER_ID,
+        group_id: gid,
+        match_id: matchId,
+        predicted_home: aiHome,
+        predicted_away: aiAway,
+        predicted_winner: null,
+        predicted_advancing: null,
+        points_earned: 0,
+      }, g);
+
+      // Upsert AI prediction row for audit trail
+      await supabase.from("predictions").upsert(
+        {
+          user_id: AI_PLAYER_ID,
+          group_id: gid,
+          match_id: matchId,
+          predicted_home: aiHome,
+          predicted_away: aiAway,
+          predicted_winner: null,
+          predicted_advancing: null,
+          points_earned: aiPts,
+        },
+        { onConflict: "user_id,group_id,match_id" }
+      );
     }
   }
 
