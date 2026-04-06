@@ -291,10 +291,10 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                 show: true,
               },
               {
-                variant: "info" as const,
-                href: "",
+                variant: "default" as const,
+                href: `/${data.locale}/dashboard/group/${data.groupId}/rules`,
                 title: t("actions.rules"),
-                meta: "",
+                meta: t("actions.rulesSubtitle"),
                 show: true,
               },
               {
@@ -319,27 +319,6 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
               const delayStyle = { animationDelay: `${delayMs}ms` };
               const baseMotion =
                 "animate-page-in motion-reduce:animate-none motion-reduce:transition-none motion-reduce:hover:scale-100";
-
-              if (card.variant === "info") {
-                return (
-                  <div
-                    key="rules-info"
-                    style={delayStyle}
-                    className={`${baseMotion} flex min-h-[100px] flex-col rounded-xl border border-dark-600 bg-dark-800 p-4 opacity-90`}
-                  >
-                    <span className="text-sm font-semibold text-white">{card.title}</span>
-                    <span className="mt-2 text-xs leading-snug text-slate-400">
-                      {t("actions.rulesResult", { points: data.pointsResult })}
-                    </span>
-                    <span className="text-xs leading-snug text-slate-400">
-                      {t("actions.rulesDifference", { points: data.pointsDiff })}
-                    </span>
-                    <span className="text-xs leading-snug text-slate-400">
-                      {t("actions.rulesExact", { points: data.pointsExact })}
-                    </span>
-                  </div>
-                );
-              }
 
               if (card.variant === "predict") {
                 const predictLabel = card.title.replace(/^🎯\s*/, "");

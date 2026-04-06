@@ -267,6 +267,7 @@
       "pending": "Pendente",
       "adminHint": "Gerenciar resultados",
       "rules": "📋 Regras",
+      "rulesSubtitle": "Ver regras e exemplos",
       "rulesResult": "Resultado: {points} pts",
       "rulesDifference": "Diferença: {points} pts",
       "rulesExact": "Exato: {points} pts",
@@ -298,6 +299,88 @@
       "title": "Convide mais jogadores",
       "copied": "Link copiado",
       "copyFailed": "Não foi possível copiar"
+    }
+  },
+  "Rules": {
+    "back": "← Voltar para {groupName}",
+    "title": "📋 Regras do jogo",
+    "subtitle": "Como os pontos são calculados em {groupName}",
+    "matches": {
+      "title": "⚽ Previsões de jogos",
+      "description": "Os pontos se acumulam. Se você acertar o placar exato, recebe os três bônus.",
+      "additive": "Os pontos são aditivos: se você acertar o placar exato, também ganha os pontos de resultado certo e diferença certa.",
+      "maximum": "Máximo por jogo: {total} pontos",
+      "result": {
+        "label": "Resultado certo",
+        "points": "{points} pts",
+        "description": "Você prevê quem vence (ou o empate)."
+      },
+      "difference": {
+        "label": "Diferença certa",
+        "points": "{points} pts",
+        "description": "A diferença de gols coincide com o jogo (ex.: 2-0 e 3-1 têm diferença 2)."
+      },
+      "exact": {
+        "label": "Placar exato",
+        "points": "{points} pts",
+        "description": "Você prevê o placar final exato."
+      }
+    },
+    "example": {
+      "title": "🧮 Exemplo interativo",
+      "actualResultCaption": "Exemplo fixo — resultado real",
+      "colPrediction": "Sua previsão",
+      "colResult": "Resultado",
+      "colDifference": "Diferença",
+      "colExact": "Exato",
+      "colTotal": "Total",
+      "rows": {
+        "exact": "Placar exato",
+        "sameDiff": "Mesma diferença de gols",
+        "resultNarrow": "Só vencedor certo",
+        "resultWide": "Só vencedor (margem diferente)",
+        "drawWrong": "Erro — previu empate",
+        "awayWrong": "Erro — previu o outro vencedor"
+      },
+      "tryYourPrediction": "Teste sua previsão",
+      "fixedActual": "Resultado real: {home} - {away}",
+      "yourPrediction": "Sua previsão:",
+      "inputHomeAria": "Gols mandante",
+      "inputAwayAria": "Gols visitante",
+      "lineResult": "Resultado certo: {mark} (+{points} pts)",
+      "lineDifference": "Diferença certa: {mark} (+{points} pts)",
+      "lineExact": "Placar exato: {mark} (+{points} pts)",
+      "lineTotal": "Total: {total} pontos",
+      "enterPredictionHint": "Digite os dois placares para ver quantos pontos você ganharia."
+    },
+    "knockout": {
+      "title": "🏟️ Fase eliminatória",
+      "description": "Nas eliminatórias, você prevê o resultado dos 90 minutos.",
+      "drawRule": "Se prever empate, deve escolher qual time avança (prorrogação / pênaltis).",
+      "bonus": "Bônus: se você acertar o empate e o time que avança, ganha {points} pontos extras."
+    },
+    "picks": {
+      "title": "⭐ Campeão e mais",
+      "description": "Antes do torneio você pode escolher vencedores em várias categorias. Os pontos são atribuídos no final do torneio.",
+      "tbd": "Pontos por categoria: a confirmar",
+      "champion": "🏆 Campeão — quem vence a Copa",
+      "runnerUp": "🥈 Vice-campeão — o finalista",
+      "thirdPlace": "🥉 Terceiro lugar",
+      "topScorer": "⚽ Artilheiro",
+      "bestPlayer": "🌟 Melhor jogador",
+      "bestGoalkeeper": "🧤 Melhor goleiro"
+    },
+    "tiebreakers": {
+      "title": "⚖️ Desempate",
+      "description": "Se dois jogadores têm os mesmos pontos, o desempate é assim:",
+      "rule1": "Mais placares exatos",
+      "rule2": "Mais resultados corretos",
+      "rule3": "Previsão enviada primeiro"
+    },
+    "virtualTrader": {
+      "title": "💰 Trader virtual",
+      "description": "Por diversão, simulamos uma aposta virtual de €1 em cada jogo. Você pode ver seu P&L fictício na aba \"{tab}\" do ranking.",
+      "disclaimer": "Sem dinheiro real — só para se gabar."
     }
   },
   "Discover": {

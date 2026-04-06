@@ -267,6 +267,7 @@
       "pending": "Pending",
       "adminHint": "Manage results",
       "rules": "📋 Rules",
+      "rulesSubtitle": "View rules & examples",
       "rulesResult": "Result: {points} pts",
       "rulesDifference": "Difference: {points} pts",
       "rulesExact": "Exact: {points} pts",
@@ -298,6 +299,88 @@
       "title": "Invite more players",
       "copied": "Link copied",
       "copyFailed": "Could not copy"
+    }
+  },
+  "Rules": {
+    "back": "← Back to {groupName}",
+    "title": "📋 Game Rules",
+    "subtitle": "How points are calculated in {groupName}",
+    "matches": {
+      "title": "⚽ Match predictions",
+      "description": "Points stack up. If you nail the exact score, you earn all three bonuses.",
+      "additive": "Points are additive: if you get the exact score, you also earn points for correct result and correct goal difference.",
+      "maximum": "Maximum per match: {total} points",
+      "result": {
+        "label": "Correct result",
+        "points": "{points} pts",
+        "description": "You predict who wins (or a draw)."
+      },
+      "difference": {
+        "label": "Correct goal difference",
+        "points": "{points} pts",
+        "description": "The margin between goals matches the actual match (e.g. 2-0 and 3-1 both have a difference of 2)."
+      },
+      "exact": {
+        "label": "Exact score",
+        "points": "{points} pts",
+        "description": "You predict the exact final scoreline."
+      }
+    },
+    "example": {
+      "title": "🧮 Interactive example",
+      "actualResultCaption": "Fixed example — actual result",
+      "colPrediction": "Your prediction",
+      "colResult": "Result",
+      "colDifference": "Difference",
+      "colExact": "Exact",
+      "colTotal": "Total",
+      "rows": {
+        "exact": "Exact score",
+        "sameDiff": "Same goal difference",
+        "resultNarrow": "Correct winner only",
+        "resultWide": "Correct winner only (different margin)",
+        "drawWrong": "Wrong — predicted draw",
+        "awayWrong": "Wrong — predicted other winner"
+      },
+      "tryYourPrediction": "Try your prediction",
+      "fixedActual": "Actual result: {home} - {away}",
+      "yourPrediction": "Your prediction:",
+      "inputHomeAria": "Home goals",
+      "inputAwayAria": "Away goals",
+      "lineResult": "Correct result: {mark} (+{points} pts)",
+      "lineDifference": "Correct goal difference: {mark} (+{points} pts)",
+      "lineExact": "Exact score: {mark} (+{points} pts)",
+      "lineTotal": "Total: {total} points",
+      "enterPredictionHint": "Enter both scores to see how many points you would get."
+    },
+    "knockout": {
+      "title": "🏟️ Knockout stage",
+      "description": "In knockout matches, you predict the 90-minute result.",
+      "drawRule": "If you predict a draw, you must choose which team advances (extra time / penalties).",
+      "bonus": "Bonus: if you correctly predict a draw and the advancing team, you earn {points} extra points."
+    },
+    "picks": {
+      "title": "⭐ Champion & more",
+      "description": "Before the tournament, you can pick winners in several categories. Points for these categories are awarded at the end of the tournament.",
+      "tbd": "Points per category: TBD",
+      "champion": "🏆 Champion — who wins the World Cup",
+      "runnerUp": "🥈 Runner-up — the finalist",
+      "thirdPlace": "🥉 Third place",
+      "topScorer": "⚽ Top scorer",
+      "bestPlayer": "🌟 Best player",
+      "bestGoalkeeper": "🧤 Best goalkeeper"
+    },
+    "tiebreakers": {
+      "title": "⚖️ Tiebreakers",
+      "description": "If two players have the same total points, ties are broken in this order:",
+      "rule1": "Most exact scores",
+      "rule2": "Most correct results",
+      "rule3": "Earliest prediction submitted"
+    },
+    "virtualTrader": {
+      "title": "💰 Virtual Trader",
+      "description": "For fun, we simulate a virtual €1 bet on each match. You can see your fictional P&L in the \"{tab}\" tab on the leaderboard.",
+      "disclaimer": "No real money — just bragging rights."
     }
   },
   "Discover": {

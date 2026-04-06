@@ -267,6 +267,7 @@
       "pending": "Pendiente",
       "adminHint": "Gestionar resultados",
       "rules": "📋 Reglas",
+      "rulesSubtitle": "Ver reglas y ejemplos",
       "rulesResult": "Resultado: {points} pts",
       "rulesDifference": "Diferencia: {points} pts",
       "rulesExact": "Exacto: {points} pts",
@@ -298,6 +299,88 @@
       "title": "Invita a más jugadores",
       "copied": "Enlace copiado",
       "copyFailed": "No se pudo copiar"
+    }
+  },
+  "Rules": {
+    "back": "← Volver a {groupName}",
+    "title": "📋 Reglas del juego",
+    "subtitle": "Así se calculan los puntos en {groupName}",
+    "matches": {
+      "title": "⚽ Predicciones de partidos",
+      "description": "Los puntos se suman. Si aciertas el marcador exacto, recibes los tres bonos.",
+      "additive": "Los puntos son aditivos: si aciertas el marcador exacto, también ganas los puntos por resultado correcto y diferencia correcta.",
+      "maximum": "Máximo por partido: {total} puntos",
+      "result": {
+        "label": "Resultado correcto",
+        "points": "{points} pts",
+        "description": "Aciertas quién gana (o el empate)."
+      },
+      "difference": {
+        "label": "Diferencia correcta",
+        "points": "{points} pts",
+        "description": "La diferencia de goles coincide con el partido (p. ej. 2-0 y 3-1 tienen diferencia 2)."
+      },
+      "exact": {
+        "label": "Marcador exacto",
+        "points": "{points} pts",
+        "description": "Aciertas el resultado final exacto."
+      }
+    },
+    "example": {
+      "title": "🧮 Ejemplo interactivo",
+      "actualResultCaption": "Ejemplo fijo — resultado real",
+      "colPrediction": "Tu predicción",
+      "colResult": "Resultado",
+      "colDifference": "Diferencia",
+      "colExact": "Exacto",
+      "colTotal": "Total",
+      "rows": {
+        "exact": "Marcador exacto",
+        "sameDiff": "Misma diferencia de goles",
+        "resultNarrow": "Solo ganador correcto",
+        "resultWide": "Solo ganador (margen distinto)",
+        "drawWrong": "Fallo — predijiste empate",
+        "awayWrong": "Fallo — predijiste al otro ganador"
+      },
+      "tryYourPrediction": "Prueba tu predicción",
+      "fixedActual": "Resultado real: {home} - {away}",
+      "yourPrediction": "Tu predicción:",
+      "inputHomeAria": "Goles local",
+      "inputAwayAria": "Goles visitante",
+      "lineResult": "Resultado correcto: {mark} (+{points} pts)",
+      "lineDifference": "Diferencia correcta: {mark} (+{points} pts)",
+      "lineExact": "Marcador exacto: {mark} (+{points} pts)",
+      "lineTotal": "Total: {total} puntos",
+      "enterPredictionHint": "Introduce ambos marcadores para ver cuántos puntos obtendrías."
+    },
+    "knockout": {
+      "title": "🏟️ Fase eliminatoria",
+      "description": "En los partidos de eliminación directa, predices el resultado de los 90 minutos.",
+      "drawRule": "Si predices empate, debes elegir qué equipo avanza (prórroga / penales).",
+      "bonus": "Bono: si aciertas el empate y el equipo que avanza, ganas {points} puntos extra."
+    },
+    "picks": {
+      "title": "⭐ Campeón y más",
+      "description": "Antes del torneo puedes elegir ganadores en varias categorías. Los puntos se asignan al final del torneo.",
+      "tbd": "Puntos por categoría: por confirmar",
+      "champion": "🏆 Campeón — quién gana el Mundial",
+      "runnerUp": "🥈 Subcampeón — el finalista",
+      "thirdPlace": "🥉 Tercer lugar",
+      "topScorer": "⚽ Máximo goleador",
+      "bestPlayer": "🌟 Mejor jugador",
+      "bestGoalkeeper": "🧤 Mejor portero"
+    },
+    "tiebreakers": {
+      "title": "⚖️ Desempate",
+      "description": "Si dos jugadores tienen los mismos puntos, se desempata así:",
+      "rule1": "Más marcadores exactos",
+      "rule2": "Más resultados correctos",
+      "rule3": "Predicción enviada primero"
+    },
+    "virtualTrader": {
+      "title": "💰 Trader virtual",
+      "description": "Por diversión, simulamos una apuesta virtual de €1 en cada partido. Puedes ver tu P&L ficticio en la pestaña \"{tab}\" del ranking.",
+      "disclaimer": "Sin dinero real — solo para presumir."
     }
   },
   "Discover": {
