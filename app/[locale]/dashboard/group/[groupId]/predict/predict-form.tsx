@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/toast-provider";
 import { formatMatchTime } from "@/lib/format-match-time";
@@ -264,6 +264,15 @@ export default function PredictForm({
   const [spyResults, setSpyResults] = useState<Record<string, { home: number; away: number; shielded: boolean } | null>>({});
   const [spyModalMatchId, setSpyModalMatchId] = useState<string | null>(null);
   const [powerBusy, setPowerBusy] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (!spyModalMatchId) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [spyModalMatchId]);
 
   const usedCounts = useMemo(() => {
     const c = { double_down: 0, spy: 0, shield: 0 };
@@ -1459,15 +1468,33 @@ function SpyModal({
   onClose: () => void;
   tp: TranslationFn;
 }) {
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/60" />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <div
-        className="relative z-10 w-full max-w-sm rounded-t-2xl bg-dark-800 p-5 sm:rounded-2xl"
+        ref={cardRef}
+        className="animate-page-in relative w-full max-w-sm overflow-hidden rounded-xl bg-[#111720] p-6 mx-4 max-h-[70vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-3 top-3 rounded-md border border-dark-600 bg-dark-900/40 px-2 py-1 text-sm font-semibold text-slate-300 hover:bg-dark-700"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+
         <h3 className="text-sm font-semibold text-white">{tp("spy.selectTarget")}</h3>
-        <div className="mt-4 max-h-60 space-y-2 overflow-y-auto">
+        <div className="mt-4 space-y-2">
           {groupMembers.map((m) => (
             <button
               key={m.userId}
@@ -1482,13 +1509,6 @@ function SpyModal({
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="mt-4 w-full rounded-lg border border-dark-600 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-dark-700"
-        >
-          ✕
-        </button>
       </div>
     </div>
   );

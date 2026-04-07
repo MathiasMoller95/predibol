@@ -230,6 +230,7 @@ export default function LandingPage({ locale }: Props) {
   const [theme, setTheme] = useState<LandingTheme>("dark");
   const [mounted, setMounted] = useState(false);
   const [remaining, setRemaining] = useState(() => KICKOFF_UTC_MS - Date.now());
+  const [groupCount, setGroupCount] = useState(0);
 
   useEffect(() => {
     setMounted(true);
@@ -237,6 +238,10 @@ export default function LandingPage({ locale }: Props) {
     if (stored === "light" || stored === "dark") {
       setTheme(stored);
     }
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => setGroupCount(d.groups ?? 0))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -328,8 +333,17 @@ export default function LandingPage({ locale }: Props) {
       </header>
 
       <main>
+        {/* Live counter pill */}
+        {groupCount >= 10 && (
+          <div className="flex justify-center px-4 pt-4">
+            <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
+              {t("stats.groupsCreated", { count: groupCount })}
+            </span>
+          </div>
+        )}
+
         {/* Hero */}
-        <section className="relative overflow-x-hidden px-4 pb-20 pt-12 sm:pt-16 md:pb-28 md:pt-20">
+        <section className={`relative overflow-x-hidden px-4 pb-20 ${groupCount >= 10 ? "pt-6 sm:pt-10 md:pt-14" : "pt-12 sm:pt-16 md:pt-20"}`}>
           {/* Subtle radial backdrop — works with Option A; strengthens hero if Option B (emoji-only) is removed */}
           <div
             className="pointer-events-none absolute left-1/2 top-0 z-0 h-[min(28rem,55vh)] w-full max-w-3xl -translate-x-1/2 bg-[radial-gradient(ellipse_80%_70%_at_50%_28%,rgba(16,185,129,0.05),transparent_72%)]"
@@ -453,6 +467,76 @@ export default function LandingPage({ locale }: Props) {
           </div>
         </section>
 
+        {/* Differentiators */}
+        <section
+          id="differentiators"
+          data-landing-reveal
+          className="landing-reveal relative overflow-hidden border-t px-4 py-16 sm:py-20"
+          style={{ borderColor: "var(--landing-border-subtle)" }}
+        >
+          <div className="relative mx-auto max-w-6xl">
+            <h2 className="text-center text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
+              {t("differentiators.title")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-lg text-center text-base" style={{ color: "var(--landing-text-muted)" }}>
+              {t("differentiators.subtitle")}
+            </p>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {/* Superpowers */}
+              <div
+                className="group rounded-xl border-l-4 border-amber-500 p-8 shadow-lg shadow-amber-500/10 transition hover:scale-[1.02] hover:shadow-xl hover:shadow-amber-500/15"
+                style={{ backgroundColor: "var(--landing-card)", borderRightWidth: 1, borderTopWidth: 1, borderBottomWidth: 1, borderRightColor: "var(--landing-border-subtle)", borderTopColor: "var(--landing-border-subtle)", borderBottomColor: "var(--landing-border-subtle)" }}
+              >
+                <span className="text-5xl" aria-hidden>⚡</span>
+                <h3 className="mt-4 text-lg font-bold" style={{ color: "var(--landing-text-heading)" }}>
+                  {t("differentiators.superpowers.title")}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--landing-text-muted)" }}>
+                  {t("differentiators.superpowers.description")}
+                </p>
+              </div>
+
+              {/* Album */}
+              <div
+                className="group rounded-xl border-l-4 border-emerald-500 p-8 shadow-lg shadow-emerald-500/10 transition hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/15"
+                style={{ backgroundColor: "var(--landing-card)", borderRightWidth: 1, borderTopWidth: 1, borderBottomWidth: 1, borderRightColor: "var(--landing-border-subtle)", borderTopColor: "var(--landing-border-subtle)", borderBottomColor: "var(--landing-border-subtle)" }}
+              >
+                <span className="text-5xl" aria-hidden>🎴</span>
+                <h3 className="mt-4 text-lg font-bold" style={{ color: "var(--landing-text-heading)" }}>
+                  {t("differentiators.album.title")}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--landing-text-muted)" }}>
+                  {t("differentiators.album.description")}
+                </p>
+                <p className="mt-3 text-lg" aria-hidden>🥉🥈🥇</p>
+              </div>
+
+              {/* AI */}
+              <div
+                className="group rounded-xl border-l-4 border-purple-500 p-8 shadow-lg shadow-purple-500/10 transition hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/15"
+                style={{ backgroundColor: "var(--landing-card)", borderRightWidth: 1, borderTopWidth: 1, borderBottomWidth: 1, borderRightColor: "var(--landing-border-subtle)", borderTopColor: "var(--landing-border-subtle)", borderBottomColor: "var(--landing-border-subtle)" }}
+              >
+                <span className="text-5xl" aria-hidden>🤖</span>
+                <h3 className="mt-4 text-lg font-bold" style={{ color: "var(--landing-text-heading)" }}>
+                  {t("differentiators.ai.title")}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--landing-text-muted)" }}>
+                  {t("differentiators.ai.description")}
+                </p>
+              </div>
+            </div>
+
+            {/* Comparison tagline */}
+            <p className="mx-auto mt-14 max-w-xl text-center text-xl italic text-gray-400">
+              {t.rich("differentiators.comparison", {
+                brand: (chunks) => <span className="font-bold not-italic text-emerald-400">{chunks}</span>,
+                action: (chunks) => <span className="font-bold not-italic text-white">{chunks}</span>,
+              })}
+            </p>
+          </div>
+        </section>
+
         {/* Features */}
         <section id="features" data-landing-reveal className="landing-reveal relative overflow-hidden px-4 py-16 sm:py-20">
           <div className="landing-mini-ball landing-mini-ball--c pointer-events-none absolute right-[3%] top-[22%] opacity-[0.09]" aria-hidden>
@@ -534,7 +618,10 @@ export default function LandingPage({ locale }: Props) {
                 >
                   {t("cta.button")}
                 </Link>
-                <p className="mt-4 text-center text-xs" style={{ color: "var(--landing-text-subtle)" }}>
+                <p className="mt-3 text-center text-sm text-gray-500">
+                  {t("cta.features")}
+                </p>
+                <p className="mt-2 text-center text-xs" style={{ color: "var(--landing-text-subtle)" }}>
                   {t("cta.belowButton")}
                 </p>
               </div>

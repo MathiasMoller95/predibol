@@ -87,13 +87,32 @@
       "matchesLabel": "matches",
       "groupsNumber": "12",
       "groupsLabel": "groups",
-      "body": "For the first time, 48 nations step up. More matches, more banter, more room to prove your friends wrong."
+      "body": "For the first time, 48 nations step up. More matches, more banter, more room to prove your friends wrong.",
+      "groupsCreated": "🔥 {count} groups created"
+    },
+    "differentiators": {
+      "title": "Not just another prediction platform",
+      "subtitle": "The first prediction platform built as a game.",
+      "superpowers": {
+        "title": "Strategic Superpowers",
+        "description": "Double your points with Double Down, spy on your rivals' predictions, or protect yours with Shield. 7 powers per tournament — use them wisely."
+      },
+      "album": {
+        "title": "Digital Sticker Album",
+        "description": "Collect all 48 World Cup teams. Bronze, Silver, or Gold based on your accuracy. Can you complete the album?"
+      },
+      "ai": {
+        "title": "Compete Against the AI",
+        "description": "An AI player with data-driven predictions. It shows up on your leaderboard as a benchmark. Can you beat the machine?"
+      },
+      "comparison": "Other platforms let you predict. <brand>Predibol</brand> lets you <action>play</action>."
     },
     "cta": {
       "title": "Who knows football best in your group?",
       "subtitle": "There's only one way to find out.",
       "button": "Create free account",
-      "belowButton": "100% free · Less than 1 minute"
+      "belowButton": "100% free · Less than 1 minute",
+      "features": "⚡ Superpowers · 🎴 Album · 🤖 AI rival"
     },
     "footer": {
       "copyright": "© 2026 Predibol",
@@ -200,7 +219,8 @@
     "privateDescription": "Only people with the invite link can join",
     "groupDescription": "Description",
     "groupDescriptionPlaceholder": "Describe your group so others can find it",
-    "groupDescriptionHelp": "Max 200 characters. Shown on the discovery page."
+    "groupDescriptionHelp": "Max 200 characters. Shown on the discovery page.",
+    "backToDashboard": "Back to dashboard"
   },
   "AccessCode": {
     "title": "Group access",
@@ -409,6 +429,32 @@
       "title": "💰 Virtual Trader",
       "description": "For fun, we simulate a virtual €1 bet on each match. You can see your fictional P&L in the \"{tab}\" tab on the leaderboard.",
       "disclaimer": "No real money — just bragging rights."
+    },
+    "superpowers": {
+      "title": "⚡ Superpowers",
+      "uses": "{count} uses",
+      "doubleDown": "Double your points on a match. Use it on matches where you're most confident.",
+      "spy": "Spy on another player's prediction before the match locks. Careful, they might be shielded!",
+      "shield": "Protect your prediction so no one can spy on it. Use it on matches where you want to keep your strategy secret.",
+      "note": "Superpowers can only be used on matches that aren't locked yet."
+    },
+    "album": {
+      "title": "🎴 Sticker Album",
+      "description": "Every time you earn points on a match, you unlock stickers for both teams that played.",
+      "bronze": "🥉 Bronze — Correct result",
+      "silver": "🥈 Silver — Correct goal difference",
+      "gold": "🥇 Gold — Exact score",
+      "upgradeOnly": "Stickers only upgrade, never downgrade. Try to get all 48 teams in Gold!",
+      "compare": "You can compare your album with other players in your group."
+    },
+    "adminPowers": {
+      "title": "👑 Admin Powers",
+      "enterResults": "Enter match results and trigger scoring",
+      "pendingPredictions": "See which players have pending predictions",
+      "accessCode": "Manage the group access code (if protected)",
+      "reminders": "Send prediction reminders (test tool)",
+      "knockoutTeams": "Resolve knockout stage teams",
+      "deleteGroup": "Delete the group"
     }
   },
   "Discover": {
@@ -451,6 +497,8 @@
       "mostCorrectResults": "Most correct results",
       "earliestSubmission": "Earliest submission"
     },
+    "limitReached": "You've reached the limit of {max} groups",
+    "limitDescription": "Delete an existing group to create a new one.",
     "errors": {
       "missingRequired": "Please complete the required fields.",
       "createFailed": "Could not create the group.",
@@ -670,6 +718,16 @@
       "awayTeam": "Away team",
       "saveTeams": "Save teams",
       "drawPickAdvancing": "Draw — pick which team advances (ET / pens)."
+    },
+    "dangerZone": {
+      "title": "⚠️ Danger Zone",
+      "deleteGroup": "Delete group",
+      "confirmTitle": "Delete this group?",
+      "confirmWarning": "This action cannot be undone. All predictions, rankings, and group data will be deleted.",
+      "typeGroupName": "Type the group name to confirm",
+      "deletePermanently": "Delete permanently",
+      "deleted": "Group deleted",
+      "cancel": "Cancel"
     }
   },
   "Dashboard": {

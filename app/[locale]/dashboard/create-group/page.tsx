@@ -1,12 +1,14 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useToast } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
+import { MAX_GROUPS_PER_USER } from "@/lib/constants";
 import type { GroupAccessMode } from "@/types/supabase";
 
 type TiebreakerRule = "most_exact_scores" | "most_correct_results" | "earliest_submission";
@@ -97,6 +99,25 @@ export default function CreateGroupPage() {
   const [error, setError] = useState<string | null>(null);
   const [accessMode, setAccessMode] = useState<GroupAccessMode>("open");
   const [accessCode, setAccessCode] = useState("");
+  const [limitReached, setLimitReached] = useState(false);
+  const [limitChecked, setLimitChecked] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("groups")
+        .select("id", { count: "exact", head: true })
+        .eq("admin_id", user.id)
+        .then(({ count }) => {
+          if (count != null && count >= MAX_GROUPS_PER_USER) {
+            setLimitReached(true);
+          }
+          setLimitChecked(true);
+        });
+    });
+  }, []);
 
   const canSubmit = useMemo(() => {
     if (form.name.trim().length === 0 || form.slug.trim().length === 0) return false;
@@ -140,6 +161,17 @@ export default function CreateGroupPage() {
 
     if (userError || !user) {
       router.replace(`/${locale}/login`);
+      return;
+    }
+
+    // Server-side limit check
+    const { count: adminCount } = await supabase
+      .from("groups")
+      .select("id", { count: "exact", head: true })
+      .eq("admin_id", user.id);
+    if (adminCount != null && adminCount >= MAX_GROUPS_PER_USER) {
+      setLimitReached(true);
+      setIsSubmitting(false);
       return;
     }
 
@@ -198,6 +230,37 @@ export default function CreateGroupPage() {
 
     showToast(`${t("create.submit")} ✓`, "success");
     router.push(`/${locale}/dashboard/group/${group.id}`);
+  }
+
+  if (limitReached) {
+    return (
+      <main className="min-h-screen bg-dark-900 px-4 py-8">
+        <section className="mx-auto w-full max-w-md rounded-xl border border-amber-500/30 bg-dark-800 p-6 text-center">
+          <span className="text-4xl" aria-hidden>⚠️</span>
+          <h1 className="mt-4 text-xl font-bold text-white">
+            {t("limitReached", { max: MAX_GROUPS_PER_USER })}
+          </h1>
+          <p className="mt-2 text-sm text-slate-400">{t("limitDescription")}</p>
+          <Link
+            href={`/${locale}/dashboard`}
+            className={`mt-6 inline-block rounded-lg bg-emerald-600 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-700 ${PRIMARY_BUTTON_CLASSES}`}
+          >
+            {tc("backToDashboard")}
+          </Link>
+        </section>
+      </main>
+    );
+  }
+
+  if (!limitChecked) {
+    return (
+      <main className="min-h-screen bg-dark-900 px-4 py-8">
+        <div className="mx-auto w-full max-w-2xl animate-pulse rounded-xl border border-dark-600 bg-dark-800 p-6">
+          <div className="h-8 w-48 rounded bg-dark-600" />
+          <div className="mt-4 h-4 w-64 rounded bg-dark-600" />
+        </div>
+      </main>
+    );
   }
 
   return (

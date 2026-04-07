@@ -19,6 +19,9 @@ type GroupRow = {
   pre_tournament_bonus_top_scorer: number | null;
   pre_tournament_bonus_best_player: number | null;
   pre_tournament_bonus_best_goalkeeper: number | null;
+  powers_double_down: number | null;
+  powers_spy: number | null;
+  powers_shield: number | null;
 };
 
 export default async function GroupRulesPage({ params }: Props) {
@@ -39,7 +42,7 @@ export default async function GroupRulesPage({ params }: Props) {
   const { data: group, error: groupError } = await supabase
     .from("groups")
     .select(
-      "name,admin_id,points_correct_result,points_correct_difference,points_exact_score,pre_tournament_bonus_champion,pre_tournament_bonus_runner_up,pre_tournament_bonus_third_place,pre_tournament_bonus_top_scorer,pre_tournament_bonus_best_player,pre_tournament_bonus_best_goalkeeper"
+      "name,admin_id,points_correct_result,points_correct_difference,points_exact_score,pre_tournament_bonus_champion,pre_tournament_bonus_runner_up,pre_tournament_bonus_third_place,pre_tournament_bonus_top_scorer,pre_tournament_bonus_best_player,pre_tournament_bonus_best_goalkeeper,powers_double_down,powers_spy,powers_shield"
     )
     .eq("id", groupId)
     .single();
@@ -48,7 +51,7 @@ export default async function GroupRulesPage({ params }: Props) {
     notFound();
   }
 
-  const typed = group as GroupRow;
+  const typed = group as unknown as GroupRow;
   const { data: membership } = await supabase
     .from("group_members")
     .select("id")
@@ -76,6 +79,10 @@ export default async function GroupRulesPage({ params }: Props) {
       bonusTopScorer={n(typed.pre_tournament_bonus_top_scorer)}
       bonusBestPlayer={n(typed.pre_tournament_bonus_best_player)}
       bonusBestGoalkeeper={n(typed.pre_tournament_bonus_best_goalkeeper)}
+      powersDoubleDown={n(typed.powers_double_down) || 3}
+      powersSpy={n(typed.powers_spy) || 2}
+      powersShield={n(typed.powers_shield) || 2}
+      isAdmin={typed.admin_id === user.id}
     />
   );
 }

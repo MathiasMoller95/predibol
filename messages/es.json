@@ -87,13 +87,32 @@
       "matchesLabel": "partidos",
       "groupsNumber": "12",
       "groupsLabel": "grupos",
-      "body": "Por primera vez, 48 selecciones. Más partidos, más palique y más ganas de demostrar que tenías razón."
+      "body": "Por primera vez, 48 selecciones. Más partidos, más palique y más ganas de demostrar que tenías razón.",
+      "groupsCreated": "🔥 {count} grupos creados"
+    },
+    "differentiators": {
+      "title": "No es otra plataforma de predicciones",
+      "subtitle": "La primera plataforma de predicciones diseñada como un juego.",
+      "superpowers": {
+        "title": "Superpoderes estratégicos",
+        "description": "Duplica tus puntos con Double Down, espía las predicciones de tus rivales, o protege las tuyas con el Escudo. 7 poderes por torneo — úsalos con cabeza."
+      },
+      "album": {
+        "title": "Álbum de cromos digital",
+        "description": "Colecciona los 48 equipos del Mundial. Bronce, Plata u Oro según tu puntería. ¿Puedes completar el álbum?"
+      },
+      "ai": {
+        "title": "Compite contra la IA",
+        "description": "Un jugador artificial con predicciones basadas en datos reales. Aparece en tu ranking como benchmark. ¿Puedes ganarle a la máquina?"
+      },
+      "comparison": "Otras plataformas te dejan predecir. <brand>Predibol</brand> te deja <action>jugar</action>."
     },
     "cta": {
       "title": "¿Quién sabe más de fútbol en tu grupo?",
       "subtitle": "Solo hay una forma de descubrirlo.",
       "button": "Crear cuenta gratis",
-      "belowButton": "100% gratis · Menos de 1 minuto"
+      "belowButton": "100% gratis · Menos de 1 minuto",
+      "features": "⚡ Superpoderes · 🎴 Álbum · 🤖 IA rival"
     },
     "footer": {
       "copyright": "© 2026 Predibol",
@@ -200,7 +219,8 @@
     "privateDescription": "Solo quienes tengan el enlace de invitacion pueden unirse",
     "groupDescription": "Descripcion",
     "groupDescriptionPlaceholder": "Describe tu grupo para que otros lo encuentren",
-    "groupDescriptionHelp": "Maximo 200 caracteres. Se muestra en la pagina de descubrimiento."
+    "groupDescriptionHelp": "Maximo 200 caracteres. Se muestra en la pagina de descubrimiento.",
+    "backToDashboard": "Volver al inicio"
   },
   "AccessCode": {
     "title": "Acceso al grupo",
@@ -409,6 +429,32 @@
       "title": "💰 Trader virtual",
       "description": "Por diversión, simulamos una apuesta virtual de €1 en cada partido. Puedes ver tu P&L ficticio en la pestaña \"{tab}\" del ranking.",
       "disclaimer": "Sin dinero real — solo para presumir."
+    },
+    "superpowers": {
+      "title": "⚡ Superpoderes",
+      "uses": "{count} usos",
+      "doubleDown": "Duplica los puntos de un partido. Úsalo en los partidos donde más confianza tengas.",
+      "spy": "Espía la predicción de otro jugador antes de que se bloquee el partido. ¡Cuidado, puede estar protegido con un Escudo!",
+      "shield": "Protege tu predicción para que nadie pueda espiarla. Actívalo en los partidos donde quieras mantener el secreto.",
+      "note": "Los superpoderes solo se pueden usar en partidos que aún no están bloqueados."
+    },
+    "album": {
+      "title": "🎴 Álbum de cromos",
+      "description": "Cada vez que ganas puntos en un partido, desbloqueas los cromos de los dos equipos que jugaron.",
+      "bronze": "🥉 Bronce — Resultado correcto",
+      "silver": "🥈 Plata — Diferencia de goles correcta",
+      "gold": "🥇 Oro — Marcador exacto",
+      "upgradeOnly": "Los cromos solo mejoran, nunca bajan de nivel. ¡Intenta conseguir los 48 equipos en Oro!",
+      "compare": "Puedes comparar tu álbum con el de otros jugadores de tu grupo."
+    },
+    "adminPowers": {
+      "title": "👑 Poderes del admin",
+      "enterResults": "Cargar resultados de partidos y activar el cálculo de puntos",
+      "pendingPredictions": "Ver qué jugadores tienen predicciones pendientes",
+      "accessCode": "Gestionar el código de acceso del grupo (si es protegido)",
+      "reminders": "Enviar recordatorios de predicciones (herramienta de test)",
+      "knockoutTeams": "Definir equipos en la fase eliminatoria",
+      "deleteGroup": "Eliminar el grupo"
     }
   },
   "Discover": {
@@ -451,6 +497,8 @@
       "mostCorrectResults": "Mas resultados correctos",
       "earliestSubmission": "Envio mas temprano"
     },
+    "limitReached": "Has alcanzado el límite de {max} grupos",
+    "limitDescription": "Elimina un grupo existente para crear uno nuevo.",
     "errors": {
       "missingRequired": "Completa los campos obligatorios.",
       "createFailed": "No se pudo crear el grupo.",
@@ -670,6 +718,16 @@
       "awayTeam": "Equipo visitante",
       "saveTeams": "Guardar equipos",
       "drawPickAdvancing": "Empate — elige quién avanza (prórroga / penales)."
+    },
+    "dangerZone": {
+      "title": "⚠️ Zona de peligro",
+      "deleteGroup": "Eliminar grupo",
+      "confirmTitle": "¿Eliminar este grupo?",
+      "confirmWarning": "Esta acción no se puede deshacer. Se eliminarán todas las predicciones, el ranking y los datos del grupo.",
+      "typeGroupName": "Escribe el nombre del grupo para confirmar",
+      "deletePermanently": "Eliminar permanentemente",
+      "deleted": "Grupo eliminado",
+      "cancel": "Cancelar"
     }
   },
   "Dashboard": {

@@ -1,6 +1,8 @@
 export const AI_PLAYER_ID = "00000000-0000-0000-0000-000000000001";
 export const AI_PLAYER_NAME = "🤖 Predibol IA";
 
+export const MAX_GROUPS_PER_USER = 3;
+
 export type PowerType = "double_down" | "spy" | "shield";
 
 export const POWER_TYPES: PowerType[] = ["double_down", "spy", "shield"];

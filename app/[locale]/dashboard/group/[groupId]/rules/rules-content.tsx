@@ -27,6 +27,10 @@ type Props = {
   bonusTopScorer: number;
   bonusBestPlayer: number;
   bonusBestGoalkeeper: number;
+  powersDoubleDown: number;
+  powersSpy: number;
+  powersShield: number;
+  isAdmin: boolean;
 };
 
 type PickCategoryKey =
@@ -78,6 +82,10 @@ export default function RulesContent({
   bonusTopScorer,
   bonusBestPlayer,
   bonusBestGoalkeeper,
+  powersDoubleDown,
+  powersSpy,
+  powersShield,
+  isAdmin,
 }: Props) {
   const t = useTranslations("Rules");
   const tv = useTranslations("VirtualBets");
@@ -366,6 +374,81 @@ export default function RulesContent({
           </p>
           <p className="mt-2 text-sm text-slate-500">{t("virtualTrader.disclaimer")}</p>
         </section>
+
+        {/* Superpowers */}
+        <section className="rounded-xl border border-dark-600 bg-[#111720] p-5 sm:p-6">
+          <h2 className="text-lg font-semibold text-white">{t("superpowers.title")}</h2>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
+              <span className="text-2xl" aria-hidden>⚡</span>
+              <p className="mt-2 font-semibold text-white">
+                x2 Double Down
+                <span className="ml-2 text-xs font-normal text-slate-400">
+                  ({t("superpowers.uses", { count: powersDoubleDown })})
+                </span>
+              </p>
+              <p className="mt-2 text-xs leading-snug text-slate-400">{t("superpowers.doubleDown")}</p>
+            </div>
+            <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4">
+              <span className="text-2xl" aria-hidden>🔍</span>
+              <p className="mt-2 font-semibold text-white">
+                Spy
+                <span className="ml-2 text-xs font-normal text-slate-400">
+                  ({t("superpowers.uses", { count: powersSpy })})
+                </span>
+              </p>
+              <p className="mt-2 text-xs leading-snug text-slate-400">{t("superpowers.spy")}</p>
+            </div>
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
+              <span className="text-2xl" aria-hidden>🛡️</span>
+              <p className="mt-2 font-semibold text-white">
+                Shield
+                <span className="ml-2 text-xs font-normal text-slate-400">
+                  ({t("superpowers.uses", { count: powersShield })})
+                </span>
+              </p>
+              <p className="mt-2 text-xs leading-snug text-slate-400">{t("superpowers.shield")}</p>
+            </div>
+          </div>
+          <p className="mt-4 text-xs text-slate-500">{t("superpowers.note")}</p>
+        </section>
+
+        {/* Sticker Album */}
+        <section className="rounded-xl border border-dark-600 bg-[#111720] p-5 sm:p-6">
+          <h2 className="text-lg font-semibold text-white">{t("album.title")}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">{t("album.description")}</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-amber-800/50 bg-amber-900/10 p-4">
+              <span className="text-2xl" aria-hidden>🥉</span>
+              <p className="mt-2 font-semibold text-white">{t("album.bronze")}</p>
+            </div>
+            <div className="rounded-lg border border-gray-400/50 bg-gray-400/5 p-4">
+              <span className="text-2xl" aria-hidden>🥈</span>
+              <p className="mt-2 font-semibold text-white">{t("album.silver")}</p>
+            </div>
+            <div className="rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4">
+              <span className="text-2xl" aria-hidden>🥇</span>
+              <p className="mt-2 font-semibold text-white">{t("album.gold")}</p>
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-slate-300">{t("album.upgradeOnly")}</p>
+          <p className="mt-2 text-xs text-slate-500">{t("album.compare")}</p>
+        </section>
+
+        {/* Admin Powers (only for admins) */}
+        {isAdmin && (
+          <section className="rounded-xl border border-amber-500/20 bg-[#111720] p-5 sm:p-6">
+            <h2 className="text-lg font-semibold text-white">{t("adminPowers.title")}</h2>
+            <ul className="mt-4 space-y-2 text-sm text-slate-300">
+              <li>• {t("adminPowers.enterResults")}</li>
+              <li>• {t("adminPowers.pendingPredictions")}</li>
+              <li>• {t("adminPowers.accessCode")}</li>
+              <li>• {t("adminPowers.reminders")}</li>
+              <li>• {t("adminPowers.knockoutTeams")}</li>
+              <li>• {t("adminPowers.deleteGroup")}</li>
+            </ul>
+          </section>
+        )}
       </div>
     </main>
   );

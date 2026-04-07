@@ -6,6 +6,7 @@ import type { GroupAccessMode } from "@/types/supabase";
 import AdminMatchPanel, { type AdminMatch, type PredictionLite } from "./admin-match-panel";
 import GroupAccessAdminPanel from "./group-access-admin-panel";
 import ReminderTestButton from "./reminder-test-button";
+import DangerZone from "./danger-zone";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -119,6 +120,8 @@ export default async function GroupAdminResultsPage({ params }: Props) {
         />
 
         <ReminderTestButton />
+
+        <DangerZone groupName={typedGroup.name} />
       </section>
     </main>
   );
