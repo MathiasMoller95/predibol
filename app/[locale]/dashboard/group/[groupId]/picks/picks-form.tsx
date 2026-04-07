@@ -73,7 +73,7 @@ export default function PicksForm({ locked, initial }: Props) {
     }
     setIsSaving(true);
     try {
-      const response = await fetch("./api", {
+      const response = await fetch("picks/api", {
         method: "POST",
         headers: {
           "content-type": "application/json",
