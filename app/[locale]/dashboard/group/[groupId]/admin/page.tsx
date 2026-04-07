@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isSuperAdmin } from "@/lib/auth";
 import type { GroupAccessMode } from "@/types/supabase";
 import AdminMatchPanel, { type AdminMatch, type PredictionLite } from "./admin-match-panel";
 import GroupAccessAdminPanel from "./group-access-admin-panel";
@@ -117,6 +118,7 @@ export default async function GroupAdminResultsPage({ params }: Props) {
           }))}
           predictions={(predictions ?? []) as PredictionLite[]}
           totalMembers={((members ?? []) as MemberRecord[]).length}
+          isSuperAdmin={isSuperAdmin(user.id)}
         />
 
         <ReminderTestButton />

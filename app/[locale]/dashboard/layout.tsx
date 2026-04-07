@@ -31,7 +31,7 @@ export default async function DashboardLayout({ children, params }: Props) {
 
   return (
     <>
-      <Navbar displayName={displayName} email={user.email ?? ""} locale={locale} />
+      <Navbar displayName={displayName} email={user.email ?? ""} locale={locale} userId={user.id} />
       <ToastProvider>
         <div className="pt-14">{children}</div>
         <footer className="border-t border-dark-600/40 py-5">

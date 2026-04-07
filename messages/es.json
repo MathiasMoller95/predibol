@@ -183,7 +183,8 @@
     "logout": "Cerrar sesion",
     "myGroups": "Mis Grupos",
     "discover": "Descubrir",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "superAdmin": "⚙️ Super Admin"
   },
   "SetName": {
     "title": "¿Como te llamamos?",
@@ -719,6 +720,8 @@
       "saveTeams": "Guardar equipos",
       "drawPickAdvancing": "Empate — elige quién avanza (prórroga / penales)."
     },
+    "managedByAdmin": "Los resultados son gestionados por el administrador de la plataforma.",
+    "goToSuperAdmin": "Ir al panel de administración →",
     "dangerZone": {
       "title": "⚠️ Zona de peligro",
       "deleteGroup": "Eliminar grupo",
@@ -862,6 +865,65 @@
         "title": "Contacto",
         "content": "Consultas sobre estos términos: {{contact.email@TBD}}."
       }
+    }
+  },
+  "SuperAdmin": {
+    "title": "Panel de administración",
+    "backToDashboard": "← Volver al dashboard",
+    "metrics": {
+      "totalUsers": "Usuarios totales",
+      "totalGroups": "Grupos totales",
+      "totalMembers": "Miembros totales",
+      "avgMembers": "Media miembros / grupo",
+      "totalPredictions": "Predicciones totales",
+      "avgPredictions": "Media predicciones / usuario",
+      "totalPowers": "Superpoderes usados",
+      "totalStickers": "Cromos recolectados",
+      "matchesFinished": "Partidos finalizados",
+      "matchesScheduled": "Partidos programados",
+      "matchesLive": "Partidos en vivo",
+      "nextMatch": "Próximo partido"
+    },
+    "matches": {
+      "title": "Gestión de resultados",
+      "upcoming": "Próximos",
+      "finished": "Finalizados",
+      "all": "Todos",
+      "markFinished": "Marcar como finalizado",
+      "rescore": "Recalcular",
+      "reset": "Resetear",
+      "resetConfirm": "¿Resetear este partido a programado? Se borrará el marcador.",
+      "scoredSummary": "Partido puntuado. {predictions} predicciones en {groups} grupos actualizados.",
+      "noMatches": "No hay partidos en esta categoría."
+    },
+    "knockout": {
+      "title": "Fase eliminatoria",
+      "resolveTeams": "Resolver equipos",
+      "advancingTeam": "Equipo que avanza",
+      "selectAdvancing": "Selecciona quién avanza antes de marcar como finalizado.",
+      "drawPickAdvancing": "Empate — elige quién avanza.",
+      "homeTeam": "Equipo local",
+      "awayTeam": "Equipo visitante",
+      "pickTeam": "Seleccionar equipo",
+      "saveTeams": "Guardar equipos",
+      "resolved": "Equipos resueltos"
+    },
+    "groups": {
+      "title": "Grupos",
+      "name": "Nombre",
+      "admin": "Admin",
+      "members": "Miembros",
+      "predictions": "Predicciones",
+      "access": "Acceso",
+      "created": "Creado",
+      "open": "Abierto",
+      "protected": "Protegido"
+    },
+    "actions": {
+      "title": "Acciones rápidas",
+      "sendReminders": "Enviar recordatorios ahora",
+      "updateOdds": "Actualizar cuotas (SQL)",
+      "exportData": "Exportar datos (próximamente)"
     }
   }
 }

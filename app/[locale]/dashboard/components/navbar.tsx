@@ -5,14 +5,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
+import { isSuperAdmin } from "@/lib/auth";
 
 type Props = {
   displayName: string;
   email: string;
   locale: string;
+  userId: string;
 };
 
-export default function Navbar({ displayName, email, locale }: Props) {
+export default function Navbar({ displayName, email, locale, userId }: Props) {
   const t = useTranslations("Navbar");
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -46,6 +48,14 @@ export default function Navbar({ displayName, email, locale }: Props) {
         </div>
 
         <div className="flex min-w-0 items-center gap-3">
+          {isSuperAdmin(userId) && (
+            <Link
+              href={`/${locale}/dashboard/super-admin`}
+              className="hidden shrink-0 text-xs font-semibold text-amber-400 transition-colors hover:text-amber-300 sm:inline"
+            >
+              {t("superAdmin")}
+            </Link>
+          )}
           <Link
             href={`/${locale}/dashboard/profile`}
             title={email}

@@ -183,7 +183,8 @@
     "logout": "Log out",
     "myGroups": "My Groups",
     "discover": "Discover",
-    "profile": "Profile"
+    "profile": "Profile",
+    "superAdmin": "⚙️ Super Admin"
   },
   "SetName": {
     "title": "What should we call you?",
@@ -719,6 +720,8 @@
       "saveTeams": "Save teams",
       "drawPickAdvancing": "Draw — pick which team advances (ET / pens)."
     },
+    "managedByAdmin": "Results are managed by the platform administrator.",
+    "goToSuperAdmin": "Go to admin panel →",
     "dangerZone": {
       "title": "⚠️ Danger Zone",
       "deleteGroup": "Delete group",
@@ -862,6 +865,65 @@
         "title": "Contact",
         "content": "Questions about these terms: {{contact.email@TBD}}."
       }
+    }
+  },
+  "SuperAdmin": {
+    "title": "Super Admin Panel",
+    "backToDashboard": "← Back to dashboard",
+    "metrics": {
+      "totalUsers": "Total users",
+      "totalGroups": "Total groups",
+      "totalMembers": "Total members",
+      "avgMembers": "Avg members / group",
+      "totalPredictions": "Total predictions",
+      "avgPredictions": "Avg predictions / user",
+      "totalPowers": "Superpowers used",
+      "totalStickers": "Stickers collected",
+      "matchesFinished": "Matches finished",
+      "matchesScheduled": "Matches scheduled",
+      "matchesLive": "Matches live",
+      "nextMatch": "Next match"
+    },
+    "matches": {
+      "title": "Match Results",
+      "upcoming": "Upcoming",
+      "finished": "Finished",
+      "all": "All",
+      "markFinished": "Mark as finished",
+      "rescore": "Rescore",
+      "reset": "Reset",
+      "resetConfirm": "Reset this match to scheduled? This will clear the score.",
+      "scoredSummary": "Match scored. {predictions} predictions across {groups} groups updated.",
+      "noMatches": "No matches in this category."
+    },
+    "knockout": {
+      "title": "Knockout stage",
+      "resolveTeams": "Resolve teams",
+      "advancingTeam": "Advancing team",
+      "selectAdvancing": "Select who advances before marking finished.",
+      "drawPickAdvancing": "Draw — pick which team advances.",
+      "homeTeam": "Home team",
+      "awayTeam": "Away team",
+      "pickTeam": "Select team",
+      "saveTeams": "Save teams",
+      "resolved": "Teams resolved"
+    },
+    "groups": {
+      "title": "Groups",
+      "name": "Name",
+      "admin": "Admin",
+      "members": "Members",
+      "predictions": "Predictions",
+      "access": "Access",
+      "created": "Created",
+      "open": "Open",
+      "protected": "Protected"
+    },
+    "actions": {
+      "title": "Quick Actions",
+      "sendReminders": "Send reminders now",
+      "updateOdds": "Update odds (run SQL)",
+      "exportData": "Export data (coming soon)"
     }
   }
 }
