@@ -271,6 +271,17 @@ Deno.serve(async (req: Request) => {
       g
     );
     pts += knockoutAdvancingBonus(H, A, m.phase, actualAdvancing, p, g);
+
+    const { data: ddPower } = await supabase
+      .from("power_usage")
+      .select("id")
+      .eq("user_id", p.user_id)
+      .eq("group_id", p.group_id)
+      .eq("match_id", matchId)
+      .eq("power_type", "double_down")
+      .maybeSingle();
+    if (ddPower) pts *= 2;
+
     const { error: upErr } = await supabase.from("predictions").update({ points_earned: pts }).eq("id", p.id);
     if (upErr) {
       return new Response(JSON.stringify({ error: upErr.message }), {

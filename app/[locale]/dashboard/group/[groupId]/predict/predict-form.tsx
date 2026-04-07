@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/toast-provider";
 import { formatMatchTime } from "@/lib/format-match-time";
@@ -8,6 +8,7 @@ import { formatGroupOddsCompactLine } from "@/lib/group-match-odds";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 import { getFlag, getGroup } from "@/lib/team-metadata";
+import type { PowerType } from "@/lib/constants";
 
 const SCORE_INPUT_CLASS =
   "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50";
@@ -69,11 +70,21 @@ type FinishedPickRow = MatchRecord & {
   predicted_away: number;
 };
 
+export type GroupMember = { userId: string; displayName: string };
+export type PowerUsageRow = { id: string; matchId: string; powerType: string; targetUserId: string | null };
+export type PowerLimits = { doubleDown: number; spy: number; shield: number };
+export type SpyResult = { home: number; away: number } | null;
+
 type Props = {
   matches: MatchRecord[];
   initialPredictions: PredictionRecord[];
   profileTimeZone: string | null;
   finishedPicks: FinishedPickRow[];
+  groupMembers: GroupMember[];
+  powerUsage: PowerUsageRow[];
+  powerLimits: PowerLimits;
+  predictionsByMatch: Record<string, string[]>;
+  currentUserId: string;
 };
 
 type PredictionInput = {
@@ -182,9 +193,20 @@ function validateKnockoutNeedsWinner(match: MatchRecord, input: PredictionInput 
   return input.predictedWinner !== "home" && input.predictedWinner !== "away";
 }
 
-export default function PredictForm({ matches, initialPredictions, profileTimeZone, finishedPicks }: Props) {
+export default function PredictForm({
+  matches,
+  initialPredictions,
+  profileTimeZone,
+  finishedPicks,
+  groupMembers,
+  powerUsage,
+  powerLimits,
+  predictionsByMatch,
+  currentUserId,
+}: Props) {
   const locale = useLocale();
   const t = useTranslations("Predictions");
+  const tp = useTranslations("Powers");
   const { showToast } = useToast();
   const effectiveTz = useEffectiveTimeZone(profileTimeZone);
   const [isSaving, setIsSaving] = useState(false);
@@ -223,6 +245,136 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
       return next;
     });
   }, [initialState]);
+
+  // ─── Superpowers state ───
+  const [activePowers, setActivePowers] = useState<Record<string, Set<PowerType>>>(() => {
+    const map: Record<string, Set<PowerType>> = {};
+    for (const pu of powerUsage) {
+      (map[pu.matchId] ??= new Set()).add(pu.powerType as PowerType);
+    }
+    return map;
+  });
+  const [spyTargets, setSpyTargets] = useState<Record<string, string>>(() => {
+    const map: Record<string, string> = {};
+    for (const pu of powerUsage) {
+      if (pu.powerType === "spy" && pu.targetUserId) map[pu.matchId] = pu.targetUserId;
+    }
+    return map;
+  });
+  const [spyResults, setSpyResults] = useState<Record<string, { home: number; away: number; shielded: boolean } | null>>({});
+  const [spyModalMatchId, setSpyModalMatchId] = useState<string | null>(null);
+  const [powerBusy, setPowerBusy] = useState<Record<string, boolean>>({});
+
+  const usedCounts = useMemo(() => {
+    const c = { double_down: 0, spy: 0, shield: 0 };
+    for (const set of Object.values(activePowers)) {
+      Array.from(set).forEach((pt) => { c[pt]++; });
+    }
+    return c;
+  }, [activePowers]);
+
+  const remaining = useMemo(
+    () => ({
+      double_down: powerLimits.doubleDown - usedCounts.double_down,
+      spy: powerLimits.spy - usedCounts.spy,
+      shield: powerLimits.shield - usedCounts.shield,
+    }),
+    [powerLimits, usedCounts],
+  );
+
+  const fetchSpyResult = useCallback(
+    async (matchId: string, targetUserId: string) => {
+      try {
+        const res = await fetch(`./predict/spy?matchId=${matchId}&targetUserId=${targetUserId}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.shielded) {
+          setSpyResults((p) => ({ ...p, [matchId]: { home: 0, away: 0, shielded: true } }));
+        } else if (data.prediction) {
+          setSpyResults((p) => ({ ...p, [matchId]: { home: data.prediction.home, away: data.prediction.away, shielded: false } }));
+        } else {
+          setSpyResults((p) => ({ ...p, [matchId]: null }));
+        }
+      } catch {
+        /* ignore */
+      }
+    },
+    [],
+  );
+
+  const togglePower = useCallback(
+    async (matchId: string, pt: PowerType, targetUserId?: string) => {
+      const key = `${matchId}-${pt}`;
+      if (powerBusy[key]) return;
+      setPowerBusy((p) => ({ ...p, [key]: true }));
+      try {
+        const isActive = activePowers[matchId]?.has(pt);
+        if (isActive) {
+          const res = await fetch("./predict/powers", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ matchId, powerType: pt }),
+          });
+          if (!res.ok) {
+            showToast(tp("error"), "error");
+            return;
+          }
+          setActivePowers((prev) => {
+            const next = { ...prev };
+            const s = new Set(next[matchId]);
+            s.delete(pt);
+            next[matchId] = s;
+            return next;
+          });
+          if (pt === "spy") {
+            setSpyTargets((p) => { const n = { ...p }; delete n[matchId]; return n; });
+            setSpyResults((p) => { const n = { ...p }; delete n[matchId]; return n; });
+          }
+          showToast(tp(`${pt === "double_down" ? "doubleDown" : pt}.deactivated`), "success");
+        } else {
+          if (pt === "spy" && !targetUserId) {
+            setSpyModalMatchId(matchId);
+            return;
+          }
+          const res = await fetch("./predict/powers", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ matchId, powerType: pt, targetUserId: targetUserId ?? null }),
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            showToast(data.error === "Limit reached" ? tp("noUsesLeft") : tp("error"), "error");
+            return;
+          }
+          setActivePowers((prev) => {
+            const next = { ...prev };
+            const s = new Set(next[matchId] ?? []);
+            s.add(pt);
+            next[matchId] = s;
+            return next;
+          });
+          if (pt === "spy" && targetUserId) {
+            setSpyTargets((p) => ({ ...p, [matchId]: targetUserId }));
+            fetchSpyResult(matchId, targetUserId);
+          }
+          const toastKey = pt === "double_down" ? "doubleDown" : pt;
+          showToast(tp(`${toastKey}.activated`), "success");
+        }
+      } finally {
+        setPowerBusy((p) => ({ ...p, [key]: false }));
+      }
+    },
+    [activePowers, powerBusy, showToast, tp, fetchSpyResult],
+  );
+
+  useEffect(() => {
+    for (const [matchId, targetId] of Object.entries(spyTargets)) {
+      if (!spyResults[matchId] && spyResults[matchId] !== null) {
+        fetchSpyResult(matchId, targetId);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const groupedMatches = useMemo(() => {
     const groups: Record<string, MatchRecord[]> = {};
@@ -421,11 +573,19 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                   const currentInput = inputs[match.id] ?? { ...emptyPredictionInput };
                   const saved = savedMatchIds.has(match.id);
                   const busy = savingMatchId === match.id;
+                  const matchPowers = activePowers[match.id];
+                  const hasDD = matchPowers?.has("double_down");
+                  const hasShield = matchPowers?.has("shield");
+                  const cardBorder = hasDD
+                    ? "border-l-4 border-amber-500 shadow-[inset_0_0_12px_rgba(245,158,11,0.08)]"
+                    : hasShield
+                      ? "border-l-4 border-emerald-500"
+                      : "border border-dark-600";
 
                   return (
                     <div
                       key={match.id}
-                      className="rounded-xl border border-dark-600 bg-dark-800 p-4"
+                      className={`rounded-xl bg-dark-800 p-4 ${cardBorder}`}
                     >
                       <p className="text-right text-sm text-slate-400">{t("matchDate", { date: formatMatchWhen(match) })}</p>
 
@@ -518,6 +678,38 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                           </p>
                         </div>
                       ) : null}
+
+                      {/* Superpowers panel */}
+                      {!lockPassed && (
+                        <PowerPanel
+                          matchId={match.id}
+                          activePowers={activePowers[match.id]}
+                          remaining={remaining}
+                          busy={powerBusy}
+                          onToggle={togglePower}
+                          tp={tp}
+                          limits={powerLimits}
+                        />
+                      )}
+
+                      {/* Spy result */}
+                      {activePowers[match.id]?.has("spy") && spyTargets[match.id] && (
+                        <SpyResultCard
+                          matchId={match.id}
+                          targetName={groupMembers.find((m) => m.userId === spyTargets[match.id])?.displayName ?? "?"}
+                          result={spyResults[match.id]}
+                          tp={tp}
+                        />
+                      )}
+
+                      {/* Who has predicted badges */}
+                      <WhoHasPredicted
+                        matchId={match.id}
+                        groupMembers={groupMembers}
+                        predicted={predictionsByMatch[match.id] ?? []}
+                        currentUserId={currentUserId}
+                        tp={tp}
+                      />
 
                       {lockPassed ? (
                         <p className="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-slate-400">
@@ -658,8 +850,17 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                         !Number.isNaN(aN) &&
                         hN === aN;
 
+                      const kMatchPowers = activePowers[match.id];
+                      const kHasDD = kMatchPowers?.has("double_down");
+                      const kHasShield = kMatchPowers?.has("shield");
+                      const kCardBorder = kHasDD
+                        ? "border-l-4 border-amber-500 shadow-[inset_0_0_12px_rgba(245,158,11,0.08)]"
+                        : kHasShield
+                          ? "border-l-4 border-emerald-500"
+                          : "border border-dark-600";
+
                       return (
-                        <div key={match.id} className="rounded-lg border border-dark-600 bg-dark-800 p-3">
+                        <div key={match.id} className={`rounded-lg bg-dark-800 p-3 ${kCardBorder}`}>
                           <div className="flex flex-wrap items-center justify-between gap-3">
                             <p className="text-sm font-medium text-white">
                               {match.home_team} vs {match.away_team}
@@ -750,6 +951,33 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
                                   </p>
                                 </div>
                               ) : null}
+
+                              {!lockPassed && (
+                                <PowerPanel
+                                  matchId={match.id}
+                                  activePowers={activePowers[match.id]}
+                                  remaining={remaining}
+                                  busy={powerBusy}
+                                  onToggle={togglePower}
+                                  tp={tp}
+                                  limits={powerLimits}
+                                />
+                              )}
+                              {activePowers[match.id]?.has("spy") && spyTargets[match.id] && (
+                                <SpyResultCard
+                                  matchId={match.id}
+                                  targetName={groupMembers.find((m) => m.userId === spyTargets[match.id])?.displayName ?? "?"}
+                                  result={spyResults[match.id]}
+                                  tp={tp}
+                                />
+                              )}
+                              <WhoHasPredicted
+                                matchId={match.id}
+                                groupMembers={groupMembers}
+                                predicted={predictionsByMatch[match.id] ?? []}
+                                currentUserId={currentUserId}
+                                tp={tp}
+                              />
 
                               {isDraw && !lockPassed ? (
                                 <div className="mt-3">
@@ -1046,6 +1274,222 @@ export default function PredictForm({ matches, initialPredictions, profileTimeZo
         </button>
       ) : null}
     </form>
+
+      {spyModalMatchId && (
+        <SpyModal
+          matchId={spyModalMatchId}
+          groupMembers={groupMembers.filter((m) => m.userId !== currentUserId)}
+          onSelect={(targetUserId) => {
+            setSpyModalMatchId(null);
+            void togglePower(spyModalMatchId, "spy", targetUserId);
+          }}
+          onClose={() => setSpyModalMatchId(null)}
+          tp={tp}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ─── Sub-components ─── */
+
+type TranslationFn = (key: string, values?: Record<string, string | number>) => string;
+
+function PowerPanel({
+  matchId,
+  activePowers,
+  remaining,
+  busy,
+  onToggle,
+  tp,
+  limits,
+}: {
+  matchId: string;
+  activePowers: Set<PowerType> | undefined;
+  remaining: Record<PowerType, number>;
+  busy: Record<string, boolean>;
+  onToggle: (matchId: string, pt: PowerType, targetUserId?: string) => void;
+  tp: TranslationFn;
+  limits: PowerLimits;
+}) {
+  const powers: { type: PowerType; icon: string; label: string; activeClass: string; limit: number }[] = [
+    { type: "double_down", icon: "⚡", label: tp("doubleDown.name"), activeClass: "border-amber-500 bg-amber-500/20 text-amber-400", limit: limits.doubleDown },
+    { type: "spy", icon: "🔍", label: tp("spy.name"), activeClass: "border-blue-500 bg-blue-500/20 text-blue-400", limit: limits.spy },
+    { type: "shield", icon: "🛡️", label: tp("shield.name"), activeClass: "border-emerald-500 bg-emerald-500/20 text-emerald-400", limit: limits.shield },
+  ];
+
+  return (
+    <div className="mt-3">
+      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">{tp("title")}</p>
+      <div className="flex flex-wrap gap-2">
+        {powers.map(({ type, icon, label, activeClass, limit }) => {
+          const isActive = activePowers?.has(type) ?? false;
+          const noRemaining = remaining[type] <= 0 && !isActive;
+          const isBusy = busy[`${matchId}-${type}`];
+          const disabled = noRemaining || isBusy;
+
+          return (
+            <button
+              key={type}
+              type="button"
+              disabled={disabled}
+              onClick={() => onToggle(matchId, type)}
+              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+                isActive
+                  ? activeClass
+                  : disabled
+                    ? "border-gray-700 bg-[#1a2332] text-gray-600 opacity-30 cursor-not-allowed"
+                    : "border-gray-700 bg-[#1a2332] text-gray-400 hover:border-gray-500"
+              }`}
+            >
+              <span>{icon}</span>
+              <span>{label}</span>
+              <span className="ml-1 rounded bg-dark-900/60 px-1 py-0.5 text-[10px] tabular-nums">
+                {remaining[type]}/{limit}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {activePowers?.has("double_down") && (
+        <p className="mt-1.5 text-xs font-medium text-amber-400">{tp("doubleDown.activated")}</p>
+      )}
+      {activePowers?.has("shield") && (
+        <p className="mt-1.5 text-xs font-medium text-emerald-400">{tp("shield.activated")}</p>
+      )}
+    </div>
+  );
+}
+
+function SpyResultCard({
+  targetName,
+  result,
+  tp,
+}: {
+  matchId: string;
+  targetName: string;
+  result: { home: number; away: number; shielded: boolean } | null | undefined;
+  tp: TranslationFn;
+}) {
+  if (result === undefined) {
+    return (
+      <div className="mt-2 animate-pulse rounded-lg border border-blue-800/40 bg-blue-900/20 px-3 py-2 text-xs text-blue-300">
+        🔍 ...
+      </div>
+    );
+  }
+  if (result === null) {
+    return (
+      <div className="mt-2 rounded-lg border border-blue-800/40 bg-blue-900/20 px-3 py-2 text-xs text-blue-300">
+        {tp("spy.noPrediction", { name: targetName })}
+      </div>
+    );
+  }
+  if (result.shielded) {
+    return (
+      <div className="mt-2 rounded-lg border border-emerald-800/40 bg-emerald-900/20 px-3 py-2 text-xs text-emerald-300">
+        {tp("spy.blocked", { name: targetName })}
+      </div>
+    );
+  }
+  return (
+    <div className="mt-2 rounded-lg border border-blue-800/40 bg-blue-900/20 px-3 py-2 text-xs text-blue-300">
+      {tp("spy.result", { name: targetName, score: `${result.home}-${result.away}` })}
+    </div>
+  );
+}
+
+function WhoHasPredicted({
+  groupMembers,
+  predicted,
+  currentUserId,
+  tp,
+}: {
+  matchId: string;
+  groupMembers: GroupMember[];
+  predicted: string[];
+  currentUserId: string;
+  tp: TranslationFn;
+}) {
+  if (groupMembers.length <= 1) return null;
+  const predictedSet = new Set(predicted);
+  return (
+    <div className="mt-3">
+      <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-slate-500">
+        {tp("groupPredictions.title")}
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {groupMembers.map((m) => {
+          const done = predictedSet.has(m.userId);
+          const isYou = m.userId === currentUserId;
+          const initials = m.displayName
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+          return (
+            <span
+              key={m.userId}
+              title={m.displayName}
+              className={`inline-flex h-6 min-w-[28px] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold ${
+                done
+                  ? "bg-emerald-500/20 text-emerald-400"
+                  : "bg-dark-900/60 text-gray-600"
+              } ${isYou ? "ring-1 ring-emerald-500/50" : ""}`}
+            >
+              {initials}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function SpyModal({
+  groupMembers,
+  onSelect,
+  onClose,
+  tp,
+}: {
+  matchId: string;
+  groupMembers: GroupMember[];
+  onSelect: (targetUserId: string) => void;
+  onClose: () => void;
+  tp: TranslationFn;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60" />
+      <div
+        className="relative z-10 w-full max-w-sm rounded-t-2xl bg-dark-800 p-5 sm:rounded-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-sm font-semibold text-white">{tp("spy.selectTarget")}</h3>
+        <div className="mt-4 max-h-60 space-y-2 overflow-y-auto">
+          {groupMembers.map((m) => (
+            <button
+              key={m.userId}
+              type="button"
+              onClick={() => onSelect(m.userId)}
+              className="flex w-full items-center gap-3 rounded-lg border border-dark-600 bg-dark-900 px-4 py-3 text-left text-sm text-white transition hover:border-blue-500/40 hover:bg-dark-700"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/20 text-xs font-semibold text-blue-400">
+                {m.displayName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+              </span>
+              <span>{m.displayName}</span>
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-4 w-full rounded-lg border border-dark-600 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-dark-700"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   );
 }

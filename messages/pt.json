@@ -480,6 +480,39 @@
     "colWinRate": "Aproveitamento",
     "noBets": "Ainda sem resultados"
   },
+  "Powers": {
+    "title": "⚡ Superpoderes",
+    "error": "Algo deu errado",
+    "doubleDown": {
+      "name": "x2 Double Down",
+      "description": "Duplique seus pontos neste jogo",
+      "activated": "⚡ x2 ativado",
+      "deactivated": "x2 desativado"
+    },
+    "spy": {
+      "name": "🔍 Espionar",
+      "description": "Veja a previsão de outro jogador",
+      "activated": "🔍 Espião ativado",
+      "deactivated": "Espião desativado",
+      "selectTarget": "Quem você quer espionar?",
+      "result": "🔍 {name} previu: {score}",
+      "noPrediction": "🔍 {name} ainda não previu",
+      "blocked": "🛡️ {name} bloqueou esta previsão"
+    },
+    "shield": {
+      "name": "🛡️ Escudo",
+      "description": "Proteja sua previsão de espiões",
+      "activated": "🛡️ Protegido",
+      "deactivated": "Escudo desativado"
+    },
+    "remaining": "{used}/{total}",
+    "groupPredictions": {
+      "title": "Previsões do grupo",
+      "predicted": "Previsto",
+      "pending": "Pendente"
+    },
+    "noUsesLeft": "Sem usos restantes"
+  },
   "Picks": {
     "title": "Campeão e mais",
     "subtitle": "Escolha os vencedores do torneio antes de comecar",

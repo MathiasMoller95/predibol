@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AI_PLAYER_ID } from "@/lib/constants";
 import PredictForm from "./predict-form";
 import Link from "next/link";
 
@@ -12,6 +13,9 @@ type GroupRecord = {
   id: string;
   name: string;
   admin_id: string;
+  powers_double_down: number;
+  powers_spy: number;
+  powers_shield: number;
 };
 
 type MatchRecord = {
@@ -55,7 +59,7 @@ export default async function GroupPredictPage({ params }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,admin_id")
+    .select("id,name,admin_id,powers_double_down,powers_spy,powers_shield")
     .eq("id", groupId)
     .single();
 
@@ -63,7 +67,7 @@ export default async function GroupPredictPage({ params }: Props) {
     notFound();
   }
 
-  const typedGroup = group as GroupRecord;
+  const typedGroup = group as unknown as GroupRecord;
   const { data: membership } = await supabase
     .from("group_members")
     .select("id")
@@ -102,6 +106,41 @@ export default async function GroupPredictPage({ params }: Props) {
   let predictions: PredictionRecord[] = [];
   if (matchIds.length > 0) {
     predictions = allPredList.filter((p) => matchIds.includes(p.match_id));
+  }
+
+  // Fetch group members (for spy target list + who-has-predicted badges)
+  const { data: membersData } = await supabase
+    .from("group_members")
+    .select("user_id,display_name")
+    .eq("group_id", groupId);
+  const groupMembers = ((membersData ?? []) as { user_id: string; display_name: string }[])
+    .filter((m) => m.user_id !== AI_PLAYER_ID)
+    .map((m) => ({ userId: m.user_id, displayName: m.display_name }));
+
+  // power_usage table not yet in generated types — will be after migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: powerRows } = await (supabase as any)
+    .from("power_usage")
+    .select("id,match_id,power_type,target_user_id")
+    .eq("user_id", user.id)
+    .eq("group_id", groupId);
+  const powerUsage = ((powerRows ?? []) as { id: string; match_id: string; power_type: string; target_user_id: string | null }[]).map(
+    (r) => ({ id: r.id, matchId: r.match_id, powerType: r.power_type, targetUserId: r.target_user_id })
+  );
+
+  // Fetch who has predicted per upcoming match
+  let predictionsByMatch: Record<string, string[]> = {};
+  if (matchIds.length > 0) {
+    const { data: allPreds } = await supabase
+      .from("predictions")
+      .select("match_id,user_id")
+      .eq("group_id", groupId)
+      .in("match_id", matchIds);
+    const map: Record<string, string[]> = {};
+    for (const row of (allPreds ?? []) as { match_id: string; user_id: string }[]) {
+      (map[row.match_id] ??= []).push(row.user_id);
+    }
+    predictionsByMatch = map;
   }
 
   type FinishedPick = MatchRecord & {
@@ -163,6 +202,15 @@ export default async function GroupPredictPage({ params }: Props) {
           initialPredictions={predictions}
           profileTimeZone={profileTimeZone}
           finishedPicks={finishedPicks}
+          groupMembers={groupMembers}
+          powerUsage={powerUsage}
+          powerLimits={{
+            doubleDown: typedGroup.powers_double_down ?? 3,
+            spy: typedGroup.powers_spy ?? 2,
+            shield: typedGroup.powers_shield ?? 2,
+          }}
+          predictionsByMatch={predictionsByMatch}
+          currentUserId={user.id}
         />
       </section>
     </main>

@@ -480,6 +480,39 @@
     "colWinRate": "Win rate",
     "noBets": "No results yet"
   },
+  "Powers": {
+    "title": "⚡ Superpowers",
+    "error": "Something went wrong",
+    "doubleDown": {
+      "name": "x2 Double Down",
+      "description": "Double your points on this match",
+      "activated": "⚡ x2 active",
+      "deactivated": "x2 removed"
+    },
+    "spy": {
+      "name": "🔍 Spy",
+      "description": "See another player's prediction",
+      "activated": "🔍 Spy active",
+      "deactivated": "Spy removed",
+      "selectTarget": "Who do you want to spy on?",
+      "result": "🔍 {name} predicted: {score}",
+      "noPrediction": "🔍 {name} hasn't predicted yet",
+      "blocked": "🛡️ {name} shielded this prediction"
+    },
+    "shield": {
+      "name": "🛡️ Shield",
+      "description": "Protect your prediction from spies",
+      "activated": "🛡️ Shielded",
+      "deactivated": "Shield removed"
+    },
+    "remaining": "{used}/{total}",
+    "groupPredictions": {
+      "title": "Group predictions",
+      "predicted": "Predicted",
+      "pending": "Pending"
+    },
+    "noUsesLeft": "No uses remaining"
+  },
   "Picks": {
     "title": "Champion & More",
     "subtitle": "Pick your tournament winners before it starts",

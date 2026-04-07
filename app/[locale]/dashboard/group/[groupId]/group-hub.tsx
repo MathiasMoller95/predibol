@@ -62,6 +62,8 @@ export type GroupHubData = {
   accessMode: GroupAccessMode;
   accessCode: string | null;
   bracketStatus: BracketHubStatusKey;
+  powersRemaining: { doubleDown: number; spy: number; shield: number };
+  powersLimits: { doubleDown: number; spy: number; shield: number };
 };
 
 function pad2(n: number) {
@@ -369,6 +371,18 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                 </Link>
               );
             })}
+        </div>
+
+        <div className="mt-3 flex items-center justify-center gap-4 text-sm text-gray-400">
+          <span className={data.powersRemaining.doubleDown < data.powersLimits.doubleDown ? "text-amber-400" : ""}>
+            ⚡ {data.powersRemaining.doubleDown}/{data.powersLimits.doubleDown}
+          </span>
+          <span className={data.powersRemaining.spy < data.powersLimits.spy ? "text-blue-400" : ""}>
+            🔍 {data.powersRemaining.spy}/{data.powersLimits.spy}
+          </span>
+          <span className={data.powersRemaining.shield < data.powersLimits.shield ? "text-emerald-400" : ""}>
+            🛡️ {data.powersRemaining.shield}/{data.powersLimits.shield}
+          </span>
         </div>
       </section>
 

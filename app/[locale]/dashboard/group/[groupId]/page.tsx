@@ -25,6 +25,9 @@ type GroupRecord = {
   points_correct_result: number;
   points_correct_difference: number;
   points_exact_score: number;
+  powers_double_down: number;
+  powers_spy: number;
+  powers_shield: number;
 };
 
 export default async function GroupHubPage({ params }: Props) {
@@ -44,7 +47,7 @@ export default async function GroupHubPage({ params }: Props) {
   const { data: group, error: groupError } = await supabase
     .from("groups")
     .select(
-      "id,name,slug,admin_id,primary_color,points_correct_result,points_correct_difference,points_exact_score",
+      "id,name,slug,admin_id,primary_color,points_correct_result,points_correct_difference,points_exact_score,powers_double_down,powers_spy,powers_shield",
     )
     .eq("id", groupId)
     .single();
@@ -53,7 +56,7 @@ export default async function GroupHubPage({ params }: Props) {
     notFound();
   }
 
-  const typedGroup = group as GroupRecord;
+  const typedGroup = group as unknown as GroupRecord;
 
   const { data: membership } = await supabase
     .from("group_members")
@@ -269,6 +272,28 @@ export default async function GroupHubPage({ params }: Props) {
 
   const bracketStatus = computeBracketHubStatus((knockoutRes.data ?? []) as { phase: string; home_team: string; away_team: string; status: string }[]);
 
+  // power_usage table not yet in generated types — will be after migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: powerUsedRows } = await (supabase as any)
+    .from("power_usage")
+    .select("power_type")
+    .eq("user_id", user.id)
+    .eq("group_id", typedGroup.id);
+  const puCounts = { double_down: 0, spy: 0, shield: 0 };
+  for (const r of (powerUsedRows ?? []) as { power_type: string }[]) {
+    if (r.power_type in puCounts) puCounts[r.power_type as keyof typeof puCounts]++;
+  }
+  const powersRemaining = {
+    doubleDown: (typedGroup.powers_double_down ?? 3) - puCounts.double_down,
+    spy: (typedGroup.powers_spy ?? 2) - puCounts.spy,
+    shield: (typedGroup.powers_shield ?? 2) - puCounts.shield,
+  };
+  const powersLimits = {
+    doubleDown: typedGroup.powers_double_down ?? 3,
+    spy: typedGroup.powers_spy ?? 2,
+    shield: typedGroup.powers_shield ?? 2,
+  };
+
   const recentResults: RecentResultRow[] = finished.map((m) => {
     const pr = predByMatch.get(m.id);
     const hs = m.home_score ?? 0;
@@ -319,6 +344,8 @@ export default async function GroupHubPage({ params }: Props) {
     accessMode: hubAccessMode,
     accessCode: hubAccessCode,
     bracketStatus,
+    powersRemaining,
+    powersLimits,
   };
 
   return (
