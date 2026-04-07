@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" width="280" height="64">
+  <text x="0" y="44" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="42" letter-spacing="-0.5">
+    <tspan fill="#10B981">Predi</tspan><tspan fill="#FFFFFF">bol</tspan>
+  </text>
+  <!-- small soccer ball accent -->
+  <circle cx="248" cy="32" r="10" fill="none" stroke="#10B981" stroke-width="1.2" opacity="0.5"/>
+  <path d="M248 22 L251 28 L258 28 L253 33 L255 40 L248 36 L241 40 L243 33 L238 28 L245 28 Z" fill="none" stroke="#10B981" stroke-width="0.8" opacity="0.3"/>
+</svg>

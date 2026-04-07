@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import JoinGroupButton from "./join-group-button";
+import type { Metadata } from "next";
 
 type Props = {
   params: { locale: string; slug: string };
@@ -14,6 +15,39 @@ type GroupRecord = {
   slug: string;
   access_mode: "open" | "protected";
 };
+
+export async function generateMetadata({ params }: { params: { locale: string; slug: string } }): Promise<Metadata> {
+  const { locale, slug } = params;
+
+  const tOg = await getTranslations({ locale, namespace: "Og" });
+  const supabase = await createClient();
+
+  const { data: group } = await supabase.from("groups").select("name").eq("slug", slug).maybeSingle();
+  const groupName = ((group?.name as string | undefined) ?? "").trim() || "Predibol";
+
+  const title = tOg("joinTitle", { groupName });
+  const description = tOg("joinDescription", { groupName });
+  const ogLocale = locale === "en" ? "en_US" : locale === "pt" ? "pt_BR" : "es_ES";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      siteName: "Predibol",
+      locale: ogLocale,
+      type: "website",
+      images: [{ url: "/api/og", width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/api/og"],
+    },
+  };
+}
 
 export default async function JoinGroupPage({ params, searchParams }: Props) {
   const { locale, slug } = params;

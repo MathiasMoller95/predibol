@@ -35,9 +35,16 @@ export default function Navbar({ displayName, email, locale, userId }: Props) {
           <Link
             href={`/${locale}/dashboard`}
             aria-label={t("myGroups")}
-            className="shrink-0 text-lg font-bold tracking-tight text-emerald-400 transition-colors hover:text-emerald-300"
+            className="flex shrink-0 items-center gap-1.5 text-lg font-bold tracking-tight transition-colors hover:text-emerald-300"
           >
-            Predibol
+            <svg viewBox="0 0 64 64" className="h-6 w-6" aria-hidden>
+              <rect width="64" height="64" rx="12" fill="#0A0E14" />
+              <text x="8" y="46" fontFamily="system-ui, sans-serif" fontWeight="800" fontSize="42">
+                <tspan fill="#10B981">P</tspan>
+                <tspan fill="#FFF">b</tspan>
+              </text>
+            </svg>
+            <span className="hidden text-emerald-400 sm:inline">Predibol</span>
           </Link>
           <Link
             href={`/${locale}/dashboard/discover`}

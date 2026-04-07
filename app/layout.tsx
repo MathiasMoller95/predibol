@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://predibol.com"),
   title: "Predibol",
-  description: "Predibol app with Next.js, Supabase, and i18n",
+  description: "Predibol",
 };
 
 export default function RootLayout({

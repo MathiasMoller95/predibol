@@ -186,6 +186,10 @@
     "profile": "Perfil",
     "superAdmin": "⚙️ Super Admin"
   },
+  "Og": {
+    "joinTitle": "Entre em {groupName} no Predibol",
+    "joinDescription": "{groupName} te convidou para prever a Copa do Mundo 2026. Aceita o desafio?"
+  },
   "SetName": {
     "title": "Como devemos te chamar?",
     "subtitle": "Este nome aparecera nas classificacoes e para outros jogadores.",
