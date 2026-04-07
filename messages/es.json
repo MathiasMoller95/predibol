@@ -268,6 +268,8 @@
       "adminHint": "Gestionar resultados",
       "rules": "📋 Reglas",
       "rulesSubtitle": "Ver reglas y ejemplos",
+      "album": "🎴 Álbum",
+      "albumProgress": "{count}/48 equipos",
       "rulesResult": "Resultado: {points} pts",
       "rulesDifference": "Diferencia: {points} pts",
       "rulesExact": "Exacto: {points} pts",
@@ -299,6 +301,29 @@
       "title": "Invita a más jugadores",
       "copied": "Enlace copiado",
       "copyFailed": "No se pudo copiar"
+    }
+  },
+  "Album": {
+    "title": "🎴 Álbum de cromos",
+    "group": "Grupo {letter}",
+    "progress": "{count}/48 equipos",
+    "tiers": {
+      "gold": "Oro",
+      "silver": "Plata",
+      "bronze": "Bronce"
+    },
+    "locked": "Bloqueado",
+    "lockedHint": "Gana puntos en un partido de {team} para desbloquear",
+    "earnedFrom": "Obtenido en {match}",
+    "goldDescription": "Marcador exacto",
+    "silverDescription": "Diferencia correcta",
+    "bronzeDescription": "Resultado correcto",
+    "compare": {
+      "title": "Comparar",
+      "myAlbum": "Mi álbum",
+      "selectPlayer": "Selecciona un jugador",
+      "theyHave": "Ellos tienen",
+      "youHave": "Tú tienes"
     }
   },
   "Rules": {

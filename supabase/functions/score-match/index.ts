@@ -289,6 +289,41 @@ Deno.serve(async (req: Request) => {
         headers: jsonHeaders,
       });
     }
+
+    // Sticker album: award stickers for both teams when points > 0
+    if (pts > 0) {
+      const predDiff = p.predicted_home - p.predicted_away;
+      const actualDiff = H - A;
+      const exactScore = p.predicted_home === H && p.predicted_away === A;
+      const correctDiff = predDiff === actualDiff;
+
+      const stickerTier = exactScore ? "gold" : correctDiff ? "silver" : "bronze";
+      const tierRank: Record<string, number> = { bronze: 1, silver: 2, gold: 3 };
+
+      for (const team of [m.home_team, m.away_team]) {
+        const { data: existing } = await supabase
+          .from("sticker_album")
+          .select("tier")
+          .eq("user_id", p.user_id)
+          .eq("group_id", p.group_id)
+          .eq("team", team)
+          .maybeSingle();
+
+        if (!existing || tierRank[stickerTier] > tierRank[existing.tier as string]) {
+          await supabase.from("sticker_album").upsert(
+            {
+              user_id: p.user_id,
+              group_id: p.group_id,
+              team,
+              tier: stickerTier,
+              earned_from_match_id: matchId,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id,group_id,team" },
+          );
+        }
+      }
+    }
   }
 
   if (isKnockoutPhase(m.phase) && m.knockout_label && actualAdvancing && actualAdvancing !== "TBD") {
@@ -371,6 +406,40 @@ Deno.serve(async (req: Request) => {
         },
         { onConflict: "user_id,group_id,match_id" }
       );
+
+      // AI sticker album
+      if (aiPts > 0) {
+        const aiDiff = aiHome - aiAway;
+        const actualDiff = H - A;
+        const aiExact = aiHome === H && aiAway === A;
+        const aiCorrectDiff = aiDiff === actualDiff;
+        const aiTier = aiExact ? "gold" : aiCorrectDiff ? "silver" : "bronze";
+        const tierRank: Record<string, number> = { bronze: 1, silver: 2, gold: 3 };
+
+        for (const team of [m.home_team, m.away_team]) {
+          const { data: existing } = await supabase
+            .from("sticker_album")
+            .select("tier")
+            .eq("user_id", AI_PLAYER_ID)
+            .eq("group_id", gid)
+            .eq("team", team)
+            .maybeSingle();
+
+          if (!existing || tierRank[aiTier] > tierRank[existing.tier as string]) {
+            await supabase.from("sticker_album").upsert(
+              {
+                user_id: AI_PLAYER_ID,
+                group_id: gid,
+                team,
+                tier: aiTier,
+                earned_from_match_id: matchId,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: "user_id,group_id,team" },
+            );
+          }
+        }
+      }
     }
   }
 

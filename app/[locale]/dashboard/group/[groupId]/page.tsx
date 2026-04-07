@@ -294,6 +294,15 @@ export default async function GroupHubPage({ params }: Props) {
     shield: typedGroup.powers_shield ?? 2,
   };
 
+  // Sticker album count (table not yet in generated types)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const stickerCountRes = await (supabase as any)
+    .from("sticker_album")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("group_id", typedGroup.id);
+  const stickerCount: number = stickerCountRes?.count ?? 0;
+
   const recentResults: RecentResultRow[] = finished.map((m) => {
     const pr = predByMatch.get(m.id);
     const hs = m.home_score ?? 0;
@@ -346,6 +355,7 @@ export default async function GroupHubPage({ params }: Props) {
     bracketStatus,
     powersRemaining,
     powersLimits,
+    stickerCount,
   };
 
   return (

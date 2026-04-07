@@ -64,6 +64,7 @@ export type GroupHubData = {
   bracketStatus: BracketHubStatusKey;
   powersRemaining: { doubleDown: number; spy: number; shield: number };
   powersLimits: { doubleDown: number; spy: number; shield: number };
+  stickerCount: number;
 };
 
 function pad2(n: number) {
@@ -297,6 +298,13 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                 href: `/${data.locale}/dashboard/group/${data.groupId}/rules`,
                 title: t("actions.rules"),
                 meta: t("actions.rulesSubtitle"),
+                show: true,
+              },
+              {
+                variant: "default" as const,
+                href: `/${data.locale}/dashboard/group/${data.groupId}/album`,
+                title: t("actions.album"),
+                meta: t("actions.albumProgress", { count: data.stickerCount }),
                 show: true,
               },
               {

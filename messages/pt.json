@@ -268,6 +268,8 @@
       "adminHint": "Gerenciar resultados",
       "rules": "📋 Regras",
       "rulesSubtitle": "Ver regras e exemplos",
+      "album": "🎴 Álbum",
+      "albumProgress": "{count}/48 seleções",
       "rulesResult": "Resultado: {points} pts",
       "rulesDifference": "Diferença: {points} pts",
       "rulesExact": "Exato: {points} pts",
@@ -299,6 +301,29 @@
       "title": "Convide mais jogadores",
       "copied": "Link copiado",
       "copyFailed": "Não foi possível copiar"
+    }
+  },
+  "Album": {
+    "title": "🎴 Álbum de figurinhas",
+    "group": "Grupo {letter}",
+    "progress": "{count}/48 seleções",
+    "tiers": {
+      "gold": "Ouro",
+      "silver": "Prata",
+      "bronze": "Bronze"
+    },
+    "locked": "Bloqueado",
+    "lockedHint": "Ganhe pontos em um jogo do {team} para desbloquear",
+    "earnedFrom": "Obtido em {match}",
+    "goldDescription": "Placar exato",
+    "silverDescription": "Diferença correta",
+    "bronzeDescription": "Resultado correto",
+    "compare": {
+      "title": "Comparar",
+      "myAlbum": "Meu álbum",
+      "selectPlayer": "Selecione um jogador",
+      "theyHave": "Eles têm",
+      "youHave": "Você tem"
     }
   },
   "Rules": {

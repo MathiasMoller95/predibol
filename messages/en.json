@@ -268,6 +268,8 @@
       "adminHint": "Manage results",
       "rules": "📋 Rules",
       "rulesSubtitle": "View rules & examples",
+      "album": "🎴 Album",
+      "albumProgress": "{count}/48 teams",
       "rulesResult": "Result: {points} pts",
       "rulesDifference": "Difference: {points} pts",
       "rulesExact": "Exact: {points} pts",
@@ -299,6 +301,29 @@
       "title": "Invite more players",
       "copied": "Link copied",
       "copyFailed": "Could not copy"
+    }
+  },
+  "Album": {
+    "title": "🎴 Sticker Album",
+    "group": "Group {letter}",
+    "progress": "{count}/48 teams",
+    "tiers": {
+      "gold": "Gold",
+      "silver": "Silver",
+      "bronze": "Bronze"
+    },
+    "locked": "Locked",
+    "lockedHint": "Earn points on a {team} match to unlock",
+    "earnedFrom": "Earned from {match}",
+    "goldDescription": "Exact score",
+    "silverDescription": "Correct difference",
+    "bronzeDescription": "Correct result",
+    "compare": {
+      "title": "Compare",
+      "myAlbum": "My album",
+      "selectPlayer": "Select a player",
+      "theyHave": "They have",
+      "youHave": "You have"
     }
   },
   "Rules": {

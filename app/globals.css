@@ -555,4 +555,86 @@ body {
   .landing-countdown-border-spin {
     animation: none !important;
   }
+
+  .sticker-gold::before,
+  .sticker-silver::before,
+  .sticker-bronze::before {
+    animation: none !important;
+  }
+}
+
+/* ── Sticker Album ── */
+
+.sticker-progress-bar {
+  background: linear-gradient(90deg, #b45309, #d4a017, #eab308);
+}
+
+@keyframes sticker-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes sticker-sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50%      { opacity: 1; transform: scale(1); }
+}
+
+.sticker-gold {
+  position: relative;
+  overflow: hidden;
+}
+.sticker-gold::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(234, 179, 8, 0.15) 45%,
+    rgba(234, 179, 8, 0.25) 50%,
+    rgba(234, 179, 8, 0.15) 55%,
+    transparent 60%
+  );
+  animation: sticker-shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.sticker-silver {
+  position: relative;
+  overflow: hidden;
+}
+.sticker-silver::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(148, 163, 184, 0.12) 45%,
+    rgba(148, 163, 184, 0.2) 50%,
+    rgba(148, 163, 184, 0.12) 55%,
+    transparent 60%
+  );
+  animation: sticker-shimmer 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.sticker-bronze {
+  position: relative;
+  overflow: hidden;
+}
+.sticker-bronze::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(180, 83, 9, 0.1) 45%,
+    rgba(180, 83, 9, 0.18) 50%,
+    rgba(180, 83, 9, 0.1) 55%,
+    transparent 60%
+  );
+  animation: sticker-shimmer 6s ease-in-out infinite;
+  pointer-events: none;
 }
