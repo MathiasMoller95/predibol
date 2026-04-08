@@ -286,7 +286,7 @@
     },
     "actions": {
       "ariaLabel": "Ações rápidas",
-      "predict": "🎯 Palpites",
+      "predict": "🎯 Jogos",
       "leaderboard": "🏆 Ranking",
       "picks": "⭐ Campeão e mais",
       "admin": "⚙️ Admin",
@@ -409,7 +409,8 @@
       "lineDifference": "Diferença certa: {mark} (+{points} pts)",
       "lineExact": "Placar exato: {mark} (+{points} pts)",
       "lineTotal": "Total: {total} pontos",
-      "enterPredictionHint": "Digite os dois placares para ver quantos pontos você ganharia."
+      "enterPredictionHint": "Digite os dois placares para ver quantos pontos você ganharia.",
+      "swipeHint": "← Deslize para ver mais →"
     },
     "knockout": {
       "title": "🏟️ Fase eliminatória",

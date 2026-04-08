@@ -286,7 +286,7 @@
     },
     "actions": {
       "ariaLabel": "Quick actions",
-      "predict": "🎯 Predictions",
+      "predict": "🎯 Matches",
       "leaderboard": "🏆 Leaderboard",
       "picks": "⭐ Champion & more",
       "admin": "⚙️ Admin",
@@ -409,7 +409,8 @@
       "lineDifference": "Correct goal difference: {mark} (+{points} pts)",
       "lineExact": "Exact score: {mark} (+{points} pts)",
       "lineTotal": "Total: {total} points",
-      "enterPredictionHint": "Enter both scores to see how many points you would get."
+      "enterPredictionHint": "Enter both scores to see how many points you would get.",
+      "swipeHint": "← Swipe to see more →"
     },
     "knockout": {
       "title": "🏟️ Knockout stage",

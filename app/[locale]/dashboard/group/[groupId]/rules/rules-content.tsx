@@ -12,7 +12,7 @@ const HOME_NAME = "Mexico";
 const AWAY_NAME = "South Africa";
 
 const INPUT_CLASS =
-  "min-h-[48px] w-full max-w-[72px] rounded-lg border border-dark-500 bg-dark-900 px-2 text-center text-xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50";
+  "min-h-[48px] w-20 max-w-[80px] shrink-0 rounded-lg border border-dark-500 bg-dark-900 px-2 text-center text-xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50";
 
 type Props = {
   locale: string;
@@ -206,8 +206,9 @@ export default function RulesContent({
           </p>
           <p className="mt-1 text-xs text-slate-500">{t("example.actualResultCaption")}</p>
 
-          <div className="mt-6 overflow-x-auto">
-            <table className="w-full min-w-[520px] border-collapse text-left text-sm">
+          <div className="relative mt-6">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[520px] border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-dark-600 text-xs font-semibold uppercase tracking-wide text-slate-500">
                   <th className="py-2 pr-3">{t("example.colPrediction")}</th>
@@ -265,32 +266,42 @@ export default function RulesContent({
                 })}
               </tbody>
             </table>
+            </div>
+            <div
+              className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-8 bg-gradient-to-l from-[#111720] to-transparent md:hidden"
+              aria-hidden
+            />
           </div>
+          <p className="mt-2 text-center text-xs text-gray-500 md:hidden">{t("example.swipeHint")}</p>
 
           <div className="mt-8 rounded-xl border border-emerald-500/30 bg-dark-900/40 p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-white">{t("example.tryYourPrediction")}</h3>
             <p className="mt-2 text-xs text-slate-500">
               {t("example.fixedActual", { home: ACTUAL_HOME, away: ACTUAL_AWAY })}
             </p>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <span className="text-sm text-slate-400">{t("example.yourPrediction")}</span>
-              <input
-                type="text"
-                inputMode="numeric"
-                className={INPUT_CLASS}
-                value={predHomeStr}
-                onChange={(e) => setPredHomeStr(e.target.value.replace(/[^\d]/g, ""))}
-                aria-label={t("example.inputHomeAria")}
-              />
-              <span className="text-slate-500">—</span>
-              <input
-                type="text"
-                inputMode="numeric"
-                className={INPUT_CLASS}
-                value={predAwayStr}
-                onChange={(e) => setPredAwayStr(e.target.value.replace(/[^\d]/g, ""))}
-                aria-label={t("example.inputAwayAria")}
-              />
+            <div className="mt-4 space-y-2">
+              <span className="block text-sm text-slate-400">{t("example.yourPrediction")}</span>
+              <div className="flex flex-row items-center gap-3">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  className={INPUT_CLASS}
+                  value={predHomeStr}
+                  onChange={(e) => setPredHomeStr(e.target.value.replace(/[^\d]/g, ""))}
+                  aria-label={t("example.inputHomeAria")}
+                />
+                <span className="shrink-0 text-2xl text-gray-400" aria-hidden>
+                  —
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  className={INPUT_CLASS}
+                  value={predAwayStr}
+                  onChange={(e) => setPredAwayStr(e.target.value.replace(/[^\d]/g, ""))}
+                  aria-label={t("example.inputAwayAria")}
+                />
+              </div>
             </div>
 
             {calcParsed ? (

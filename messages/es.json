@@ -286,7 +286,7 @@
     },
     "actions": {
       "ariaLabel": "Accesos rápidos",
-      "predict": "🎯 Predicciones",
+      "predict": "🎯 Partidos",
       "leaderboard": "🏆 Ranking",
       "picks": "⭐ Campeón y más",
       "admin": "⚙️ Admin",
@@ -409,7 +409,8 @@
       "lineDifference": "Diferencia correcta: {mark} (+{points} pts)",
       "lineExact": "Marcador exacto: {mark} (+{points} pts)",
       "lineTotal": "Total: {total} puntos",
-      "enterPredictionHint": "Introduce ambos marcadores para ver cuántos puntos obtendrías."
+      "enterPredictionHint": "Introduce ambos marcadores para ver cuántos puntos obtendrías.",
+      "swipeHint": "← Desliza para ver más →"
     },
     "knockout": {
       "title": "🏟️ Fase eliminatoria",
