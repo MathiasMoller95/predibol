@@ -59,6 +59,23 @@ function FloatingSoccerEmoji({ className }: { className?: string }) {
   );
 }
 
+const WC_DIVIDER_COLORS = [
+  "from-emerald-500/40 via-amber-500/30 to-blue-500/40",
+  "from-red-500/30 via-white/20 to-emerald-500/40",
+  "from-blue-500/40 via-amber-500/30 to-red-500/40",
+  "from-amber-500/40 via-emerald-500/30 to-purple-500/40",
+] as const;
+
+function WcDivider({ index = 0 }: { index?: number }) {
+  return (
+    <div className="mx-auto max-w-6xl px-4" aria-hidden>
+      <div
+        className={`h-px w-full bg-gradient-to-r opacity-30 ${WC_DIVIDER_COLORS[index % WC_DIVIDER_COLORS.length]}`}
+      />
+    </div>
+  );
+}
+
 function CountdownUnit({
   value,
   label,
@@ -200,8 +217,10 @@ function LandingStatsGrid({ locale }: { locale: string }) {
     return () => obs.disconnect();
   }, [t, locale]);
 
+  const targetHosts = Number.parseInt(t("stats.hostCountriesNumber"), 10);
+
   return (
-    <div ref={gridRef} className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
+    <div ref={gridRef} className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-4">
       <div className="relative flex min-h-[5rem] flex-col items-center justify-center">
         <TrophyWatermark />
         <p className="relative z-[1] flex flex-col items-center sm:block">
@@ -211,14 +230,20 @@ function LandingStatsGrid({ locale }: { locale: string }) {
       </div>
       <div className="flex flex-col items-center justify-center">
         <p className="flex flex-col items-center sm:block">
-          <span className="font-mono text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{matches}</span>
-          <span className="mt-0.5 block text-sm font-semibold text-emerald-500/90 sm:mt-1 sm:text-base">{t("stats.matchesLabel")}</span>
+          <span className="font-mono text-4xl font-extrabold tabular-nums text-amber-500 sm:text-5xl">{matches}</span>
+          <span className="mt-0.5 block text-sm font-semibold text-amber-500/90 sm:mt-1 sm:text-base">{t("stats.matchesLabel")}</span>
         </p>
       </div>
       <div className="flex flex-col items-center justify-center">
         <p className="flex flex-col items-center sm:block">
           <span className="font-mono text-4xl font-extrabold tabular-nums text-emerald-500 sm:text-5xl">{groups}</span>
           <span className="mt-0.5 block text-sm font-semibold text-emerald-500/90 sm:mt-1 sm:text-base">{t("stats.groupsLabel")}</span>
+        </p>
+      </div>
+      <div className="flex flex-col items-center justify-center">
+        <p className="flex flex-col items-center sm:block">
+          <span className="font-mono text-4xl font-extrabold tabular-nums text-amber-500 sm:text-5xl">{Number.isNaN(targetHosts) ? 3 : targetHosts}</span>
+          <span className="mt-0.5 block text-sm font-semibold text-amber-500/90 sm:mt-1 sm:text-base">{t("stats.hostCountriesLabel")}</span>
         </p>
       </div>
     </div>
@@ -330,6 +355,11 @@ export default function LandingPage({ locale }: Props) {
             </Link>
           </div>
         </div>
+        <div
+          className="landing-wc-header-stripe h-[3px] w-full"
+          style={{ opacity: isLight ? 0.6 : 0.45 }}
+          aria-hidden
+        />
       </header>
 
       <main>
@@ -344,7 +374,15 @@ export default function LandingPage({ locale }: Props) {
 
         {/* Hero */}
         <section className={`relative overflow-x-hidden px-4 pb-20 ${groupCount >= 10 ? "pt-6 sm:pt-10 md:pt-14" : "pt-12 sm:pt-16 md:pt-20"}`}>
-          {/* Subtle radial backdrop — works with Option A; strengthens hero if Option B (emoji-only) is removed */}
+          {/* "26" watermark */}
+          <span
+            className="pointer-events-none absolute left-1/2 top-[8%] z-0 -translate-x-1/2 select-none font-mono text-[280px] font-black leading-none tracking-tighter sm:text-[360px] md:text-[420px]"
+            style={{ color: isLight ? "rgba(0,0,0,0.025)" : "rgba(255,255,255,0.02)" }}
+            aria-hidden
+          >
+            26
+          </span>
+          {/* Subtle radial backdrop */}
           <div
             className="pointer-events-none absolute left-1/2 top-0 z-0 h-[min(28rem,55vh)] w-full max-w-3xl -translate-x-1/2 bg-[radial-gradient(ellipse_80%_70%_at_50%_28%,rgba(16,185,129,0.05),transparent_72%)]"
             aria-hidden
@@ -391,6 +429,9 @@ export default function LandingPage({ locale }: Props) {
             </div>
 
             <p className="mt-10 text-balance text-lg font-semibold text-emerald-400 sm:text-xl">{t("countdown.urgency")}</p>
+            <p className="mt-1.5 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--landing-text-subtle)" }}>
+              {t("countdown.worldCup")} &nbsp;🇺🇸🇲🇽🇨🇦
+            </p>
             <div
               className="mx-auto mt-4 flex max-w-3xl flex-wrap justify-center gap-3 sm:gap-4"
               aria-live="polite"
@@ -425,11 +466,11 @@ export default function LandingPage({ locale }: Props) {
         </section>
 
         {/* How it works */}
+        <WcDivider index={0} />
         <section
           id="how-it-works"
           data-landing-reveal
-          className="landing-reveal relative overflow-hidden border-t px-4 py-16 sm:py-20"
-          style={{ borderColor: "var(--landing-border-subtle)" }}
+          className="landing-reveal relative overflow-hidden px-4 py-16 sm:py-20"
         >
           <div className="landing-how-pattern pointer-events-none absolute inset-0" aria-hidden />
           <div className="landing-mini-ball pointer-events-none absolute right-[6%] top-[14%] opacity-[0.1]" aria-hidden>
@@ -439,7 +480,7 @@ export default function LandingPage({ locale }: Props) {
             <FloatingSoccerEmoji className="text-3xl" />
           </div>
           <div className="relative mx-auto max-w-6xl">
-            <h2 className="text-center text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
+            <h2 className="text-center text-2xl font-bold uppercase tracking-wider sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
               {t("howItWorks.title")}
             </h2>
             <div className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
@@ -468,14 +509,14 @@ export default function LandingPage({ locale }: Props) {
         </section>
 
         {/* Differentiators */}
+        <WcDivider index={1} />
         <section
           id="differentiators"
           data-landing-reveal
-          className="landing-reveal relative overflow-hidden border-t px-4 py-16 sm:py-20"
-          style={{ borderColor: "var(--landing-border-subtle)" }}
+          className="landing-reveal relative overflow-hidden px-4 py-16 sm:py-20"
         >
           <div className="relative mx-auto max-w-6xl">
-            <h2 className="text-center text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
+            <h2 className="text-center text-2xl font-bold uppercase tracking-wider sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
               {t("differentiators.title")}
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-center text-base" style={{ color: "var(--landing-text-muted)" }}>
@@ -546,7 +587,7 @@ export default function LandingPage({ locale }: Props) {
             <FloatingSoccerEmoji className="text-3xl" />
           </div>
           <div className="relative mx-auto max-w-6xl">
-            <h2 className="text-center text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
+            <h2 className="text-center text-2xl font-bold uppercase tracking-wider sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
               {t("features.title")}
             </h2>
             <ul className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -575,27 +616,34 @@ export default function LandingPage({ locale }: Props) {
         </section>
 
         {/* Stats */}
+        <WcDivider index={2} />
         <section
           id="stats"
           data-landing-reveal
-          className="landing-reveal relative overflow-hidden border-t px-4 py-16 sm:py-20"
-          style={{ borderColor: "var(--landing-border-subtle)" }}
+          className="landing-reveal relative overflow-hidden px-4 py-16 sm:py-20"
         >
           <div className="landing-mini-ball pointer-events-none absolute right-[12%] top-[20%] opacity-[0.08]" aria-hidden>
             <FloatingSoccerEmoji className="text-3xl" />
           </div>
           <div className="relative mx-auto max-w-6xl text-center">
-            <h2 className="text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
+            <h2 className="text-2xl font-bold uppercase tracking-wider sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
               {t("stats.title")}
             </h2>
             <LandingStatsGrid locale={locale} />
-            <p className="mx-auto mt-10 max-w-2xl text-pretty text-sm leading-relaxed sm:text-base" style={{ color: "var(--landing-text-muted)" }}>
+            <p className="mx-auto mt-6 text-sm" style={{ color: "var(--landing-text-subtle)" }}>
+              {t("countdown.hostCountries")}
+            </p>
+            <p className="mx-auto mt-1 text-xs font-medium" style={{ color: "var(--landing-text-subtle)" }}>
+              {t("stats.dates")}
+            </p>
+            <p className="mx-auto mt-8 max-w-2xl text-pretty text-sm leading-relaxed sm:text-base" style={{ color: "var(--landing-text-muted)" }}>
               {t("stats.body")}
             </p>
           </div>
         </section>
 
         {/* Bottom CTA */}
+        <WcDivider index={3} />
         <section id="cta" data-landing-reveal className="landing-reveal px-4 py-16 sm:py-20">
           <div className="mx-auto max-w-3xl">
             <div
@@ -605,11 +653,14 @@ export default function LandingPage({ locale }: Props) {
                 boxShadow: "var(--landing-gradient-cta)",
               }}
             >
-              <h2 className="text-center text-2xl font-bold sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
+              <h2 className="text-center text-2xl font-bold uppercase tracking-wider sm:text-3xl" style={{ color: "var(--landing-text-heading)" }}>
                 {t("cta.title")}
               </h2>
               <p className="mx-auto mt-3 max-w-md text-center text-sm sm:text-base" style={{ color: "var(--landing-text-muted)" }}>
                 {t("cta.subtitle")}
+              </p>
+              <p className="mt-2 text-center text-xs" style={{ color: "var(--landing-text-subtle)" }}>
+                {t("cta.dates")}
               </p>
               <div className="mt-8 flex flex-col items-center">
                 <Link

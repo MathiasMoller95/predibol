@@ -563,6 +563,33 @@ body {
   }
 }
 
+/* ── World Cup 2026 header stripe ── */
+.landing-wc-header-stripe {
+  background: linear-gradient(
+    to right,
+    #B91C1C 0%,
+    #FFFFFF 8%,
+    #1D4ED8 16%,
+    #15803D 30%,
+    #FFFFFF 42%,
+    #DC2626 54%,
+    #DC2626 66%,
+    #FFFFFF 78%,
+    #DC2626 88%,
+    #10B981 100%
+  );
+}
+
+.landing-root[data-theme="light"] .landing-wc-header-stripe {
+  opacity: 0.5 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-wc-header-stripe {
+    background-size: 100% 100%;
+  }
+}
+
 /* ── Sticker Album ── */
 
 .sticker-progress-bar {

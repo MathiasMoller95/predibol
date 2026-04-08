@@ -26,6 +26,8 @@
     },
     "countdown": {
       "urgency": "Crie sua liga antes que a Copa comece",
+      "worldCup": "FIFA World Cup 2026",
+      "hostCountries": "🇺🇸 USA · 🇲🇽 México · 🇨🇦 Canada",
       "days": "Dias",
       "hours": "Horas",
       "minutes": "Minutos",
@@ -88,6 +90,9 @@
       "groupsNumber": "12",
       "groupsLabel": "grupos",
       "body": "Pela primeira vez, 48 seleções. Mais jogos, mais resenha e mais chance de provar que você tinha razão.",
+      "hostCountriesNumber": "3",
+      "hostCountriesLabel": "países anfitriões",
+      "dates": "11 jun — 19 jul 2026",
       "groupsCreated": "🔥 {count} grupos criados"
     },
     "differentiators": {
@@ -112,6 +117,7 @@
       "subtitle": "Só há uma maneira de descobrir.",
       "button": "Criar conta grátis",
       "belowButton": "100% grátis · Menos de 1 minuto",
+      "dates": "🏟️ 11 de junho — 19 de julho, 2026",
       "features": "⚡ Superpoderes · 🎴 Álbum · 🤖 IA rival"
     },
     "footer": {
