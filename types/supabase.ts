@@ -129,6 +129,7 @@ export type Database = {
           created_at: string;
           updated_at: string;
           gdpr_consent_at: string | null;
+          email_weekly_recap: boolean;
         };
         Insert: {
           id: string;
@@ -137,6 +138,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           gdpr_consent_at?: string | null;
+          email_weekly_recap?: boolean;
         };
         Update: {
           id?: string;
@@ -145,6 +147,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           gdpr_consent_at?: string | null;
+          email_weekly_recap?: boolean;
         };
         Relationships: [];
       };

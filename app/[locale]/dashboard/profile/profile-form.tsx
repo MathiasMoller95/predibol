@@ -19,16 +19,23 @@ const inputClass =
 type Props = {
   initialDisplayName: string;
   initialTimezone: string;
+  initialEmailWeeklyRecap: boolean;
   email: string;
 };
 
-export default function ProfileForm({ initialDisplayName, initialTimezone, email }: Props) {
+export default function ProfileForm({
+  initialDisplayName,
+  initialTimezone,
+  initialEmailWeeklyRecap,
+  email,
+}: Props) {
   const t = useTranslations("Profile");
   const locale = useLocale();
   const router = useRouter();
   const { showToast } = useToast();
   const [name, setName] = useState(initialDisplayName);
   const [timezone, setTimezone] = useState(initialTimezone || DEFAULT_TIMEZONE);
+  const [emailWeeklyRecap, setEmailWeeklyRecap] = useState(initialEmailWeeklyRecap);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -65,6 +72,7 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
         id: user.id,
         display_name: trimmed,
         timezone,
+        email_weekly_recap: emailWeeklyRecap,
         updated_at: now,
       },
       { onConflict: "id" }
@@ -118,6 +126,21 @@ export default function ProfileForm({ initialDisplayName, initialTimezone, email
           />
         </div>
         <TimezoneField translationNamespace="Profile" value={timezone} onChange={setTimezone} />
+        <div className="flex items-start gap-3 rounded-lg border border-dark-600 bg-dark-900/80 px-4 py-3">
+          <input
+            id="profile-weekly-recap"
+            type="checkbox"
+            checked={emailWeeklyRecap}
+            onChange={(e) => setEmailWeeklyRecap(e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0 rounded border-dark-500 bg-dark-700 text-emerald-600 focus:ring-emerald-500"
+          />
+          <div className="min-w-0">
+            <label htmlFor="profile-weekly-recap" className="text-sm font-medium text-slate-200">
+              {t("weeklyRecapLabel")}
+            </label>
+            <p className="mt-1 text-xs text-slate-500">{t("weeklyRecapHint")}</p>
+          </div>
+        </div>
         <div>
           <span className="mb-1 block text-sm font-medium text-slate-300">{t("emailLabel")}</span>
           <p className="rounded-lg border border-dark-600 bg-dark-900 px-4 py-3 text-sm text-slate-400">{email}</p>

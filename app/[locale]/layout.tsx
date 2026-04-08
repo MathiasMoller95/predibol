@@ -1,7 +1,9 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
+import RegisterSw from "@/components/register-sw";
 import { routing } from "@/i18n/routing";
 
 const geistSans = localFont({
@@ -18,6 +20,18 @@ const geistMono = localFont({
 type Props = {
   children: React.ReactNode;
   params: { locale: string };
+};
+
+export const metadata: Metadata = {
+  appleWebApp: {
+    capable: true,
+    title: "Predibol",
+    statusBarStyle: "black-translucent",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0e14",
 };
 
 export function generateStaticParams() {
@@ -40,6 +54,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-dark-900 text-slate-100 antialiased`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <RegisterSw />
           {children}
         </NextIntlClientProvider>
       </body>

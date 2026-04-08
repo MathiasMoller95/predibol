@@ -3,9 +3,14 @@
 # Deploy Edge Function secrets (Dashboard or CLI):
 #   supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
 #   send-prediction-reminders also needs: RESEND_API_KEY, SITE_URL, SUPABASE_ANON_KEY (for admin test JWT path)
+#   send-weekly-digest: RESEND_API_KEY, SITE_URL, DIGEST_CRON_SECRET, optional FROM_EMAIL, DIGEST_DISABLED
 
 [functions.score-match]
 verify_jwt = true
 
 [functions.send-prediction-reminders]
 verify_jwt = true
+
+# Cron invokes with DIGEST_CRON_SECRET (Authorization or x-cron-secret); JWT not used.
+[functions.send-weekly-digest]
+verify_jwt = false
