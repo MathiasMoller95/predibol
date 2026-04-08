@@ -547,7 +547,8 @@
     "colPoints": "Puntos",
     "colCorrectResults": "Aciertos",
     "colExactScores": "Marcadores exactos",
-    "colPredictionsMade": "Pronosticos"
+    "colPredictionsMade": "Pronosticos",
+    "notPlayedYet": "Aún sin jugar"
   },
   "VirtualBets": {
     "tab": {

@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
-import LeaderboardBoard, { type LeaderboardBoardRow } from "./leaderboard-board";
+import { mergeGroupLeaderboardRows, type LeaderboardDbRow } from "@/lib/group-leaderboard-merge";
+import LeaderboardBoard from "./leaderboard-board";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -13,18 +14,6 @@ type GroupRecord = {
   id: string;
   name: string;
   admin_id: string;
-};
-
-type LeaderboardRow = {
-  user_id: string;
-  rank: number | null;
-  total_points: number;
-  correct_results: number;
-  exact_scores: number;
-  predictions_made: number;
-  virtual_pnl: number | null;
-  virtual_bets_won: number | null;
-  virtual_bets_lost: number | null;
 };
 
 type MemberRow = {
@@ -84,33 +73,25 @@ export default async function GroupLeaderboardPage({ params }: Props) {
 
   const memberList = (members ?? []) as MemberRow[];
   const memberByUser = new Map(memberList.map((m) => [m.user_id, m.display_name]));
-  const boardUserIds = Array.from(
-    new Set(((boardRows ?? []) as LeaderboardRow[]).map((r) => r.user_id))
-  );
+  const memberIds = memberList.map((m) => m.user_id);
   let profileByUserId = new Map<string, string>();
-  if (boardUserIds.length > 0) {
-    const { data: profileRows } = await supabase.from("profiles").select("id,display_name").in("id", boardUserIds);
+  if (memberIds.length > 0) {
+    const { data: profileRows } = await supabase.from("profiles").select("id,display_name").in("id", memberIds);
     profileByUserId = new Map(
       ((profileRows ?? []) as ProfileRow[]).map((p) => [p.id, p.display_name])
     );
   }
 
-  const rows: LeaderboardBoardRow[] = ((boardRows ?? []) as LeaderboardRow[]).map((row) => ({
-    user_id: row.user_id,
-    rank: row.rank,
-    total_points: row.total_points,
-    correct_results: row.correct_results,
-    exact_scores: row.exact_scores,
-    predictions_made: row.predictions_made,
-    virtual_pnl: row.virtual_pnl ?? 0,
-    virtual_bets_won: row.virtual_bets_won ?? 0,
-    virtual_bets_lost: row.virtual_bets_lost ?? 0,
-    display_name: resolveDisplayName(
-      profileByUserId.get(row.user_id),
-      memberByUser.get(row.user_id),
-      row.user_id === user.id ? user.email : undefined
-    ),
-  }));
+  const rows = mergeGroupLeaderboardRows(
+    memberList,
+    (boardRows ?? []) as LeaderboardDbRow[],
+    (uid) =>
+      resolveDisplayName(
+        profileByUserId.get(uid),
+        memberByUser.get(uid),
+        uid === user.id ? user.email : undefined
+      ),
+  );
 
   return (
     <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">

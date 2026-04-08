@@ -163,12 +163,17 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                         ) : null}
                       </td>
                       <td className="py-3 pr-4 text-slate-300">
-                        {row.display_name}
-                        {isAI ? (
-                          <span className="ml-1.5 rounded bg-purple-500/20 px-1.5 py-0.5 text-xs font-medium text-purple-400">
-                            IA
-                          </span>
-                        ) : null}
+                        <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
+                          {row.display_name}
+                          {isAI ? (
+                            <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-xs font-medium text-purple-400">
+                              IA
+                            </span>
+                          ) : null}
+                          {!isAI && row.predictions_made === 0 ? (
+                            <span className="text-[10px] font-normal text-slate-500">{t("notPlayedYet")}</span>
+                          ) : null}
+                        </span>
                       </td>
                       <td className="py-3 pr-4 text-right font-mono tabular-nums font-bold text-emerald-400">
                         {row.total_points}

@@ -11,6 +11,7 @@ import GroupHubClient, {
 } from "./group-hub";
 import type { GroupAccessMode } from "@/types/supabase";
 import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
+import { mergeGroupLeaderboardRows, type LeaderboardDbRow } from "@/lib/group-leaderboard-merge";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -90,8 +91,8 @@ export default async function GroupHubPage({ params }: Props) {
     totalMatchesRes,
     predCountRes,
     picksRes,
-    topBoardRes,
-    myBoardRes,
+    hubMembersRes,
+    hubLeaderboardRes,
     finishedRes,
     knockoutRes,
   ] = await Promise.all([
@@ -120,18 +121,13 @@ export default async function GroupHubPage({ params }: Props) {
       .eq("group_id", typedGroup.id)
       .eq("user_id", user.id)
       .maybeSingle(),
+    supabase.from("group_members").select("user_id,display_name").eq("group_id", typedGroup.id),
     supabase
       .from("leaderboard")
-      .select("user_id,rank,total_points")
-      .eq("group_id", typedGroup.id)
-      .order("rank", { ascending: true, nullsFirst: false })
-      .limit(5),
-    supabase
-      .from("leaderboard")
-      .select("rank,total_points")
-      .eq("group_id", typedGroup.id)
-      .eq("user_id", user.id)
-      .maybeSingle(),
+      .select(
+        "user_id,total_points,correct_results,exact_scores,predictions_made,virtual_pnl,virtual_bets_won,virtual_bets_lost",
+      )
+      .eq("group_id", typedGroup.id),
     supabase
       .from("matches")
       .select("id,home_team,away_team,home_score,away_score,match_time,home_win_odds,draw_odds,away_win_odds")
@@ -197,51 +193,50 @@ export default async function GroupHubPage({ params }: Props) {
     picks.best_goalkeeper
   );
 
-  const topRows = (topBoardRes.data ?? []) as {
-    user_id: string;
-    rank: number | null;
-    total_points: number;
-  }[];
-  const topIds = topRows.map((r) => r.user_id);
-  const inTop5 = topIds.includes(user.id);
-  const nameIds = Array.from(new Set(topIds.concat(user.id)));
+  const hubMemberList = (hubMembersRes.data ?? []) as { user_id: string; display_name: string }[];
+  const hubMemberIds = hubMemberList.map((m) => m.user_id);
+  let hubProfileMap = new Map<string, string>();
+  if (hubMemberIds.length > 0) {
+    const { data: profHub } = await supabase.from("profiles").select("id,display_name").in("id", hubMemberIds);
+    hubProfileMap = new Map((profHub ?? []).map((p) => [p.id as string, p.display_name as string]));
+  }
 
-  const { data: memPick } = await supabase
-    .from("group_members")
-    .select("user_id,display_name")
-    .eq("group_id", typedGroup.id)
-    .in("user_id", nameIds);
-
-  const { data: profPick } = await supabase.from("profiles").select("id,display_name").in("id", nameIds);
-
-  const memberMap = new Map((memPick ?? []).map((m) => [m.user_id as string, m.display_name as string]));
-  const profileMap = new Map((profPick ?? []).map((p) => [p.id as string, p.display_name as string]));
-
+  const hubMemberByUser = new Map(hubMemberList.map((m) => [m.user_id, m.display_name]));
   const selfEmail = user.email ?? undefined;
 
-  function displayFor(uid: string, isSelf: boolean): string {
+  function displayForHub(uid: string, isSelf: boolean): string {
     return resolveDisplayName(
-      profileMap.get(uid),
-      memberMap.get(uid),
+      hubProfileMap.get(uid),
+      hubMemberByUser.get(uid),
       isSelf ? selfEmail : undefined,
     );
   }
 
-  const leaderboardTop: LeaderboardPreviewRow[] = topRows.map((r) => ({
+  const mergedHubBoard = mergeGroupLeaderboardRows(
+    hubMemberList,
+    (hubLeaderboardRes.data ?? []) as LeaderboardDbRow[],
+    (uid) => displayForHub(uid, uid === user.id),
+  );
+
+  const topFive = mergedHubBoard.slice(0, 5);
+  const topIds = topFive.map((r) => r.user_id);
+  const inTop5 = topIds.includes(user.id);
+  const selfMerged = mergedHubBoard.find((r) => r.user_id === user.id);
+
+  const leaderboardTop: LeaderboardPreviewRow[] = topFive.map((r) => ({
     userId: r.user_id,
     rank: r.rank,
     points: r.total_points,
-    displayName: displayFor(r.user_id, r.user_id === user.id),
+    displayName: r.display_name,
   }));
 
-  const myBoard = myBoardRes.data as { rank: number | null; total_points: number } | null;
-  const showLeaderboardSelfRow = Boolean(myBoard && !inTop5);
+  const showLeaderboardSelfRow = Boolean(selfMerged && !inTop5);
   const leaderboardSelf: LeaderboardPreviewRow | null = showLeaderboardSelfRow
     ? {
         userId: user.id,
-        rank: myBoard!.rank,
-        points: myBoard!.total_points,
-        displayName: displayFor(user.id, true),
+        rank: selfMerged!.rank,
+        points: selfMerged!.total_points,
+        displayName: selfMerged!.display_name,
       }
     : null;
 
@@ -344,7 +339,7 @@ export default async function GroupHubPage({ params }: Props) {
     nextMatchPrediction,
     totalMatches: totalMatchesRes.count ?? 0,
     predictionsMadeCount: predCountRes.count ?? 0,
-    userRank: myBoard?.rank ?? null,
+    userRank: selfMerged?.rank ?? null,
     picksComplete,
     leaderboardTop,
     showLeaderboardSelfRow,
