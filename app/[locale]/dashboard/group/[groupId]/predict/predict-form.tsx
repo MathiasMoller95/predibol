@@ -11,10 +11,10 @@ import { getFlag, getGroup } from "@/lib/team-metadata";
 import type { PowerType } from "@/lib/constants";
 
 const SCORE_INPUT_CLASS =
-  "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50";
+  "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 placeholder:text-gray-600 placeholder:text-center";
 
 const SCORE_INPUT_KNOCKOUT_CLASS =
-  "mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 disabled:bg-dark-700 disabled:text-slate-500";
+  "mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 disabled:bg-dark-700 disabled:text-slate-500 placeholder:text-gray-600 placeholder:text-center";
 
 type MatchRecord = {
   id: string;
@@ -611,7 +611,7 @@ export default function PredictForm({
                           type="number"
                           min={0}
                           inputMode="numeric"
-                          placeholder="0"
+                          placeholder="-"
                           value={currentInput.predictedHome}
                           onChange={(event) =>
                             setInputs((prev) => ({
@@ -638,7 +638,7 @@ export default function PredictForm({
                           type="number"
                           min={0}
                           inputMode="numeric"
-                          placeholder="0"
+                          placeholder="-"
                           value={currentInput.predictedAway}
                           onChange={(event) =>
                             setInputs((prev) => ({
@@ -725,16 +725,20 @@ export default function PredictForm({
                           <span aria-hidden>🔒</span>
                           {t("locked")}
                         </p>
-                      ) : (
-                        <button
-                          type="button"
-                          disabled={busy || isSaving}
-                          onClick={() => void saveSingleMatch(match)}
-                          className={`mt-4 w-full min-h-[48px] rounded-lg border border-emerald-600/50 bg-emerald-900/30 px-4 py-2 text-sm font-semibold text-emerald-300 hover:bg-emerald-900/50 ${PRIMARY_BUTTON_CLASSES}`}
-                        >
-                          {busy ? t("saveSaving") : saved ? t("update") : t("save")}
-                        </button>
-                      )}
+                      ) : (() => {
+                        const bothFilled = currentInput.predictedHome !== "" && currentInput.predictedAway !== ""
+                          && !Number.isNaN(Number(currentInput.predictedHome)) && !Number.isNaN(Number(currentInput.predictedAway));
+                        return (
+                          <button
+                            type="button"
+                            disabled={busy || isSaving || !bothFilled}
+                            onClick={() => void saveSingleMatch(match)}
+                            className={`mt-4 w-full min-h-[48px] rounded-lg border border-emerald-600/50 bg-emerald-900/30 px-4 py-2 text-sm font-semibold text-emerald-300 hover:bg-emerald-900/50 disabled:opacity-50 disabled:cursor-not-allowed ${PRIMARY_BUTTON_CLASSES}`}
+                          >
+                            {busy ? t("saveSaving") : saved ? t("update") : t("save")}
+                          </button>
+                        );
+                      })()}
                     </div>
                   );
                 })}
@@ -887,6 +891,7 @@ export default function PredictForm({
                                   <input
                                     type="number"
                                     min={0}
+                                    placeholder="-"
                                     value={currentInput.predictedHome}
                                     disabled={lockPassed}
                                     onChange={(event) =>
@@ -906,6 +911,7 @@ export default function PredictForm({
                                   <input
                                     type="number"
                                     min={0}
+                                    placeholder="-"
                                     value={currentInput.predictedAway}
                                     disabled={lockPassed}
                                     onChange={(event) =>
@@ -1121,6 +1127,7 @@ export default function PredictForm({
                             <input
                               type="number"
                               min={0}
+                              placeholder="-"
                               value={currentInput.predictedHome}
                               disabled={lockPassed}
                               onChange={(event) =>
@@ -1140,6 +1147,7 @@ export default function PredictForm({
                             <input
                               type="number"
                               min={0}
+                              placeholder="-"
                               value={currentInput.predictedAway}
                               disabled={lockPassed}
                               onChange={(event) =>
