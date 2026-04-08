@@ -429,8 +429,11 @@ export default function LandingPage({ locale }: Props) {
             </div>
 
             <p className="mt-10 text-balance text-lg font-semibold text-emerald-400 sm:text-xl">{t("countdown.urgency")}</p>
-            <p className="mt-1.5 text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--landing-text-subtle)" }}>
-              {t("countdown.worldCup")} &nbsp;🇺🇸🇲🇽🇨🇦
+            <p className="mt-2 flex items-center justify-center gap-2">
+              <span className="landing-wc26-text text-sm font-extrabold uppercase tracking-widest sm:text-base">
+                {t("countdown.worldCup")}
+              </span>
+              <span className="text-base sm:text-lg" aria-hidden>🇺🇸🇲🇽🇨🇦</span>
             </p>
             <div
               className="mx-auto mt-4 flex max-w-3xl flex-wrap justify-center gap-3 sm:gap-4"

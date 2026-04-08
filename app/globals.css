@@ -563,6 +563,41 @@ body {
   }
 }
 
+/* ── World Cup 2026 branded text ── */
+.landing-wc26-text {
+  background: linear-gradient(
+    95deg,
+    #DC2626 0%,
+    #F97316 12%,
+    #EAB308 24%,
+    #22C55E 38%,
+    #06B6D4 52%,
+    #3B82F6 66%,
+    #8B5CF6 80%,
+    #EC4899 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.landing-root[data-theme="light"] .landing-wc26-text {
+  background: linear-gradient(
+    95deg,
+    #B91C1C 0%,
+    #EA580C 12%,
+    #CA8A04 24%,
+    #16A34A 38%,
+    #0891B2 52%,
+    #2563EB 66%,
+    #7C3AED 80%,
+    #DB2777 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ── World Cup 2026 header stripe ── */
 .landing-wc-header-stripe {
   background: linear-gradient(
