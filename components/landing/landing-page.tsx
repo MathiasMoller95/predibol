@@ -66,6 +66,44 @@ const WC_DIVIDER_COLORS = [
   "from-amber-500/40 via-emerald-500/30 to-purple-500/40",
 ] as const;
 
+const WC26_LETTER_COLORS = [
+  "#DC2626", // red
+  "#F97316", // orange
+  "#EAB308", // yellow
+  "#22C55E", // green
+  "#06B6D4", // cyan
+  "#3B82F6", // blue
+  "#8B5CF6", // purple
+  "#EC4899", // pink
+  "#14B8A6", // teal
+  "#E11D48", // rose
+  "#A855F7", // violet
+  "#0EA5E9", // sky
+  "#F59E0B", // amber
+  "#10B981", // emerald
+  "#6366F1", // indigo
+] as const;
+
+function WcColorLetters({ children }: { children: React.ReactNode }) {
+  const text = typeof children === "string" ? children : String(children ?? "");
+  let colorIdx = 0;
+
+  return (
+    <>
+      {Array.from(text).map((char, i) => {
+        if (char === " ") return <span key={i}>{" "}</span>;
+        const color = WC26_LETTER_COLORS[colorIdx % WC26_LETTER_COLORS.length];
+        colorIdx++;
+        return (
+          <span key={i} style={{ color }} className="font-extrabold">
+            {char}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
 function WcDivider({ index = 0 }: { index?: number }) {
   return (
     <div className="mx-auto max-w-6xl px-4" aria-hidden>
@@ -412,7 +450,9 @@ export default function LandingPage({ locale }: Props) {
               className="mx-auto mt-6 max-w-3xl text-balance text-2xl font-bold leading-tight sm:text-3xl md:text-4xl"
               style={{ color: "var(--landing-text-heading)" }}
             >
-              {t("hero.tagline")}
+              {t.rich("hero.tagline", {
+                wc: (chunks) => <WcColorLetters>{chunks}</WcColorLetters>,
+              })}
             </h1>
 
             <p

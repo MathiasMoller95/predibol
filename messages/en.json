@@ -14,7 +14,7 @@
       "login": "Log in"
     },
     "hero": {
-      "tagline": "Predict the World Cup with your friends",
+      "tagline": "Predict the <wc>World Cup 2026</wc> with your friends",
       "subtitle": "Create your private league, submit your predictions for every match, and compete to be #1 in your group.",
       "pill1": "⚽ 48 teams · 104 matches",
       "pill2": "👥 Private & public leagues",

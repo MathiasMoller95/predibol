@@ -14,7 +14,7 @@
       "login": "Iniciar sesión"
     },
     "hero": {
-      "tagline": "Predice el Mundial 2026 con tus amigos",
+      "tagline": "Predice el <wc>Mundial 2026</wc> con tus amigos",
       "subtitle": "Crea tu grupo, envía tus pronósticos y averigua quién es el que sabe más de fútbol.",
       "pill1": "⚽ 48 equipos · 104 partidos",
       "pill2": "👥 Grupos privados y públicos",
