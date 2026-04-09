@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { teamFlags, teamGroup } from "@/lib/team-metadata";
 
@@ -87,8 +88,22 @@ export default function AlbumView({
     [],
   );
 
-  /** Team whose detail modal is open (centered overlay; avoids clipped tooltips on mobile). */
+  /** Team whose detail modal is open (portaled to body; true viewport center). */
   const [detailTeam, setDetailTeam] = useState<string | null>(null);
+  const [portalReady, setPortalReady] = useState(false);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!detailTeam) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [detailTeam]);
 
   function matchLabel(matchId: string | null) {
     if (!matchId) return "";
@@ -107,9 +122,82 @@ export default function AlbumView({
 
   const pct = Math.round((stats.collected / 48) * 100);
 
+  const modal =
+    portalReady && detailTeam ? (
+      createPortal(
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => setDetailTeam(null)}
+          role="presentation"
+        >
+          <div
+            className="relative mx-4 w-full max-w-xs rounded-xl border border-gray-700 bg-[#111720] p-6 text-center shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="album-sticker-detail-title"
+          >
+            <button
+              type="button"
+              className="absolute right-3 top-3 rounded-lg p-1 text-lg leading-none text-slate-400 transition hover:bg-white/10 hover:text-white"
+              onClick={() => setDetailTeam(null)}
+              aria-label={t("closeModal")}
+            >
+              ✕
+            </button>
+
+            {(() => {
+              const sticker = stickerMap.get(detailTeam);
+              const flag = teamFlags[detailTeam] ?? "⚽";
+              if (sticker) {
+                return (
+                  <>
+                    <span className="text-6xl leading-none" aria-hidden>
+                      {flag}
+                    </span>
+                    <h2 id="album-sticker-detail-title" className="mt-3 text-lg font-bold text-white">
+                      {detailTeam}
+                    </h2>
+                    <p className="mt-3 text-sm font-semibold text-white">
+                      {tierEmoji(sticker.tier)} {t(`tiers.${sticker.tier}`)}
+                      {" — "}
+                      {t(`${sticker.tier}Description`)}
+                    </p>
+                    {sticker.matchId ? (
+                      <p className="mt-3 text-sm text-slate-400">
+                        {t("earnedFrom", { match: matchLabel(sticker.matchId) })}
+                      </p>
+                    ) : null}
+                  </>
+                );
+              }
+              return (
+                <>
+                  <span className="text-6xl leading-none opacity-40 grayscale" aria-hidden>
+                    {flag}
+                  </span>
+                  <h2 id="album-sticker-detail-title" className="mt-3 text-lg font-bold text-gray-500">
+                    {detailTeam}
+                  </h2>
+                  <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    {t("locked")}
+                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-slate-400">
+                    {t("lockedHint", { team: detailTeam })}
+                  </p>
+                </>
+              );
+            })()}
+          </div>
+        </div>,
+        document.body,
+      )
+    ) : null;
+
   return (
-    <main className="animate-page-in min-h-screen bg-[#0A0E14] px-4 py-8">
-      <div className="mx-auto w-full max-w-4xl">
+    <>
+      <main className="animate-page-in min-h-screen bg-[#0A0E14] px-4 py-8">
+        <div className="mx-auto w-full max-w-4xl">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
           className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
@@ -264,76 +352,9 @@ export default function AlbumView({
             );
           })}
         </div>
-
-        {/* Sticker detail modal (tap backdrop or ✕ to close) */}
-        {detailTeam && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-            onClick={() => setDetailTeam(null)}
-            role="presentation"
-          >
-            <div
-              className="relative mx-6 w-full max-w-sm rounded-xl border border-gray-700 bg-[#111720] p-5 text-center shadow-xl"
-              onClick={(e) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="album-sticker-detail-title"
-            >
-              <button
-                type="button"
-                className="absolute right-3 top-3 rounded-lg p-1 text-lg leading-none text-slate-400 transition hover:bg-white/10 hover:text-white"
-                onClick={() => setDetailTeam(null)}
-                aria-label={t("closeModal")}
-              >
-                ✕
-              </button>
-
-              {(() => {
-                const sticker = stickerMap.get(detailTeam);
-                const flag = teamFlags[detailTeam] ?? "⚽";
-                if (sticker) {
-                  return (
-                    <>
-                      <span className="text-6xl leading-none" aria-hidden>
-                        {flag}
-                      </span>
-                      <h2 id="album-sticker-detail-title" className="mt-3 text-lg font-bold text-white">
-                        {detailTeam}
-                      </h2>
-                      <p className="mt-3 text-sm font-semibold text-white">
-                        {tierEmoji(sticker.tier)} {t(`tiers.${sticker.tier}`)}
-                        {" — "}
-                        {t(`${sticker.tier}Description`)}
-                      </p>
-                      {sticker.matchId ? (
-                        <p className="mt-3 text-sm text-slate-400">
-                          {t("earnedFrom", { match: matchLabel(sticker.matchId) })}
-                        </p>
-                      ) : null}
-                    </>
-                  );
-                }
-                return (
-                  <>
-                    <span className="text-6xl leading-none opacity-40 grayscale" aria-hidden>
-                      {flag}
-                    </span>
-                    <h2 id="album-sticker-detail-title" className="mt-3 text-lg font-bold text-gray-500">
-                      {detailTeam}
-                    </h2>
-                    <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                      {t("locked")}
-                    </p>
-                    <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                      {t("lockedHint", { team: detailTeam })}
-                    </p>
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-        )}
-      </div>
-    </main>
+        </div>
+      </main>
+      {modal}
+    </>
   );
 }
