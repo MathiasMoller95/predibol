@@ -2,8 +2,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import type { GroupMatchLite, PredictionScores } from "@/lib/projected-standings";
 import { compareKnockoutLabels } from "@/lib/knockout-bracket-utils";
-import BracketView, { type BracketMatchVM, type BracketPredictionVM } from "./bracket-view";
+import BracketWithTabs from "./bracket-with-tabs";
+import { type BracketMatchVM, type BracketPredictionVM } from "./bracket-view";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -47,6 +49,14 @@ export default async function GroupBracketPage({ params }: Props) {
     redirect(`/${locale}/dashboard`);
   }
 
+  const { data: groupMatchRows } = await supabase
+    .from("matches")
+    .select("id,phase,home_team,away_team")
+    .eq("phase", "group")
+    .order("match_time", { ascending: true });
+
+  const groupStageMatches = (groupMatchRows ?? []) as GroupMatchLite[];
+
   const { data: matchRows } = await supabase
     .from("matches")
     .select(
@@ -59,20 +69,36 @@ export default async function GroupBracketPage({ params }: Props) {
   matches.sort((a, b) => compareKnockoutLabels(a.knockout_label, b.knockout_label));
 
   const matchIds = matches.map((m) => m.id);
+  const groupIds = groupStageMatches.map((m) => m.id);
+  const seen = new Set<string>();
+  const allIds: string[] = [];
+  for (const id of [...matchIds, ...groupIds]) {
+    if (!seen.has(id)) {
+      seen.add(id);
+      allIds.push(id);
+    }
+  }
+
   const predictionByMatch: Record<string, BracketPredictionVM> = {};
-  if (matchIds.length > 0) {
+  const groupPredictionScores: PredictionScores = {};
+  if (allIds.length > 0) {
     const { data: preds } = await supabase
       .from("predictions")
       .select("match_id,predicted_home,predicted_away")
       .eq("group_id", groupId)
       .eq("user_id", user.id)
-      .in("match_id", matchIds);
+      .in("match_id", allIds);
+    const groupIdSet = new Set(groupIds);
     for (const p of preds ?? []) {
-      predictionByMatch[p.match_id as string] = {
-        match_id: p.match_id as string,
+      const mid = p.match_id as string;
+      predictionByMatch[mid] = {
+        match_id: mid,
         predicted_home: p.predicted_home as number,
         predicted_away: p.predicted_away as number,
       };
+      if (groupIdSet.has(mid)) {
+        groupPredictionScores[mid] = { home: p.predicted_home as number, away: p.predicted_away as number };
+      }
     }
   }
 
@@ -82,7 +108,12 @@ export default async function GroupBracketPage({ params }: Props) {
         <Link href={`/${locale}/dashboard/group/${groupId}`} className="text-sm font-medium text-gpri hover:text-gpri/90">
           {common("backToGroup", { groupName })}
         </Link>
-        <BracketView matches={matches} predictionsByMatchId={predictionByMatch} />
+        <BracketWithTabs
+          knockoutMatches={matches}
+          groupStageMatches={groupStageMatches}
+          groupPredictionScores={groupPredictionScores}
+          predictionsByMatchId={predictionByMatch}
+        />
       </section>
     </main>
   );

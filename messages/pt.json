@@ -679,7 +679,31 @@
     "marketOdds": "Mercado",
     "aiPrediction": "IA",
     "draw": "Empate",
-    "groupFavorite": "Fav"
+    "groupFavorite": "Fav",
+    "copy": {
+      "bannerPrompt": "Você já tem palpites em {groupName}. Copiar para este grupo?",
+      "copyButton": "Copiar palpites",
+      "dismissButton": "Não, começar do zero",
+      "successToast": "{count} palpites copiados. Pode editá-los antes do fecho.",
+      "copying": "Copiando...",
+      "copyFrom": "Copiar de:",
+      "error": "Não foi possível copiar os palpites."
+    },
+    "projected": {
+      "title": "Classificação projetada",
+      "disclaimer": "Apenas com as partidas que você palpitou neste grupo. As não palpitadas são ignoradas.",
+      "predictedFraction": "{count}/6 palpites",
+      "completeNudge": "Palpite os seis jogos do grupo para uma projeção mais completa.",
+      "colPos": "Pos",
+      "colTeam": "Equipe",
+      "colPts": "Pts",
+      "colW": "V",
+      "colD": "E",
+      "colL": "D",
+      "colGF": "GP",
+      "colGA": "GC",
+      "colGD": "SG"
+    }
   },
   "Bracket": {
     "title": "Chave do Mundial",
@@ -694,7 +718,10 @@
     "scrollHint": "Role na horizontal para ver a chave completa.",
     "phaseRoundOf16": "Oitavas de final",
     "phaseQuarter": "Quartas de final",
-    "phaseSemi": "Semifinais"
+    "phaseSemi": "Semifinais",
+    "tabActual": "Resultados reais",
+    "tabProjection": "Minha projeção",
+    "projectionDisclaimer": "As oitavas são preenchidas com seus palpites da fase de grupos. As fases seguintes seguem o chaveamento oficial."
   },
   "AdminPage": {
     "title": "Painel administrativo",

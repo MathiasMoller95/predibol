@@ -42,6 +42,8 @@ export type BracketPredictionVM = {
 type Props = {
   matches: BracketMatchVM[];
   predictionsByMatchId: Record<string, BracketPredictionVM>;
+  /** When true, R16 sides marked "?" use dashed styling (projection tab). */
+  projectionMode?: boolean;
 };
 
 const NODE = BRACKET_NODE_HEIGHT;
@@ -81,10 +83,12 @@ function MatchCard({
   match,
   prediction,
   t,
+  projectionMode = false,
 }: {
   match: BracketMatchVM | undefined;
   prediction: BracketPredictionVM | undefined;
   t: ReturnType<typeof useTranslations<"Bracket">>;
+  projectionMode?: boolean;
 }) {
   if (!match) {
     return (
@@ -103,6 +107,8 @@ function MatchCard({
   const a = match.away_team;
   const hTbd = h === "TBD";
   const aTbd = a === "TBD";
+  const hUncertain = h === "?";
+  const aUncertain = a === "?";
   const hs = match.home_score;
   const as = match.away_score;
 
@@ -114,7 +120,9 @@ function MatchCard({
 
   const rowClass = (side: "home" | "away") => {
     const base = "flex items-center justify-between gap-2 px-2 py-1.5 text-sm";
-    if (!finished) return `${base} text-slate-200`;
+    const uncertain = side === "home" ? hUncertain : aUncertain;
+    const dash = projectionMode && uncertain ? " mx-1 rounded border border-dashed border-slate-500/45" : "";
+    if (!finished) return `${base}${dash} text-slate-200`;
     if (winner === side) return `${base} border-l-2 border-gpri bg-gpri/20 text-white`;
     return `${base} text-slate-400`;
   };
@@ -132,27 +140,41 @@ function MatchCard({
       ) : null}
       <div className={rowClass("home")}>
         <span className="min-w-0 truncate">
-          {!hTbd ? <span aria-hidden>{getFlag(h)}</span> : null}{" "}
-          {!hTbd ? <span className="font-medium">{h}</span> : <span className="text-slate-500">{formatSourceLine(t, match.home_source)}</span>}
+          {hUncertain ? (
+            <span className="font-medium text-slate-400">?</span>
+          ) : !hTbd ? (
+            <>
+              <span aria-hidden>{getFlag(h)}</span> <span className="font-medium">{h}</span>
+            </>
+          ) : (
+            <span className="text-slate-500">{formatSourceLine(t, match.home_source)}</span>
+          )}
         </span>
         <span className="shrink-0 tabular-nums text-slate-300">
-          {finished && hs != null ? hs : !hTbd && !aTbd && !finished ? "–" : ""}
+          {finished && hs != null ? hs : !hTbd && !aTbd && !hUncertain && !aUncertain && !finished ? "–" : ""}
         </span>
       </div>
       <div className="h-px bg-[#1e293b]" />
       <div className={rowClass("away")}>
         <span className="min-w-0 truncate">
-          {!aTbd ? <span aria-hidden>{getFlag(a)}</span> : null}{" "}
-          {!aTbd ? <span className="font-medium">{a}</span> : <span className="text-slate-500">{formatSourceLine(t, match.away_source)}</span>}
+          {aUncertain ? (
+            <span className="font-medium text-slate-400">?</span>
+          ) : !aTbd ? (
+            <>
+              <span aria-hidden>{getFlag(a)}</span> <span className="font-medium">{a}</span>
+            </>
+          ) : (
+            <span className="text-slate-500">{formatSourceLine(t, match.away_source)}</span>
+          )}
         </span>
         <span className="shrink-0 tabular-nums text-slate-300">
-          {finished && as != null ? as : !hTbd && !aTbd && !finished ? "–" : ""}
+          {finished && as != null ? as : !hTbd && !aTbd && !hUncertain && !aUncertain && !finished ? "–" : ""}
         </span>
       </div>
       {hTbd && aTbd ? (
         <p className="border-t border-[#1e293b] px-2 py-1 text-[10px] text-slate-500">{t("teamsTbd")}</p>
       ) : null}
-      {prediction && (!hTbd || !aTbd) ? (
+      {prediction && (!hTbd || !aTbd) && !hUncertain && !aUncertain ? (
         <p className="border-t border-[#1e293b] px-2 py-0.5 text-[10px] text-gpri/90">
           {t("yourPrediction")}: {prediction.predicted_home}-{prediction.predicted_away}
         </p>
@@ -225,7 +247,7 @@ function BridgeToFinal({
   );
 }
 
-export default function BracketView({ matches, predictionsByMatchId }: Props) {
+export default function BracketView({ matches, predictionsByMatchId, projectionMode = false }: Props) {
   const t = useTranslations("Bracket");
 
   const byLabel = useMemo(() => {
@@ -272,29 +294,87 @@ export default function BracketView({ matches, predictionsByMatchId }: Props) {
       <div className="hidden md:block">
         <div className="overflow-x-auto pb-2">
           <div className="inline-flex min-w-max items-start gap-0 py-2">
-            <RoundColumn labels={[...BRACKET_R16_LEFT]} tops={r16L} treeH={treeH} byLabel={byLabel} predictionsByMatchId={predictionsByMatchId} t={t} />
+            <RoundColumn
+              labels={[...BRACKET_R16_LEFT]}
+              tops={r16L}
+              treeH={treeH}
+              byLabel={byLabel}
+              predictionsByMatchId={predictionsByMatchId}
+              t={t}
+              projectionMode={projectionMode}
+            />
             <ConnectorColumn leftTops={r16L} parentTops={qfL} height={treeH} />
-            <RoundColumn labels={[...BRACKET_QF_LEFT]} tops={qfL} treeH={treeH} byLabel={byLabel} predictionsByMatchId={predictionsByMatchId} t={t} />
+            <RoundColumn
+              labels={[...BRACKET_QF_LEFT]}
+              tops={qfL}
+              treeH={treeH}
+              byLabel={byLabel}
+              predictionsByMatchId={predictionsByMatchId}
+              t={t}
+              projectionMode={projectionMode}
+            />
             <ConnectorColumn leftTops={qfL} parentTops={sfL} height={treeH} />
-            <RoundColumn labels={[...BRACKET_SF_LEFT]} tops={sfL} treeH={treeH} byLabel={byLabel} predictionsByMatchId={predictionsByMatchId} t={t} />
+            <RoundColumn
+              labels={[...BRACKET_SF_LEFT]}
+              tops={sfL}
+              treeH={treeH}
+              byLabel={byLabel}
+              predictionsByMatchId={predictionsByMatchId}
+              t={t}
+              projectionMode={projectionMode}
+            />
             <BridgeToFinal sfTops={sfL} finalTop={finalTop} height={treeH} fromLeft />
 
             <div className="relative shrink-0 px-1" style={{ width: 200, minHeight: centerH }}>
               <div className="absolute left-0 w-[200px]" style={{ top: finalTop }}>
-                <MatchCard match={finalMatch} prediction={finalMatch ? predictionsByMatchId[finalMatch.id] : undefined} t={t} />
+                <MatchCard
+                  match={finalMatch}
+                  prediction={finalMatch ? predictionsByMatchId[finalMatch.id] : undefined}
+                  t={t}
+                  projectionMode={projectionMode}
+                />
               </div>
               <div className="absolute left-0 w-[200px]" style={{ top: thirdTop }}>
                 <p className="mb-1 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-500">{t("thirdPlace")}</p>
-                <MatchCard match={thirdMatch} prediction={thirdMatch ? predictionsByMatchId[thirdMatch.id] : undefined} t={t} />
+                <MatchCard
+                  match={thirdMatch}
+                  prediction={thirdMatch ? predictionsByMatchId[thirdMatch.id] : undefined}
+                  t={t}
+                  projectionMode={projectionMode}
+                />
               </div>
             </div>
 
             <BridgeToFinal sfTops={sfR} finalTop={finalTop} height={treeH} fromLeft={false} />
-            <RoundColumn labels={[...BRACKET_SF_RIGHT]} tops={sfR} treeH={treeH} byLabel={byLabel} predictionsByMatchId={predictionsByMatchId} t={t} />
+            <RoundColumn
+              labels={[...BRACKET_SF_RIGHT]}
+              tops={sfR}
+              treeH={treeH}
+              byLabel={byLabel}
+              predictionsByMatchId={predictionsByMatchId}
+              t={t}
+              projectionMode={projectionMode}
+            />
             <ConnectorColumn leftTops={qfR} parentTops={sfR} height={treeH} />
-            <RoundColumn labels={[...BRACKET_QF_RIGHT]} tops={qfR} treeH={treeH} byLabel={byLabel} predictionsByMatchId={predictionsByMatchId} t={t} />
+            <RoundColumn
+              labels={[...BRACKET_QF_RIGHT]}
+              tops={qfR}
+              treeH={treeH}
+              byLabel={byLabel}
+              predictionsByMatchId={predictionsByMatchId}
+              t={t}
+              projectionMode={projectionMode}
+            />
             <ConnectorColumn leftTops={r16R} parentTops={qfR} height={treeH} />
-            <RoundColumn labels={[...BRACKET_R16_RIGHT]} tops={r16R} treeH={treeH} byLabel={byLabel} predictionsByMatchId={predictionsByMatchId} t={t} />
+            <RoundColumn
+              labels={[...BRACKET_R16_RIGHT]}
+              tops={r16R}
+              treeH={treeH}
+              byLabel={byLabel}
+              predictionsByMatchId={predictionsByMatchId}
+              t={t}
+              projectionMode={projectionMode}
+            />
           </div>
         </div>
       </div>
@@ -306,7 +386,7 @@ export default function BracketView({ matches, predictionsByMatchId }: Props) {
             <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-white">{label}</summary>
             <div className="space-y-3 border-t border-dark-600 p-3">
               {items.map((m) => (
-                <MatchCard key={m.id} match={m} prediction={predictionsByMatchId[m.id]} t={t} />
+                <MatchCard key={m.id} match={m} prediction={predictionsByMatchId[m.id]} t={t} projectionMode={projectionMode} />
               ))}
             </div>
           </details>
@@ -323,6 +403,7 @@ function RoundColumn({
   byLabel,
   predictionsByMatchId,
   t,
+  projectionMode,
 }: {
   labels: readonly string[];
   tops: number[];
@@ -330,12 +411,18 @@ function RoundColumn({
   byLabel: Record<string, BracketMatchVM | undefined>;
   predictionsByMatchId: Record<string, BracketPredictionVM>;
   t: ReturnType<typeof useTranslations<"Bracket">>;
+  projectionMode: boolean;
 }) {
   return (
     <div className="relative shrink-0" style={{ width: 200, minHeight: treeH }}>
       {labels.map((lb, i) => (
         <div key={lb} className="absolute left-0" style={{ top: tops[i] }}>
-          <MatchCard match={byLabel[lb]} prediction={byLabel[lb] ? predictionsByMatchId[byLabel[lb]!.id] : undefined} t={t} />
+          <MatchCard
+            match={byLabel[lb]}
+            prediction={byLabel[lb] ? predictionsByMatchId[byLabel[lb]!.id] : undefined}
+            t={t}
+            projectionMode={projectionMode}
+          />
         </div>
       ))}
     </div>

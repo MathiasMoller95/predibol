@@ -679,7 +679,31 @@
     "marketOdds": "Market",
     "aiPrediction": "AI",
     "draw": "Draw",
-    "groupFavorite": "Fav"
+    "groupFavorite": "Fav",
+    "copy": {
+      "bannerPrompt": "You already have predictions in {groupName}. Copy them to this group?",
+      "copyButton": "Copy predictions",
+      "dismissButton": "No, start fresh",
+      "successToast": "{count} predictions copied. You can edit them before lockdown.",
+      "copying": "Copying...",
+      "copyFrom": "Copy from:",
+      "error": "Could not copy predictions."
+    },
+    "projected": {
+      "title": "Projected standings",
+      "disclaimer": "Based only on matches you have predicted in this group. Unpredicted matches are ignored.",
+      "predictedFraction": "{count}/6 predicted",
+      "completeNudge": "Predict all six group matches for a fuller projection.",
+      "colPos": "Pos",
+      "colTeam": "Team",
+      "colPts": "Pts",
+      "colW": "W",
+      "colD": "D",
+      "colL": "L",
+      "colGF": "GF",
+      "colGA": "GA",
+      "colGD": "GD"
+    }
   },
   "Bracket": {
     "title": "World Cup Bracket",
@@ -694,7 +718,10 @@
     "scrollHint": "Scroll sideways to see the full bracket on desktop.",
     "phaseRoundOf16": "Round of 16",
     "phaseQuarter": "Quarter-finals",
-    "phaseSemi": "Semi-finals"
+    "phaseSemi": "Semi-finals",
+    "tabActual": "Actual results",
+    "tabProjection": "My projection",
+    "projectionDisclaimer": "Round of 16 is filled from your group-stage predictions. Later rounds stay as in the official bracket."
   },
   "AdminPage": {
     "title": "Admin Panel",

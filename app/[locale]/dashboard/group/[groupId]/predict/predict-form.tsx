@@ -7,6 +7,8 @@ import { formatMatchTime } from "@/lib/format-match-time";
 import { formatGroupOddsCompactLine } from "@/lib/group-match-odds";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
+import ProjectedGroupStandingsTable from "@/components/ProjectedGroupStandingsTable";
+import type { PredictionScores } from "@/lib/projected-standings";
 import { getFlag, getGroup } from "@/lib/team-metadata";
 import type { PowerType } from "@/lib/constants";
 
@@ -397,6 +399,19 @@ export default function PredictForm({
   }, [matches]);
 
   const groupStageMatches = useMemo(() => matches.filter((match) => match.phase === "group"), [matches]);
+
+  const mergedGroupPredictionScores = useMemo((): PredictionScores => {
+    const preds: PredictionScores = {};
+    for (const m of groupStageMatches) {
+      const inp = inputs[m.id];
+      if (!inp || inp.predictedHome === "" || inp.predictedAway === "") continue;
+      const h = Number(inp.predictedHome);
+      const a = Number(inp.predictedAway);
+      if (!Number.isFinite(h) || !Number.isFinite(a) || h < 0 || a < 0) continue;
+      preds[m.id] = { home: h, away: a };
+    }
+    return preds;
+  }, [groupStageMatches, inputs]);
   const knockoutMatches = useMemo(() => matches.filter((match) => match.phase !== "group"), [matches]);
   const knockoutByPhase = useMemo(() => {
     const map = new Map<string, MatchRecord[]>();
@@ -743,6 +758,12 @@ export default function PredictForm({
                   );
                 })}
               </div>
+
+              <ProjectedGroupStandingsTable
+                groupLetter={expandedGroup}
+                groupStageMatches={groupStageMatches}
+                predictionScores={mergedGroupPredictionScores}
+              />
 
               <button
                 type="button"

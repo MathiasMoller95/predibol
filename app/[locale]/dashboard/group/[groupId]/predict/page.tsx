@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AI_PLAYER_ID } from "@/lib/constants";
+import CopyPredictionsBanner, { type CopyPredictionOption } from "@/components/CopyPredictionsBanner";
 import PredictForm from "./predict-form";
 import Link from "next/link";
 
@@ -185,6 +186,69 @@ export default async function GroupPredictPage({ params }: Props) {
       .filter((x): x is FinishedPick => x != null);
   }
 
+  const { data: otherMemberships } = await supabase
+    .from("group_members")
+    .select("group_id")
+    .eq("user_id", user.id)
+    .neq("group_id", groupId);
+
+  const otherGroupIds = (otherMemberships ?? []).map((r) => r.group_id as string);
+
+  let copyOptions: CopyPredictionOption[] = [];
+
+  if (otherGroupIds.length > 0) {
+    const nowForUnlock = new Date().toISOString();
+    const { data: unlockRows } = await supabase
+      .from("matches")
+      .select("id")
+      .eq("status", "scheduled")
+      .gt("locked_at", nowForUnlock);
+
+    const unlockableIds = (unlockRows ?? []).map((r) => (r as { id: string }).id);
+    const targetMissingIds = unlockableIds.filter((mid) => !predByMatchId.has(mid));
+
+    if (targetMissingIds.length > 0) {
+      const { data: srcPredRows } = await supabase
+        .from("predictions")
+        .select("group_id,match_id")
+        .eq("user_id", user.id)
+        .in("group_id", otherGroupIds)
+        .in("match_id", targetMissingIds);
+
+      const targetMissingSet = new Set(targetMissingIds);
+      const byGroup = new Map<string, Set<string>>();
+      for (const row of srcPredRows ?? []) {
+        const r = row as { group_id: string; match_id: string };
+        if (!targetMissingSet.has(r.match_id)) continue;
+        if (!byGroup.has(r.group_id)) byGroup.set(r.group_id, new Set());
+        byGroup.get(r.group_id)!.add(r.match_id);
+      }
+
+      const groupsWithCopy = Array.from(byGroup.entries()).filter(([, set]) => set.size > 0);
+      if (groupsWithCopy.length > 0) {
+        const gids = groupsWithCopy.map(([id]) => id);
+        const { data: nameRows } = await supabase.from("groups").select("id,name").in("id", gids);
+        const nameById = new Map(
+          (nameRows ?? []).map((g) => {
+            const gr = g as { id: string; name: string };
+            return [gr.id, gr.name] as const;
+          }),
+        );
+
+        copyOptions = groupsWithCopy
+          .map(([gid, set]) => ({
+            groupId: gid,
+            groupName: nameById.get(gid) ?? gid,
+            copyableCount: set.size,
+          }))
+          .sort((a, b) => {
+            if (b.copyableCount !== a.copyableCount) return b.copyableCount - a.copyableCount;
+            return a.groupName.localeCompare(b.groupName);
+          });
+      }
+    }
+  }
+
   return (
     <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
@@ -196,6 +260,10 @@ export default async function GroupPredictPage({ params }: Props) {
         </Link>
         <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
         <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
+
+        {copyOptions.length > 0 ? (
+          <CopyPredictionsBanner targetGroupId={groupId} options={copyOptions} />
+        ) : null}
 
         <PredictForm
           matches={typedMatches}

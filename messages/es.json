@@ -679,7 +679,31 @@
     "marketOdds": "Mercado",
     "aiPrediction": "IA",
     "draw": "Empate",
-    "groupFavorite": "Fav"
+    "groupFavorite": "Fav",
+    "copy": {
+      "bannerPrompt": "Ya tienes predicciones en {groupName}. ¿Quieres copiarlas a este grupo?",
+      "copyButton": "Copiar predicciones",
+      "dismissButton": "No, predecir desde cero",
+      "successToast": "Se copiaron {count} predicciones. Puedes editarlas antes del cierre.",
+      "copying": "Copiando...",
+      "copyFrom": "Copiar desde:",
+      "error": "No se pudieron copiar las predicciones."
+    },
+    "projected": {
+      "title": "Clasificación proyectada",
+      "disclaimer": "Solo con los partidos que pronosticaste en este grupo. Los no pronosticados no cuentan.",
+      "predictedFraction": "{count}/6 pronosticados",
+      "completeNudge": "Pronostica los seis partidos del grupo para una proyección más completa.",
+      "colPos": "Pos",
+      "colTeam": "Equipo",
+      "colPts": "Pts",
+      "colW": "G",
+      "colD": "E",
+      "colL": "P",
+      "colGF": "GF",
+      "colGA": "GC",
+      "colGD": "DG"
+    }
   },
   "Bracket": {
     "title": "Bracket del Mundial",
@@ -694,7 +718,10 @@
     "scrollHint": "Desplázate en horizontal para ver el cuadro completo.",
     "phaseRoundOf16": "Octavos de final",
     "phaseQuarter": "Cuartos de final",
-    "phaseSemi": "Semifinales"
+    "phaseSemi": "Semifinales",
+    "tabActual": "Resultados reales",
+    "tabProjection": "Mi proyección",
+    "projectionDisclaimer": "Los octavos se rellenan con tus pronósticos de fase de grupos. Las rondas siguientes siguen el cuadro oficial."
   },
   "AdminPage": {
     "title": "Panel de administracion",
