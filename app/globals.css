@@ -17,6 +17,15 @@ html {
   --foreground: #f1f5f9;
 }
 
+/* Default group theme vars (overridden per group in app/[locale]/dashboard/group/[groupId]/layout.tsx) */
+[data-group-shell] {
+  --gpri-rgb: 16 185 129;
+  --gsec-rgb: 52 211 153;
+  --group-primary: #10b981;
+  --group-secondary: #34d399;
+  --group-bg-tint: rgba(16, 185, 129, 0.08);
+}
+
 body {
   color: #f1f5f9;
   background-color: #0a0e14;

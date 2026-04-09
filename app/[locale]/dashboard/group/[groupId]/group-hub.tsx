@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -27,7 +28,7 @@ export type RecentResultRow = {
   predHome: number | null;
   predAway: number | null;
   pointsEarned: number;
-  /** Virtual €1 1X2 P&L; null if no prediction or odds missing */
+  /** Simulated €1 notional 1X2 P&L; null if no prediction or odds missing */
   virtualPnl: number | null;
 };
 
@@ -36,6 +37,8 @@ export type GroupHubData = {
   groupId: string;
   slug: string;
   groupName: string;
+  /** Public storage URL; optional */
+  logoUrl: string | null;
   primaryColor: string | null;
   isAdmin: boolean;
   memberCount: number;
@@ -191,9 +194,28 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
+            {data.logoUrl ? (
+              <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-dark-900">
+                <Image
+                  src={data.logoUrl}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-full w-full object-cover"
+                  unoptimized
+                />
+              </span>
+            ) : (
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-dark-900 text-lg font-bold text-slate-500"
+                aria-hidden
+              >
+                ⚽
+              </span>
+            )}
             <h1 className="text-3xl font-bold text-white">{data.groupName}</h1>
             {data.isAdmin ? (
-              <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-emerald-500/30">
+              <span className="rounded-full bg-gpri/20 px-2 py-0.5 text-xs font-medium text-gpri ring-1 ring-gpri/30">
                 {t("adminBadge")}
               </span>
             ) : null}
@@ -239,7 +261,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
             {lockState.closed ? (
               <p className="mt-3 text-sm font-medium text-amber-400/90">{t("nextMatch.predictionsClosed")}</p>
             ) : countdownParts ? (
-              <p className="mt-3 text-sm text-emerald-400/90" aria-live="polite">
+              <p className="mt-3 text-sm text-gpri/90" aria-live="polite">
                 {t("nextMatch.locksIn", {
                   days: countdownParts.days,
                   hours: pad2(countdownParts.hours),
@@ -250,7 +272,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
 
             {data.nextMatchPrediction ? (
               <p className="mt-3 text-sm text-slate-300">
-                <span className="text-emerald-400">✓</span>{" "}
+                <span className="text-gpri">✓</span>{" "}
                 {t("nextMatch.yourPrediction", {
                   home: data.nextMatchPrediction.home,
                   away: data.nextMatchPrediction.away,
@@ -259,7 +281,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
             ) : !lockState.closed ? (
               <Link
                 href={`/${data.locale}/dashboard/group/${data.groupId}/predict`}
-                className="mt-4 inline-flex min-h-[44px] items-center text-sm font-semibold text-emerald-400 underline-offset-4 hover:text-emerald-300 hover:underline"
+                className="mt-4 inline-flex min-h-[44px] items-center text-sm font-semibold text-gpri underline-offset-4 hover:text-gpri/90 hover:underline"
               >
                 {t("nextMatch.predictNow")}
               </Link>
@@ -339,17 +361,17 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                     key={card.href}
                     href={card.href}
                     style={delayStyle}
-                    className={`block rounded-xl ${baseMotion} transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-emerald-500/15`}
+                    className={`block rounded-xl ${baseMotion} transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-gpri/15`}
                   >
-                    <div className="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 p-[2px] shadow-lg shadow-emerald-500/20">
+                    <div className="rounded-xl bg-gradient-to-r from-gpri to-gsec p-[2px] shadow-lg shadow-gpri/20">
                       <div className="relative flex min-h-[120px] flex-col rounded-[10px] bg-dark-800 p-6 transition-colors duration-200 hover:bg-dark-800">
                         {showPulse ? (
                           <span
                             className="pointer-events-none absolute right-2 top-2 flex h-3 w-3"
                             aria-hidden
                           >
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/50 motion-reduce:animate-none" />
-                            <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gpri/50 motion-reduce:animate-none" />
+                            <span className="relative inline-flex h-3 w-3 rounded-full bg-gpri" />
                           </span>
                         ) : null}
                         <div className="flex items-start gap-2 pr-4">
@@ -372,7 +394,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                   key={card.href}
                   href={card.href}
                   style={delayStyle}
-                  className={`${baseMotion} flex min-h-[100px] flex-col rounded-xl border border-dark-600 bg-dark-800 p-4 transition-all duration-200 hover:scale-[1.02] hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10`}
+                  className={`${baseMotion} flex min-h-[100px] flex-col rounded-xl border border-dark-600 bg-dark-800 p-4 transition-all duration-200 hover:scale-[1.02] hover:border-gpri/30 hover:shadow-lg hover:shadow-gpri/10`}
                 >
                   <span className="text-sm font-semibold text-white">{card.title}</span>
                   <span className="mt-2 text-xs leading-snug text-slate-400">{card.meta}</span>
@@ -388,7 +410,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
           <span className={data.powersRemaining.spy < data.powersLimits.spy ? "text-blue-400" : ""}>
             🔍 {data.powersRemaining.spy}/{data.powersLimits.spy}
           </span>
-          <span className={data.powersRemaining.shield < data.powersLimits.shield ? "text-emerald-400" : ""}>
+          <span className={data.powersRemaining.shield < data.powersLimits.shield ? "text-gpri" : ""}>
             🛡️ {data.powersRemaining.shield}/{data.powersLimits.shield}
           </span>
         </div>
@@ -399,7 +421,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
           <h2 className="text-lg font-semibold text-white">{t("leaderboardPreview.title")}</h2>
           <Link
             href={`/${data.locale}/dashboard/group/${data.groupId}/leaderboard`}
-            className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
+            className="text-sm font-medium text-gpri hover:text-gpri/90"
           >
             {t("leaderboardPreview.seeAll")}
           </Link>
@@ -428,18 +450,18 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                     <span aria-hidden>{medal}</span>
                     {row.rank ?? "—"} · {row.displayName}
                   </span>
-                  <span className="shrink-0 font-mono tabular-nums font-semibold text-emerald-400">{row.points}</span>
+                  <span className="shrink-0 font-mono tabular-nums font-semibold text-gpri">{row.points}</span>
                 </li>
               );
             })}
             {data.showLeaderboardSelfRow && data.leaderboardSelf ? (
               <>
                 <li className="py-1 text-center text-xs text-slate-500">···</li>
-                <li className="flex items-center justify-between gap-3 rounded-lg border border-dark-600 bg-emerald-900/20 px-3 py-2 text-sm ring-1 ring-inset ring-emerald-500/30">
+                <li className="flex items-center justify-between gap-3 rounded-lg border border-dark-600 bg-gpri/15 px-3 py-2 text-sm ring-1 ring-inset ring-gpri/30">
                   <span className="min-w-0 truncate font-medium text-slate-100">
                     {data.leaderboardSelf.rank ?? "—"} · {data.leaderboardSelf.displayName}
                   </span>
-                  <span className="shrink-0 font-mono tabular-nums font-semibold text-emerald-400">
+                  <span className="shrink-0 font-mono tabular-nums font-semibold text-gpri">
                     {data.leaderboardSelf.points}
                   </span>
                 </li>
@@ -455,7 +477,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
           <h2 className="text-lg font-semibold text-white">{t("recentResults.title")}</h2>
           <Link
             href={`/${data.locale}/dashboard/group/${data.groupId}/predict`}
-            className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
+            className="text-sm font-medium text-gpri hover:text-gpri/90"
           >
             {t("recentResults.seeAll")}
           </Link>
@@ -471,7 +493,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
               >
                 <p className="font-medium text-white">
                   <span aria-hidden>{getFlag(row.homeTeam)}</span> {row.homeTeam}{" "}
-                  <span className="tabular-nums font-bold text-emerald-300">
+                  <span className="tabular-nums font-bold text-gsec">
                     {row.homeScore}-{row.awayScore}
                   </span>{" "}
                   {row.awayTeam} <span aria-hidden>{getFlag(row.awayTeam)}</span>
@@ -482,7 +504,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                     : t("recentResults.noPrediction")}{" "}
                   <span
                     className={
-                      row.pointsEarned > 0 ? "font-mono font-semibold text-emerald-400" : "font-mono text-slate-500"
+                      row.pointsEarned > 0 ? "font-mono font-semibold text-gpri" : "font-mono text-slate-500"
                     }
                   >
                     {t("recentResults.points", { points: row.pointsEarned })}
@@ -505,7 +527,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
               <button
                 type="button"
                 onClick={() => void onCopyInvite()}
-                className={`shrink-0 rounded-lg border border-dark-500 bg-dark-700 px-4 py-2.5 text-sm font-medium text-slate-200 hover:border-emerald-500/50 hover:bg-dark-600 ${PRIMARY_BUTTON_CLASSES}`}
+                className={`shrink-0 rounded-lg border border-dark-500 bg-dark-700 px-4 py-2.5 text-sm font-medium text-slate-200 hover:border-gpri/50 hover:bg-dark-600 ${PRIMARY_BUTTON_CLASSES}`}
               >
                 {t("copyLink")}
               </button>
@@ -513,7 +535,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                 <button
                   type="button"
                   onClick={() => void onCopyAccessCode()}
-                  className={`shrink-0 rounded-lg border border-dark-500 bg-dark-700 px-4 py-2.5 text-sm font-medium text-slate-200 hover:border-emerald-500/50 hover:bg-dark-600 ${PRIMARY_BUTTON_CLASSES}`}
+                  className={`shrink-0 rounded-lg border border-dark-500 bg-dark-700 px-4 py-2.5 text-sm font-medium text-slate-200 hover:border-gpri/50 hover:bg-dark-600 ${PRIMARY_BUTTON_CLASSES}`}
                 >
                   {tAccess("copyCode")}
                 </button>
@@ -521,7 +543,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
               <InviteCardShareButton groupName={data.groupName} locale={data.locale} />
             </div>
             {data.accessMode === "protected" && data.accessCode ? (
-              <p className="w-full text-center text-sm font-mono text-emerald-300 sm:text-left">
+              <p className="w-full text-center text-sm font-mono text-gsec sm:text-left">
                 {tAccess("linkAndCode", { code: data.accessCode })}
               </p>
             ) : null}
@@ -530,7 +552,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className={`mt-3 inline-flex w-full min-h-[44px] items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
+            className={`mt-3 inline-flex w-full min-h-[44px] items-center justify-center rounded-lg bg-gpri px-4 py-2 text-sm font-medium text-white hover:brightness-110 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
           >
             {t("shareWhatsApp")}
           </a>

@@ -12,6 +12,7 @@ import GroupHubClient, {
 import type { GroupAccessMode } from "@/types/supabase";
 import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
 import { mergeGroupLeaderboardRows, type LeaderboardDbRow } from "@/lib/group-leaderboard-merge";
+import { resolveGroupTheme } from "@/lib/group-theme";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -23,6 +24,9 @@ type GroupRecord = {
   slug: string;
   admin_id: string;
   primary_color: string | null;
+  secondary_color: string | null;
+  colors: import("@/types/supabase").Json | null;
+  logo_url: string | null;
   points_correct_result: number;
   points_correct_difference: number;
   points_exact_score: number;
@@ -48,7 +52,7 @@ export default async function GroupHubPage({ params }: Props) {
   const { data: group, error: groupError } = await supabase
     .from("groups")
     .select(
-      "id,name,slug,admin_id,primary_color,points_correct_result,points_correct_difference,points_exact_score,powers_double_down,powers_spy,powers_shield",
+      "id,name,slug,admin_id,primary_color,secondary_color,colors,logo_url,points_correct_result,points_correct_difference,points_exact_score,powers_double_down,powers_spy,powers_shield",
     )
     .eq("id", groupId)
     .single();
@@ -58,6 +62,11 @@ export default async function GroupHubPage({ params }: Props) {
   }
 
   const typedGroup = group as unknown as GroupRecord;
+  const theme = resolveGroupTheme({
+    colors: typedGroup.colors,
+    primary_color: typedGroup.primary_color,
+    secondary_color: typedGroup.secondary_color,
+  });
 
   const { data: membership } = await supabase
     .from("group_members")
@@ -320,7 +329,8 @@ export default async function GroupHubPage({ params }: Props) {
     groupId: typedGroup.id,
     slug: typedGroup.slug,
     groupName: typedGroup.name,
-    primaryColor: typedGroup.primary_color,
+    logoUrl: typedGroup.logo_url,
+    primaryColor: theme.primary,
     isAdmin,
     memberCount,
     pointsResult: typedGroup.points_correct_result,
@@ -356,7 +366,7 @@ export default async function GroupHubPage({ params }: Props) {
   return (
     <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
-        <Link href={`/${locale}/dashboard`} className="text-sm font-medium text-emerald-400 hover:text-emerald-300">
+        <Link href={`/${locale}/dashboard`} className="text-sm font-medium text-gpri hover:text-gpri/90">
           {common("backToGroups")}
         </Link>
         <GroupHubClient data={hubData} />

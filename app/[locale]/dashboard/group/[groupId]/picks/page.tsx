@@ -75,7 +75,7 @@ export default async function GroupPicksPage({ params }: Props) {
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
+          className="text-sm font-medium text-gpri hover:text-gpri/90"
         >
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>
@@ -87,7 +87,7 @@ export default async function GroupPicksPage({ params }: Props) {
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/${locale}/dashboard/group/${groupId}`}
-              className="inline-flex rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-emerald-500/40 hover:bg-dark-600"
+              className="inline-flex rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-gpri/40 hover:bg-dark-600"
             >
               {t("backToGroup")}
             </Link>

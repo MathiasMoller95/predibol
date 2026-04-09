@@ -11,10 +11,10 @@ import { getFlag, getGroup } from "@/lib/team-metadata";
 import type { PowerType } from "@/lib/constants";
 
 const SCORE_INPUT_CLASS =
-  "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 placeholder:text-gray-600 placeholder:text-center";
+  "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50 placeholder:text-gray-600 placeholder:text-center";
 
 const SCORE_INPUT_KNOCKOUT_CLASS =
-  "mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 disabled:bg-dark-700 disabled:text-slate-500 placeholder:text-gray-600 placeholder:text-center";
+  "mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50 disabled:bg-dark-700 disabled:text-slate-500 placeholder:text-gray-600 placeholder:text-center";
 
 type MatchRecord = {
   id: string;
@@ -530,7 +530,7 @@ export default function PredictForm({
               <li key={m.id} className="rounded-lg border border-dark-600 bg-dark-800 px-3 py-3 text-sm text-slate-300">
                 <p className="font-medium text-white">
                   <span aria-hidden>{getFlag(m.home_team)}</span> {m.home_team}{" "}
-                  <span className="tabular-nums text-emerald-300">
+                  <span className="tabular-nums text-gsec">
                     {m.home_score}-{m.away_score}
                   </span>{" "}
                   {m.away_team} <span aria-hidden>{getFlag(m.away_team)}</span>
@@ -568,7 +568,7 @@ export default function PredictForm({
               <button
                 type="button"
                 onClick={() => setExpandedGroup(null)}
-                className="text-sm font-medium text-emerald-400 transition-colors hover:text-emerald-300 active:scale-[0.97]"
+                className="text-sm font-medium text-gpri transition-colors hover:text-gpri/90 active:scale-[0.97]"
               >
                 ← {t("backToGroups")}
               </button>
@@ -588,7 +588,7 @@ export default function PredictForm({
                   const cardBorder = hasDD
                     ? "border-l-4 border-amber-500 shadow-[inset_0_0_12px_rgba(245,158,11,0.08)]"
                     : hasShield
-                      ? "border-l-4 border-emerald-500"
+                      ? "border-l-4 border-gpri"
                       : "border border-dark-600";
 
                   return (
@@ -733,7 +733,7 @@ export default function PredictForm({
                             type="button"
                             disabled={busy || isSaving || !bothFilled}
                             onClick={() => void saveSingleMatch(match)}
-                            className={`mt-4 w-full min-h-[48px] rounded-lg border border-emerald-600/50 bg-emerald-900/30 px-4 py-2 text-sm font-semibold text-emerald-300 hover:bg-emerald-900/50 disabled:opacity-50 disabled:cursor-not-allowed ${PRIMARY_BUTTON_CLASSES}`}
+                            className={`mt-4 w-full min-h-[48px] rounded-lg border border-gpri/50 bg-gpri/20 px-4 py-2 text-sm font-semibold text-gsec hover:bg-gpri/15 disabled:opacity-50 disabled:cursor-not-allowed ${PRIMARY_BUTTON_CLASSES}`}
                           >
                             {busy ? t("saveSaving") : saved ? t("update") : t("save")}
                           </button>
@@ -748,7 +748,7 @@ export default function PredictForm({
                 type="button"
                 disabled={isSaving || savingMatchId !== null}
                 onClick={() => void saveGroupAll(expandedGroup)}
-                className={`mt-6 w-full min-h-[48px] rounded-lg bg-emerald-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
+                className={`mt-6 w-full min-h-[48px] rounded-lg bg-gpri px-4 py-3 text-base font-semibold text-white shadow-sm hover:brightness-110 disabled:cursor-not-allowed disabled:bg-gpri/50 ${PRIMARY_BUTTON_CLASSES}`}
               >
                 {isSaving ? t("saveSaving") : t("saveAll", { group: expandedGroup })}
               </button>
@@ -765,7 +765,7 @@ export default function PredictForm({
                     group.predictedCount === 0
                       ? "border-dark-600"
                       : allPredicted
-                        ? "border-emerald-500/50"
+                        ? "border-gpri/50"
                         : "border-amber-500/50";
 
                   const ctaText = allPredicted
@@ -775,10 +775,10 @@ export default function PredictForm({
                       : t("tapToPredict");
 
                   const ctaClass = allPredicted
-                    ? "text-emerald-400"
+                    ? "text-gpri"
                     : partial
                       ? "text-amber-400"
-                      : "text-emerald-400";
+                      : "text-gpri";
 
                   const oddsLine = formatGroupOddsCompactLine(group.teams, group.matches);
 
@@ -788,7 +788,7 @@ export default function PredictForm({
                       type="button"
                       onClick={() => setExpandedGroup(group.letter)}
                       style={{ animationDelay: `${Math.min(cardIndex * 80, 500)}ms` }}
-                      className={`group/card animate-page-in cursor-pointer rounded-lg border ${accent} bg-dark-800 p-3 text-left transition-all duration-200 hover:border-emerald-500/40 hover:bg-dark-700 active:scale-[0.98]`}
+                      className={`group/card animate-page-in cursor-pointer rounded-lg border ${accent} bg-dark-800 p-3 text-left transition-all duration-200 hover:border-gpri/40 hover:bg-dark-700 active:scale-[0.98]`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-base font-semibold text-white">
@@ -797,7 +797,7 @@ export default function PredictForm({
                         <span
                           className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${
                             allPredicted
-                              ? "bg-emerald-900/50 text-emerald-300 ring-1 ring-emerald-700/50"
+                              ? "bg-gpri/15 text-gsec ring-1 ring-gpri/40"
                               : group.predictedCount > 0
                                 ? "bg-amber-900/40 text-amber-300 ring-1 ring-amber-700/50"
                                 : "bg-dark-700 text-slate-400 ring-1 ring-dark-500"
@@ -821,7 +821,7 @@ export default function PredictForm({
                       <p className="mt-2 text-xs text-slate-400">{t("groupProgress", { count: group.predictedCount })}</p>
                       <div className="mt-3 flex items-end justify-between gap-2 border-t border-dark-600 pt-2">
                         <span className={`text-xs font-medium leading-snug ${ctaClass}`}>{ctaText}</span>
-                        <span className="text-lg font-light text-emerald-400" aria-hidden>
+                        <span className="text-lg font-light text-gpri" aria-hidden>
                           ›
                         </span>
                       </div>
@@ -869,7 +869,7 @@ export default function PredictForm({
                       const kCardBorder = kHasDD
                         ? "border-l-4 border-amber-500 shadow-[inset_0_0_12px_rgba(245,158,11,0.08)]"
                         : kHasShield
-                          ? "border-l-4 border-emerald-500"
+                          ? "border-l-4 border-gpri"
                           : "border border-dark-600";
 
                       return (
@@ -1012,8 +1012,8 @@ export default function PredictForm({
                                       }
                                       className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
                                         currentInput.predictedAdvancing === match.home_team
-                                          ? "border-emerald-500 bg-emerald-500/15 text-emerald-200 ring-2 ring-emerald-500/50"
-                                          : "border-dark-500 bg-dark-900 text-slate-200 hover:border-emerald-500/40"
+                                          ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
+                                          : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
                                       }`}
                                     >
                                       {match.home_team}
@@ -1032,8 +1032,8 @@ export default function PredictForm({
                                       }
                                       className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
                                         currentInput.predictedAdvancing === match.away_team
-                                          ? "border-emerald-500 bg-emerald-500/15 text-emerald-200 ring-2 ring-emerald-500/50"
-                                          : "border-dark-500 bg-dark-900 text-slate-200 hover:border-emerald-500/40"
+                                          ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
+                                          : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
                                       }`}
                                     >
                                       {match.away_team}
@@ -1058,7 +1058,7 @@ export default function PredictForm({
                                         ),
                                       }))
                                     }
-                                    className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50"
+                                    className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50"
                                   >
                                     <option value="">{t("chooseTeam")}</option>
                                     <option value="home">{match.home_team}</option>
@@ -1218,8 +1218,8 @@ export default function PredictForm({
                               }
                               className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
                                 currentInput.predictedAdvancing === match.home_team
-                                  ? "border-emerald-500 bg-emerald-500/15 text-emerald-200 ring-2 ring-emerald-500/50"
-                                  : "border-dark-500 bg-dark-900 text-slate-200 hover:border-emerald-500/40"
+                                  ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
+                                  : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
                               }`}
                             >
                               {match.home_team}
@@ -1237,8 +1237,8 @@ export default function PredictForm({
                               }
                               className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
                                 currentInput.predictedAdvancing === match.away_team
-                                  ? "border-emerald-500 bg-emerald-500/15 text-emerald-200 ring-2 ring-emerald-500/50"
-                                  : "border-dark-500 bg-dark-900 text-slate-200 hover:border-emerald-500/40"
+                                  ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
+                                  : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
                               }`}
                             >
                               {match.away_team}
@@ -1261,7 +1261,7 @@ export default function PredictForm({
                                 ),
                               }))
                             }
-                            className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50"
+                            className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50"
                           >
                             <option value="">{t("chooseTeam")}</option>
                             <option value="home">{match.home_team}</option>
@@ -1285,7 +1285,7 @@ export default function PredictForm({
         <button
           type="submit"
           disabled={isSaving}
-          className={`w-full min-h-[48px] rounded-lg bg-emerald-600 px-4 py-3 text-base font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
+          className={`w-full min-h-[48px] rounded-lg bg-gpri px-4 py-3 text-base font-medium text-white hover:brightness-110 disabled:cursor-not-allowed disabled:bg-gpri/50 ${PRIMARY_BUTTON_CLASSES}`}
         >
           {isSaving ? t("saveSaving") : t("saveButton")}
         </button>
@@ -1332,7 +1332,7 @@ function PowerPanel({
   const powers: { type: PowerType; icon: string; label: string; activeClass: string; limit: number }[] = [
     { type: "double_down", icon: "⚡", label: tp("doubleDown.name"), activeClass: "border-amber-500 bg-amber-500/20 text-amber-400", limit: limits.doubleDown },
     { type: "spy", icon: "🔍", label: tp("spy.name"), activeClass: "border-blue-500 bg-blue-500/20 text-blue-400", limit: limits.spy },
-    { type: "shield", icon: "🛡️", label: tp("shield.name"), activeClass: "border-emerald-500 bg-emerald-500/20 text-emerald-400", limit: limits.shield },
+    { type: "shield", icon: "🛡️", label: tp("shield.name"), activeClass: "border-gpri bg-gpri/20 text-gpri", limit: limits.shield },
   ];
 
   return (
@@ -1372,7 +1372,7 @@ function PowerPanel({
         <p className="mt-1.5 text-xs font-medium text-amber-400">{tp("doubleDown.activated")}</p>
       )}
       {activePowers?.has("shield") && (
-        <p className="mt-1.5 text-xs font-medium text-emerald-400">{tp("shield.activated")}</p>
+        <p className="mt-1.5 text-xs font-medium text-gpri">{tp("shield.activated")}</p>
       )}
     </div>
   );
@@ -1404,7 +1404,7 @@ function SpyResultCard({
   }
   if (result.shielded) {
     return (
-      <div className="mt-2 rounded-lg border border-emerald-800/40 bg-emerald-900/20 px-3 py-2 text-xs text-emerald-300">
+      <div className="mt-2 rounded-lg border border-gpri/40 bg-gpri/15 px-3 py-2 text-xs text-gsec">
         {tp("spy.blocked", { name: targetName })}
       </div>
     );
@@ -1451,9 +1451,9 @@ function WhoHasPredicted({
               title={m.displayName}
               className={`inline-flex h-6 min-w-[28px] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold ${
                 done
-                  ? "bg-emerald-500/20 text-emerald-400"
+                  ? "bg-gpri/20 text-gpri"
                   : "bg-dark-900/60 text-gray-600"
-              } ${isYou ? "ring-1 ring-emerald-500/50" : ""}`}
+              } ${isYou ? "ring-1 ring-gpri/50" : ""}`}
             >
               {initials}
             </span>

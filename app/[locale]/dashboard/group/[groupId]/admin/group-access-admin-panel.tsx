@@ -104,7 +104,7 @@ export default function GroupAccessAdminPanel({ groupId, initialMode, initialCod
           disabled={busy}
           onClick={() => void selectOpen()}
           className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 disabled:opacity-50 ${
-            mode === "open" ? "bg-emerald-500/5 ring-2 ring-emerald-500" : "bg-[#111720]"
+            mode === "open" ? "bg-gpri/5 ring-2 ring-gpri" : "bg-[#111720]"
           }`}
         >
           <span className="text-lg" aria-hidden>
@@ -118,7 +118,7 @@ export default function GroupAccessAdminPanel({ groupId, initialMode, initialCod
           disabled={busy}
           onClick={() => void selectProtected()}
           className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 disabled:opacity-50 ${
-            mode === "protected" ? "bg-emerald-500/5 ring-2 ring-emerald-500" : "bg-[#111720]"
+            mode === "protected" ? "bg-gpri/5 ring-2 ring-gpri" : "bg-[#111720]"
           }`}
         >
           <span className="text-lg" aria-hidden>
@@ -132,12 +132,12 @@ export default function GroupAccessAdminPanel({ groupId, initialMode, initialCod
       {mode === "protected" ? (
         <div className="mt-4 space-y-3 rounded-lg border border-dark-600 bg-dark-900/50 p-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-2xl tracking-widest text-emerald-300">{code}</span>
+            <span className="font-mono text-2xl tracking-widest text-gsec">{code}</span>
             <button
               type="button"
               disabled={busy}
               onClick={() => void onCopyCode()}
-              className={`rounded-lg border border-dark-500 bg-dark-700 px-3 py-1.5 text-sm font-medium text-slate-200 hover:border-emerald-500/50 ${PRIMARY_BUTTON_CLASSES}`}
+              className={`rounded-lg border border-dark-500 bg-dark-700 px-3 py-1.5 text-sm font-medium text-slate-200 hover:border-gpri/50 ${PRIMARY_BUTTON_CLASSES}`}
             >
               {t("copyCode")}
             </button>
@@ -145,7 +145,7 @@ export default function GroupAccessAdminPanel({ groupId, initialMode, initialCod
               type="button"
               disabled={busy}
               onClick={() => void onRegenerate()}
-              className={`rounded-lg border border-dark-500 bg-dark-700 px-3 py-1.5 text-sm font-medium text-slate-200 hover:border-emerald-500/50 ${PRIMARY_BUTTON_CLASSES}`}
+              className={`rounded-lg border border-dark-500 bg-dark-700 px-3 py-1.5 text-sm font-medium text-slate-200 hover:border-gpri/50 ${PRIMARY_BUTTON_CLASSES}`}
             >
               {t("regenerate")}
             </button>

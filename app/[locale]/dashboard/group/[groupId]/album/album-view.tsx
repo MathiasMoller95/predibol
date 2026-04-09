@@ -200,7 +200,7 @@ export default function AlbumView({
         <div className="mx-auto w-full max-w-4xl">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
+          className="text-sm font-medium text-gpri hover:text-gpri/90"
         >
           {common("backToGroup", { groupName })}
         </Link>
@@ -238,7 +238,7 @@ export default function AlbumView({
               }}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                 !compareMode
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500"
+                  ? "bg-gpri/20 text-gpri border border-gpri"
                   : "bg-[#1a2332] text-gray-400 border border-gray-700"
               }`}
             >
@@ -295,7 +295,7 @@ export default function AlbumView({
                     let compareBorder = "";
                     if (compareMode && compareUserId && !compareLoading) {
                       if (otherHasIt && !hasIt) compareBorder = "ring-2 ring-blue-500/60";
-                      else if (hasIt && !otherHasIt) compareBorder = "ring-2 ring-emerald-500/60";
+                      else if (hasIt && !otherHasIt) compareBorder = "ring-2 ring-gpri/60";
                     }
 
                     return (

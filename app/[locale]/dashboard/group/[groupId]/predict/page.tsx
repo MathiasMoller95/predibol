@@ -190,7 +190,7 @@ export default async function GroupPredictPage({ params }: Props) {
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
+          className="text-sm font-medium text-gpri hover:text-gpri/90"
         >
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>

@@ -29,6 +29,12 @@ export async function generateMetadata({ params }: { params: { locale: string; s
   const description = tOg("joinDescription", { groupName });
   const ogLocale = locale === "en" ? "en_US" : locale === "pt" ? "pt_BR" : "es_ES";
 
+  const siteBase =
+    (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "") ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
+  const ogGroupPath = `/api/og/group/${encodeURIComponent(slug)}`;
+  const ogImageUrl = siteBase ? `${siteBase}${ogGroupPath}` : ogGroupPath;
+
   return {
     title,
     description,
@@ -38,13 +44,13 @@ export async function generateMetadata({ params }: { params: { locale: string; s
       siteName: "Predibol",
       locale: ogLocale,
       type: "website",
-      images: [{ url: "/api/og", width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/api/og"],
+      images: [ogImageUrl],
     },
   };
 }

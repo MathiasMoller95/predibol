@@ -25,6 +25,7 @@ export type AdminMatch = {
 export type PredictionLite = {
   match_id: string;
   user_id: string;
+  submitted_at?: string;
 };
 
 type Props = {
@@ -36,7 +37,7 @@ type Props = {
 };
 
 function statusStyles(status: MatchStatus) {
-  if (status === "finished") return "bg-emerald-900/40 text-emerald-300 ring-1 ring-emerald-700/50";
+  if (status === "finished") return "bg-gpri/15 text-gsec ring-1 ring-gpri/40";
   if (status === "live") return "bg-amber-900/40 text-amber-300 ring-1 ring-amber-700/50";
   return "bg-dark-700 text-slate-300 ring-1 ring-dark-500";
 }
@@ -106,7 +107,7 @@ export default function AdminMatchPanel({
                     <span
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
                         allIn
-                          ? "bg-emerald-900/50 text-emerald-300 ring-1 ring-emerald-700/50"
+                          ? "bg-gpri/15 text-gsec ring-1 ring-gpri/40"
                           : "bg-amber-900/40 text-amber-300 ring-1 ring-amber-700/50"
                       }`}
                     >
@@ -152,7 +153,7 @@ export default function AdminMatchPanel({
                     {t("finished")}
                   </span>
                 </div>
-                <p className="mt-3 text-base font-semibold text-emerald-400 sm:mt-0">
+                <p className="mt-3 text-base font-semibold text-gpri sm:mt-0">
                   {match.home_score ?? 0} - {match.away_score ?? 0}
                   {match.advancing_team && (
                     <span className="ml-2 text-xs font-normal text-slate-400">→ {match.advancing_team}</span>

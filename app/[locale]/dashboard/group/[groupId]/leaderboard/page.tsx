@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -14,6 +15,7 @@ type GroupRecord = {
   id: string;
   name: string;
   admin_id: string;
+  logo_url: string | null;
 };
 
 type MemberRow = {
@@ -40,7 +42,7 @@ export default async function GroupLeaderboardPage({ params }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,admin_id")
+    .select("id,name,admin_id,logo_url")
     .eq("id", groupId)
     .single();
 
@@ -98,25 +100,48 @@ export default async function GroupLeaderboardPage({ params }: Props) {
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-emerald-400 hover:text-emerald-300"
+          className="text-sm font-medium text-gpri hover:text-gpri/90"
         >
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
-            <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
-            <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
+            <div className="flex flex-wrap items-center gap-3">
+              {typedGroup.logo_url ? (
+                <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-dark-900">
+                  <Image
+                    src={typedGroup.logo_url}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="h-full w-full object-cover"
+                    unoptimized
+                  />
+                </span>
+              ) : (
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-dark-900 text-lg text-slate-500"
+                  aria-hidden
+                >
+                  ⚽
+                </span>
+              )}
+              <div>
+                <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+                <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
+              </div>
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/${locale}/dashboard/group/${groupId}`}
-              className="inline-flex rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-emerald-500/40 hover:bg-dark-600"
+              className="inline-flex rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-gpri/40 hover:bg-dark-600"
             >
               {t("backToGroup")}
             </Link>
             <Link
               href={`/${locale}/dashboard/group/${groupId}/predict`}
-              className="inline-flex rounded-lg border border-emerald-600/50 bg-emerald-900/30 px-3 py-2 text-sm font-medium text-emerald-300 transition hover:bg-emerald-900/50"
+              className="inline-flex rounded-lg border border-gpri/50 bg-gpri/20 px-3 py-2 text-sm font-medium text-gsec transition hover:bg-gpri/15"
             >
               {t("openPredictions")}
             </Link>

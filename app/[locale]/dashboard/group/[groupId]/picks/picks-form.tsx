@@ -176,7 +176,7 @@ export default function PicksForm({ locked, initial }: Props) {
         <button
           type="submit"
           disabled={disabled}
-          className={`w-full min-h-[48px] rounded-lg bg-emerald-600 px-4 py-3 text-base font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
+          className={`w-full min-h-[48px] rounded-lg bg-gpri px-4 py-3 text-base font-semibold text-white hover:brightness-110 disabled:opacity-60 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
         >
           {isSaving ? t("saving") : t("save")}
         </button>

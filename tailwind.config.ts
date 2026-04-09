@@ -9,6 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        /** Group-scoped theme (set via [data-group-shell] in group layout) */
+        gpri: "rgb(var(--gpri-rgb) / <alpha-value>)",
+        gsec: "rgb(var(--gsec-rgb) / <alpha-value>)",
         background: "var(--background)",
         foreground: "var(--foreground)",
         dark: {

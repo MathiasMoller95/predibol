@@ -336,6 +336,14 @@
       "copyFailed": "Could not copy"
     }
   },
+  "GroupBottomNav": {
+    "navAria": "Group sections",
+    "matches": "Matches",
+    "ranking": "Ranking",
+    "bracket": "Bracket",
+    "champion": "Champion",
+    "album": "Album"
+  },
   "Album": {
     "title": "🎴 Sticker Album",
     "group": "Group {letter}",
@@ -441,9 +449,9 @@
       "rule3": "Earliest prediction submitted"
     },
     "virtualTrader": {
-      "title": "💰 Virtual Trader",
-      "description": "For fun, we simulate a virtual €1 bet on each match. You can see your fictional P&L in the \"{tab}\" tab on the leaderboard.",
-      "disclaimer": "No real money — just bragging rights."
+      "title": "📈 Simulated P&L",
+      "description": "For fun, we calculate a simulated P&L using a €1 notional amount per match (analytics only). You can see it in the \"{tab}\" tab on the leaderboard.",
+      "disclaimer": "Entertainment only — no real money."
     },
     "superpowers": {
       "title": "⚡ Superpowers",
@@ -557,17 +565,17 @@
   "VirtualBets": {
     "tab": {
       "points": "🏆 Points",
-      "virtualBets": "💰 Virtual trader"
+      "virtualBets": "📈 Simulated P&L"
     },
-    "disclaimer": "🎮 Simulation with a virtual €1 bet per match. No real money.",
+    "disclaimer": "📊 Each finished match uses a €1 notional amount to compute simulated profit and loss. No real money.",
     "profit": "+€{amount}",
     "loss": "-€{amount}",
     "record": "{won}-{lost}",
     "winRate": "{rate}%",
     "pnl": "P&L",
-    "colRecord": "Record",
-    "colWinRate": "Win rate",
-    "noBets": "No results yet"
+    "colRecord": "W–L",
+    "colWinRate": "Success %",
+    "noBets": "No simulated P&L data yet"
   },
   "Powers": {
     "title": "⚡ Superpowers",
@@ -746,6 +754,53 @@
       "deletePermanently": "Delete permanently",
       "deleted": "Group deleted",
       "cancel": "Cancel"
+    },
+    "identity": {
+      "sectionTitle": "Group identity",
+      "sectionHint": "Upload a logo and optional colors so this group feels like your own. Colors apply across group pages only.",
+      "uploadLogo": "Upload logo",
+      "dropHint": "Drag and drop here, or use the button (PNG, JPG, WEBP, SVG · max 2 MB).",
+      "removeLogo": "Remove logo",
+      "uploading": "Uploading…",
+      "uploaded": "Logo saved",
+      "uploadError": "Could not upload logo",
+      "fileTooBig": "File must be 2 MB or smaller",
+      "invalidType": "Use PNG, JPG, WEBP, or SVG",
+      "extractedLabel": "Colors from your logo",
+      "useTheseColors": "Use these colors",
+      "manualLabel": "Manual colors",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "tint": "Background tint",
+      "applyManual": "Apply colors",
+      "resetDefault": "Reset to Predibol default",
+      "colorsSaved": "Colors saved",
+      "saveError": "Could not save",
+      "resetDone": "Theme reset",
+      "removedLogo": "Logo removed"
+    },
+    "activity": {
+      "sectionTitle": "Member activity",
+      "sectionHint": "Sorted with fewest match predictions first — nudge who needs to catch up.",
+      "empty": "No members yet.",
+      "displayName": "Player",
+      "predictionsSubmitted": "Match predictions",
+      "progress": "Progress",
+      "picks": "Pre-tournament picks",
+      "picksComplete": "Completed",
+      "picksPending": "Pending",
+      "lastActive": "Last active",
+      "never": "No predictions yet"
+    },
+    "whatsapp": {
+      "sectionTitle": "WhatsApp reminder",
+      "sectionHint": "{count, plural, =0 {Everyone looks up to date — you can still copy a nudge.} other {Players who may need a nudge:}}",
+      "copyButton": "📋 Copy reminder for WhatsApp",
+      "copied": "Copied! Paste it in your WhatsApp group",
+      "shareWhatsapp": "Share via WhatsApp",
+      "linePending": "- {name} — {pending} matches left",
+      "noLines": "- (No pending match predictions — great!)",
+      "message": "⚽ *Predibol reminder — {groupName}* ⚽\n\n{incompleteCount} of {totalPlayers} players still need to finish something (matches or picks).\n\n🔴 Pending match predictions:\n{lines}\n\n⏰ Get your picks in before the deadline!\n\n👉 {inviteLink}"
     }
   },
   "Dashboard": {
@@ -850,7 +905,7 @@
     "sections": {
       "whatPredibolIs": {
         "title": "What Predibol is",
-        "content": "Predibol is a social prediction game built around the FIFA World Cup 2026. You predict match outcomes, earn points in private or public groups, and compare results with friends.\n\nPredibol is not a gambling or betting platform. No real money is wagered, paid out, or processed through Predibol. Any reference to “virtual” stakes in the product is purely for entertainment and has no monetary value.\n\nThe service is provided for entertainment only."
+        "content": "Predibol is a social prediction game built around the FIFA World Cup 2026. You predict match outcomes, earn points in private or public groups, and compare results with friends.\n\nPredibol is not a gambling or betting platform. No real money is wagered, paid out, or processed through Predibol. Any simulated P&L feature in the product is purely for entertainment and has no monetary value.\n\nThe service is provided for entertainment only."
       },
       "accounts": {
         "title": "Accounts",

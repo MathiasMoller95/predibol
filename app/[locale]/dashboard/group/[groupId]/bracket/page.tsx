@@ -79,7 +79,7 @@ export default async function GroupBracketPage({ params }: Props) {
   return (
     <main className="animate-page-in min-h-screen bg-[#0A0E14] px-4 py-8">
       <section className="mx-auto w-full max-w-[1600px] rounded-xl border border-dark-600 bg-dark-800/60 p-5 sm:p-6">
-        <Link href={`/${locale}/dashboard/group/${groupId}`} className="text-sm font-medium text-emerald-400 hover:text-emerald-300">
+        <Link href={`/${locale}/dashboard/group/${groupId}`} className="text-sm font-medium text-gpri hover:text-gpri/90">
           {common("backToGroup", { groupName })}
         </Link>
         <BracketView matches={matches} predictionsByMatchId={predictionByMatch} />

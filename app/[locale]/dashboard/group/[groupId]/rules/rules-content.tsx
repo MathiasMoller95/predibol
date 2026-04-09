@@ -12,7 +12,7 @@ const HOME_NAME = "Mexico";
 const AWAY_NAME = "South Africa";
 
 const INPUT_CLASS =
-  "min-h-[48px] w-20 max-w-[80px] shrink-0 rounded-lg border border-dark-500 bg-dark-900 px-2 text-center text-xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50";
+  "min-h-[48px] w-20 max-w-[80px] shrink-0 rounded-lg border border-dark-500 bg-dark-900 px-2 text-center text-xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50";
 
 type Props = {
   locale: string;
@@ -59,7 +59,7 @@ const EXAMPLE_ROWS: ExampleRowDef[] = [
 
 function CellCheck({ ok }: { ok: boolean }) {
   return (
-    <span className={ok ? "text-emerald-400" : "text-red-400/90"} aria-hidden>
+    <span className={ok ? "text-gpri" : "text-red-400/90"} aria-hidden>
       {ok ? "✅" : "❌"}
     </span>
   );
@@ -140,7 +140,7 @@ export default function RulesContent({
       <div className="mx-auto w-full max-w-3xl space-y-8">
         <Link
           href={`/${locale}/dashboard/group/${groupId}`}
-          className="inline-block text-sm font-medium text-emerald-400 hover:text-emerald-300"
+          className="inline-block text-sm font-medium text-gpri hover:text-gpri/90"
         >
           {t("back", { groupName })}
         </Link>
@@ -161,7 +161,7 @@ export default function RulesContent({
                 ✅
               </span>
               <p className="mt-2 font-semibold text-white">{t("matches.result.label")}</p>
-              <p className="mt-1 font-mono text-lg font-bold text-emerald-400">
+              <p className="mt-1 font-mono text-lg font-bold text-gpri">
                 {t("matches.result.points", { points: pointsResult })}
               </p>
               <p className="mt-2 text-xs leading-snug text-slate-400">{t("matches.result.description")}</p>
@@ -171,7 +171,7 @@ export default function RulesContent({
                 📏
               </span>
               <p className="mt-2 font-semibold text-white">{t("matches.difference.label")}</p>
-              <p className="mt-1 font-mono text-lg font-bold text-emerald-400">
+              <p className="mt-1 font-mono text-lg font-bold text-gpri">
                 {t("matches.difference.points", { points: pointsDiff })}
               </p>
               <p className="mt-2 text-xs leading-snug text-slate-400">{t("matches.difference.description")}</p>
@@ -181,7 +181,7 @@ export default function RulesContent({
                 🎯
               </span>
               <p className="mt-2 font-semibold text-white">{t("matches.exact.label")}</p>
-              <p className="mt-1 font-mono text-lg font-bold text-emerald-400">
+              <p className="mt-1 font-mono text-lg font-bold text-gpri">
                 {t("matches.exact.points", { points: pointsExact })}
               </p>
               <p className="mt-2 text-xs leading-snug text-slate-400">{t("matches.exact.description")}</p>
@@ -189,7 +189,7 @@ export default function RulesContent({
           </div>
 
           <p className="mt-6 text-sm text-slate-300">{t("matches.additive")}</p>
-          <p className="mt-2 text-base font-bold text-emerald-400">
+          <p className="mt-2 text-base font-bold text-gpri">
             {t("matches.maximum", { total: maxPerMatch })}
           </p>
         </section>
@@ -199,7 +199,7 @@ export default function RulesContent({
           <h2 className="text-lg font-semibold text-white">{t("example.title")}</h2>
           <p className="mt-3 text-sm font-medium text-slate-200">
             <span aria-hidden>{getFlag(HOME_NAME)}</span> {HOME_NAME}{" "}
-            <span className="tabular-nums text-emerald-300">
+            <span className="tabular-nums text-gsec">
               {ACTUAL_HOME}-{ACTUAL_AWAY}
             </span>{" "}
             {AWAY_NAME} <span aria-hidden>{getFlag(AWAY_NAME)}</span>
@@ -233,7 +233,7 @@ export default function RulesContent({
                       key={`${row.predHome}-${row.predAway}-${row.labelKey}`}
                       className={`border-b border-dark-600/80 ${
                         highlight
-                          ? "bg-emerald-950/30 shadow-[inset_4px_0_0_0_rgba(16,185,129,0.6)] ring-1 ring-inset ring-emerald-500/20"
+                          ? "bg-gpri/10 shadow-[inset_4px_0_0_0_rgba(16,185,129,0.6)] ring-1 ring-inset ring-gpri/20"
                           : "odd:bg-dark-900/20"
                       }`}
                     >
@@ -258,7 +258,7 @@ export default function RulesContent({
                           {fmtPts(b.exactPts)}
                         </span>
                       </td>
-                      <td className="py-2.5 pr-3 text-right font-mono font-bold tabular-nums text-emerald-400">
+                      <td className="py-2.5 pr-3 text-right font-mono font-bold tabular-nums text-gpri">
                         {b.total}
                       </td>
                     </tr>
@@ -274,7 +274,7 @@ export default function RulesContent({
           </div>
           <p className="mt-2 text-center text-xs text-gray-500 md:hidden">{t("example.swipeHint")}</p>
 
-          <div className="mt-8 rounded-xl border border-emerald-500/30 bg-dark-900/40 p-4 sm:p-5">
+          <div className="mt-8 rounded-xl border border-gpri/30 bg-dark-900/40 p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-white">{t("example.tryYourPrediction")}</h3>
             <p className="mt-2 text-xs text-slate-500">
               {t("example.fixedActual", { home: ACTUAL_HOME, away: ACTUAL_AWAY })}
@@ -324,7 +324,7 @@ export default function RulesContent({
                     points: calcParsed.exactPts,
                   })}
                 </li>
-                <li className="pt-2 font-semibold text-emerald-400">
+                <li className="pt-2 font-semibold text-gpri">
                   {t("example.lineTotal", { total: calcParsed.total })}
                 </li>
               </ul>
@@ -355,13 +355,13 @@ export default function RulesContent({
                 className="rounded-lg border border-dark-600 bg-dark-900/50 p-4"
               >
                 <p className="text-sm font-semibold text-white">{t(`picks.categories.${row.key}`)}</p>
-                <p className="mt-2 font-mono text-lg font-bold text-emerald-400">
+                <p className="mt-2 font-mono text-lg font-bold text-gpri">
                   {t("picks.points", { points: row.points })}
                 </p>
               </div>
             ))}
           </div>
-          <p className="mt-6 text-base font-bold text-emerald-400">
+          <p className="mt-6 text-base font-bold text-gpri">
             {t("picks.maxBonus", { total: maxPickBonus })}
           </p>
         </section>
@@ -377,7 +377,7 @@ export default function RulesContent({
           </ol>
         </section>
 
-        {/* Virtual trader */}
+        {/* Simulated P&L (analytics) */}
         <section className="rounded-xl border border-dark-600 bg-[#111720] p-5 sm:p-6">
           <h2 className="text-lg font-semibold text-white">{t("virtualTrader.title")}</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-300">
@@ -410,7 +410,7 @@ export default function RulesContent({
               </p>
               <p className="mt-2 text-xs leading-snug text-slate-400">{t("superpowers.spy")}</p>
             </div>
-            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
+            <div className="rounded-lg border border-gpri/30 bg-gpri/5 p-4">
               <span className="text-2xl" aria-hidden>🛡️</span>
               <p className="mt-2 font-semibold text-white">
                 Shield

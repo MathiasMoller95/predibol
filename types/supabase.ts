@@ -29,6 +29,7 @@ export type Database = {
           slug: string;
           primary_color: string | null;
           secondary_color: string | null;
+          colors: Json | null;
           logo_url: string | null;
           admin_id: string;
           points_correct_result: number;
@@ -53,6 +54,7 @@ export type Database = {
           slug: string;
           primary_color?: string | null;
           secondary_color?: string | null;
+          colors?: Json | null;
           logo_url?: string | null;
           admin_id: string;
           points_correct_result?: number;
@@ -77,6 +79,7 @@ export type Database = {
           slug?: string;
           primary_color?: string | null;
           secondary_color?: string | null;
+          colors?: Json | null;
           logo_url?: string | null;
           admin_id?: string;
           points_correct_result?: number;
@@ -362,6 +365,7 @@ export type Database = {
           slug: string;
           primary_color: string | null;
           secondary_color: string | null;
+          logo_url: string | null;
           admin_id: string;
           created_at: string;
         }[];

@@ -61,7 +61,7 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
           onClick={() => setTab("points")}
           className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
             tab === "points"
-              ? "bg-emerald-600 text-white shadow-sm"
+              ? "bg-gpri text-white shadow-sm"
               : "text-slate-400 hover:text-slate-200"
           }`}
         >
@@ -72,7 +72,7 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
           onClick={() => setTab("pnl")}
           className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
             tab === "pnl"
-              ? "bg-emerald-600 text-white shadow-sm"
+              ? "bg-gpri text-white shadow-sm"
               : "text-slate-400 hover:text-slate-200"
           }`}
         >
@@ -139,8 +139,8 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                         : r === 3
                           ? "border-l-4 border-amber-600"
                           : "";
-                  const selfBorder = isSelf && !topThree ? "border-l-4 border-l-emerald-500" : "";
-                  const rowBg = isSelf ? "bg-emerald-900/20 ring-1 ring-inset ring-emerald-500/30" : "";
+                  const selfBorder = isSelf && !topThree ? "border-l-4 border-l-gpri" : "";
+                  const rowBg = isSelf ? "bg-gpri/15 ring-1 ring-inset ring-gpri/30" : "";
                   return (
                     <tr
                       key={row.user_id}
@@ -157,7 +157,7 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                         <span aria-hidden>{medal}</span>
                         {row.rank ?? "—"}
                         {isSelf ? (
-                          <span className="ml-2 rounded-full bg-emerald-900/50 px-2 py-0.5 text-xs font-medium text-emerald-300 ring-1 ring-emerald-700/50">
+                          <span className="ml-2 rounded-full bg-gpri/15 px-2 py-0.5 text-xs font-medium text-gsec ring-1 ring-gpri/40">
                             {t("youBadge")}
                           </span>
                         ) : null}
@@ -175,7 +175,7 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                           ) : null}
                         </span>
                       </td>
-                      <td className="py-3 pr-4 text-right font-mono tabular-nums font-bold text-emerald-400">
+                      <td className="py-3 pr-4 text-right font-mono tabular-nums font-bold text-gpri">
                         {row.total_points}
                       </td>
                       <td className="py-3 pr-4 text-right tabular-nums text-slate-400">
@@ -200,11 +200,11 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                   const pnlBorder = isAI
                     ? "border-l-4 border-purple-500"
                     : pnlPositive
-                      ? "border-l-2 border-emerald-500"
+                      ? "border-l-2 border-gpri"
                       : pnlNegative
                         ? "border-l-2 border-red-500"
                         : "";
-                  const rowBg = isSelf ? "bg-emerald-900/20 ring-1 ring-inset ring-emerald-500/30" : "";
+                  const rowBg = isSelf ? "bg-gpri/15 ring-1 ring-inset ring-gpri/30" : "";
                   const won = row.virtual_bets_won;
                   const lost = row.virtual_bets_lost;
                   const totalBets = won + lost;
@@ -223,7 +223,7 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                         <span aria-hidden>{medal}</span>
                         {pr}
                         {isSelf ? (
-                          <span className="ml-2 rounded-full bg-emerald-900/50 px-2 py-0.5 text-xs font-medium text-emerald-300 ring-1 ring-emerald-700/50">
+                          <span className="ml-2 rounded-full bg-gpri/15 px-2 py-0.5 text-xs font-medium text-gsec ring-1 ring-gpri/40">
                             {t("youBadge")}
                           </span>
                         ) : null}
@@ -238,7 +238,7 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                       </td>
                       <td
                         className={`py-3 pr-4 text-right font-mono tabular-nums font-bold ${
-                          pnlPositive ? "text-emerald-400" : pnlNegative ? "text-red-400" : "text-slate-300"
+                          pnlPositive ? "text-gpri" : pnlNegative ? "text-red-400" : "text-slate-300"
                         }`}
                       >
                         {formatPnlLabel(row.virtual_pnl, tv)}

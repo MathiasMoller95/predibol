@@ -336,6 +336,14 @@
       "copyFailed": "Não foi possível copiar"
     }
   },
+  "GroupBottomNav": {
+    "navAria": "Navegação do grupo",
+    "matches": "Partidas",
+    "ranking": "Ranking",
+    "bracket": "Chave",
+    "champion": "Campeão",
+    "album": "Álbum"
+  },
   "Album": {
     "title": "🎴 Álbum de figurinhas",
     "group": "Grupo {letter}",
@@ -441,9 +449,9 @@
       "rule3": "Previsão enviada primeiro"
     },
     "virtualTrader": {
-      "title": "💰 Trader virtual",
-      "description": "Por diversão, simulamos uma aposta virtual de €1 em cada jogo. Você pode ver seu P&L fictício na aba \"{tab}\" do ranking.",
-      "disclaimer": "Sem dinheiro real — só para se gabar."
+      "title": "📈 P&L simulado",
+      "description": "Por diversão, calculamos um P&L simulado usando 1 € de referência por jogo (apenas estatística). Veja na aba «{tab}» do ranking.",
+      "disclaimer": "Apenas entretenimento — sem dinheiro real."
     },
     "superpowers": {
       "title": "⚡ Superpoderes",
@@ -557,17 +565,17 @@
   "VirtualBets": {
     "tab": {
       "points": "🏆 Pontos",
-      "virtualBets": "💰 Trader virtual"
+      "virtualBets": "📈 P&L simulado"
     },
-    "disclaimer": "🎮 Simulação com aposta virtual de €1 por jogo. Sem dinheiro real.",
+    "disclaimer": "📊 Em cada jogo finalizado usamos 1 € de referência para calcular o P&L simulado. Sem dinheiro real.",
     "profit": "+€{amount}",
     "loss": "-€{amount}",
     "record": "{won}-{lost}",
     "winRate": "{rate}%",
     "pnl": "P&L",
-    "colRecord": "Placar",
-    "colWinRate": "Aproveitamento",
-    "noBets": "Ainda sem resultados"
+    "colRecord": "V–D",
+    "colWinRate": "Taxa de acerto",
+    "noBets": "Ainda sem dados de P&L simulado"
   },
   "Powers": {
     "title": "⚡ Superpoderes",
@@ -746,6 +754,53 @@
       "deletePermanently": "Excluir permanentemente",
       "deleted": "Grupo excluído",
       "cancel": "Cancelar"
+    },
+    "identity": {
+      "sectionTitle": "Identidade do grupo",
+      "sectionHint": "Envie um logo e cores opcionais para personalizar o grupo. As cores valem só nas páginas do grupo.",
+      "uploadLogo": "Enviar logo",
+      "dropHint": "Arraste para cá ou use o botão (PNG, JPG, WEBP, SVG · máx. 2 MB).",
+      "removeLogo": "Remover logo",
+      "uploading": "Enviando…",
+      "uploaded": "Logo salvo",
+      "uploadError": "Não foi possível enviar o logo",
+      "fileTooBig": "O arquivo deve ter no máximo 2 MB",
+      "invalidType": "Use PNG, JPG, WEBP ou SVG",
+      "extractedLabel": "Cores extraídas do logo",
+      "useTheseColors": "Usar estas cores",
+      "manualLabel": "Cores manuais",
+      "primary": "Principal",
+      "secondary": "Secundária",
+      "tint": "Tom de fundo",
+      "applyManual": "Aplicar cores",
+      "resetDefault": "Restaurar padrão Predibol",
+      "colorsSaved": "Cores salvas",
+      "saveError": "Não foi possível salvar",
+      "resetDone": "Tema restaurado",
+      "removedLogo": "Logo removido"
+    },
+    "activity": {
+      "sectionTitle": "Atividade dos membros",
+      "sectionHint": "Ordenado com menos palpites de partida primeiro — para ver quem precisa de um empurrão.",
+      "empty": "Ainda não há membros.",
+      "displayName": "Jogador",
+      "predictionsSubmitted": "Palpites de partida",
+      "progress": "Progresso",
+      "picks": "Palpites pré-Copa",
+      "picksComplete": "Concluído",
+      "picksPending": "Pendente",
+      "lastActive": "Última atividade",
+      "never": "Ainda sem palpites"
+    },
+    "whatsapp": {
+      "sectionTitle": "Lembrete no WhatsApp",
+      "sectionHint": "{count, plural, =0 {Parece que todos estão em dia — você ainda pode copiar um lembrete.} other {Quem pode precisar de um lembrete:}}",
+      "copyButton": "📋 Copiar lembrete para o WhatsApp",
+      "copied": "Copiado! Cole no grupo do WhatsApp",
+      "shareWhatsapp": "Compartilhar no WhatsApp",
+      "linePending": "- {name} — {pending} partidas pendentes",
+      "noLines": "- (Nenhuma partida pendente — ótimo!)",
+      "message": "⚽ *Lembrete Predibol — {groupName}* ⚽\n\n{incompleteCount} de {totalPlayers} jogadores ainda não concluíram algo (partidas ou palpites).\n\n🔴 Partidas pendentes:\n{lines}\n\n⏰ Não esqueçam de palpitar antes do fechamento!\n\n👉 {inviteLink}"
     }
   },
   "Dashboard": {
@@ -850,7 +905,7 @@
     "sections": {
       "whatPredibolIs": {
         "title": "O que é a Predibol",
-        "content": "A Predibol é um jogo social de palpites à volta do Campeonato do Mundo FIFA 2026. Palpitas resultados, ganhas pontos em grupos e comparas com amigos.\n\nA Predibol não é plataforma de apostas a dinheiro. Não processamos pagamentos reais. Qualquer “aposta virtual” é só entretenimento.\n\nO serviço é apenas recreativo."
+        "content": "A Predibol é um jogo social de palpites à volta do Campeonato do Mundo FIFA 2026. Palpitas resultados, ganhas pontos em grupos e comparas com amigos.\n\nA Predibol não é plataforma de apostas a dinheiro. Não processamos pagamentos reais. Qualquer cálculo de P&L simulado é só entretenimento.\n\nO serviço é apenas recreativo."
       },
       "accounts": {
         "title": "Contas",

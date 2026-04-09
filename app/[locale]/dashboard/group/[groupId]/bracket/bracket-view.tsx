@@ -115,7 +115,7 @@ function MatchCard({
   const rowClass = (side: "home" | "away") => {
     const base = "flex items-center justify-between gap-2 px-2 py-1.5 text-sm";
     if (!finished) return `${base} text-slate-200`;
-    if (winner === side) return `${base} border-l-2 border-emerald-500 bg-emerald-900/30 text-white`;
+    if (winner === side) return `${base} border-l-2 border-gpri bg-gpri/20 text-white`;
     return `${base} text-slate-400`;
   };
 
@@ -124,10 +124,10 @@ function MatchCard({
       {live ? (
         <div className="flex items-center gap-2 border-b border-[#1e293b] px-2 py-1">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gsec opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-gpri" />
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-emerald-400">{t("live")}</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-gpri">{t("live")}</span>
         </div>
       ) : null}
       <div className={rowClass("home")}>
@@ -153,7 +153,7 @@ function MatchCard({
         <p className="border-t border-[#1e293b] px-2 py-1 text-[10px] text-slate-500">{t("teamsTbd")}</p>
       ) : null}
       {prediction && (!hTbd || !aTbd) ? (
-        <p className="border-t border-[#1e293b] px-2 py-0.5 text-[10px] text-emerald-500/90">
+        <p className="border-t border-[#1e293b] px-2 py-0.5 text-[10px] text-gpri/90">
           {t("yourPrediction")}: {prediction.predicted_home}-{prediction.predicted_away}
         </p>
       ) : null}
