@@ -346,6 +346,7 @@
       "bronze": "Bronze"
     },
     "locked": "Locked",
+    "closeModal": "Close",
     "lockedHint": "Earn points on a {team} match to unlock",
     "earnedFrom": "Earned from {match}",
     "goldDescription": "Exact score",

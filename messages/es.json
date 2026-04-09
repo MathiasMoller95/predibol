@@ -346,6 +346,7 @@
       "bronze": "Bronce"
     },
     "locked": "Bloqueado",
+    "closeModal": "Cerrar",
     "lockedHint": "Gana puntos en un partido de {team} para desbloquear",
     "earnedFrom": "Obtenido en {match}",
     "goldDescription": "Marcador exacto",
