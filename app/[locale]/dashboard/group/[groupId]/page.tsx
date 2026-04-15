@@ -103,7 +103,7 @@ export default async function GroupHubPage({ params }: Props) {
       .from("group_members")
       .select("id", { count: "exact", head: true })
       .eq("group_id", typedGroup.id),
-    supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle(),
+    supabase.from("profiles").select("timezone,onboarding_completed_at").eq("id", user.id).maybeSingle(),
     supabase
       .from("matches")
       .select("id,home_team,away_team,match_time,locked_at")
@@ -154,6 +154,7 @@ export default async function GroupHubPage({ params }: Props) {
   const memberCount = memberCountRes.count ?? 0;
   const profileTz = ((profileRes.data?.timezone as string | undefined) ?? "").trim();
   const profileTimezone = profileTz || DEFAULT_TIMEZONE;
+  const onboardingCompletedAt = (profileRes.data?.onboarding_completed_at as string | null | undefined) ?? null;
 
   const nextMatchRow = nextMatchRes.data as {
     id: string;
@@ -301,6 +302,7 @@ export default async function GroupHubPage({ params }: Props) {
   const hubData: GroupHubData = {
     locale,
     groupId: typedGroup.id,
+    currentUserId: user.id,
     slug: typedGroup.slug,
     groupName: typedGroup.name,
     logoUrl: typedGroup.logo_url,
@@ -332,6 +334,7 @@ export default async function GroupHubPage({ params }: Props) {
     powersRemaining,
     powersLimits,
     stickerCount,
+    onboardingCompletedAt,
   };
 
   return (

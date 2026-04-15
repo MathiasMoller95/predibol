@@ -192,6 +192,47 @@
     "profile": "Perfil",
     "superAdmin": "⚙️ Super Admin"
   },
+  "Onboarding": {
+    "skip": "Pular tutorial",
+    "next": "Entendi →",
+    "progress": "Etapa {current}/{total}",
+    "step1": {
+      "title": "🏟️ Bem-vindo a {groupName}!",
+      "subtitle": "Você vai competir contra {memberCount} jogadores. Vamos te preparar em 30 segundos.",
+      "primary": "Bora! ⚽"
+    },
+    "step2": {
+      "title": "Chame o placar",
+      "body": "Preveja o placar de cada partida. Quanto mais perto, mais pontos você ganha.",
+      "example": "Placar exato = {points} pts!",
+      "hint": "Dica: toque no card 🎯 Partidas para começar."
+    },
+    "step3": {
+      "title": "Suas armas secretas",
+      "body": "Você tem 3 superpoderes para superar seus rivais:",
+      "doubleDown": "2x pontos quando tiver certeza",
+      "spy": "Espie o palpite de um rival",
+      "shield": "Bloqueie espiões de ver o seu",
+      "note": "Use com sabedoria — são limitados!"
+    },
+    "step4": {
+      "title": "Colecione todas",
+      "body": "Cada palpite correto te dá figurinhas de times — Bronze, Prata ou Ouro. Consegue colecionar os 48?",
+      "plus": "Além disso: escolha seu campeão da Copa, compita contra nossa IA rival 🤖 e acompanhe seu P&L virtual 💰"
+    },
+    "step5": {
+      "title": "Pronto para o jogo!",
+      "body": "Está tudo pronto! Comece a prever e suba no ranking.",
+      "primary": "Fazer meu primeiro palpite →",
+      "secondary": "Explorar primeiro"
+    },
+    "admin": {
+      "title": "Você manda 👑",
+      "body": "Como admin, você pode personalizar seu grupo, ver quem já previu e enviar lembretes pelo WhatsApp.",
+      "primary": "Bora!",
+      "next": "Dica de admin →"
+    }
+  },
   "Og": {
     "joinTitle": "Entre em {groupName} no Predibol",
     "joinDescription": "{groupName} te convidou para prever a Copa do Mundo 2026. Aceita o desafio?"

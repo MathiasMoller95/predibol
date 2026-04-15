@@ -192,6 +192,47 @@
     "profile": "Perfil",
     "superAdmin": "⚙️ Super Admin"
   },
+  "Onboarding": {
+    "skip": "Saltar tutorial",
+    "next": "Entendido →",
+    "progress": "Paso {current}/{total}",
+    "step1": {
+      "title": "🏟️ ¡Bienvenido a {groupName}!",
+      "subtitle": "Vas a competir contra {memberCount} jugadores. Te ponemos al día en 30 segundos.",
+      "primary": "¡Vamos! ⚽"
+    },
+    "step2": {
+      "title": "Canta el marcador",
+      "body": "Predice el resultado de cada partido. Cuanto más cerca, más puntos ganas.",
+      "example": "Resultado exacto = {points} pts!",
+      "hint": "Tip: toca la tarjeta 🎯 Partidos para empezar."
+    },
+    "step3": {
+      "title": "Tus armas secretas",
+      "body": "Tienes 3 superpoderes para superar a tus rivales:",
+      "doubleDown": "2x puntos cuando estés seguro",
+      "spy": "Espía la predicción de un rival",
+      "shield": "Bloquea a los espías",
+      "note": "¡Úsalos con sabiduría — son limitados!"
+    },
+    "step4": {
+      "title": "Colecciónalas todas",
+      "body": "Cada predicción correcta te da stickers de equipos — Bronce, Plata u Oro. ¿Puedes coleccionar los 48?",
+      "plus": "Además: elige tu campeón del Mundial, compite contra nuestra IA rival 🤖 y sigue tu P&L virtual 💰"
+    },
+    "step5": {
+      "title": "¡Listo para el partido!",
+      "body": "¡Estás listo! Empieza a predecir y sube en el ranking.",
+      "primary": "Hacer mi primera predicción →",
+      "secondary": "Explorar primero"
+    },
+    "admin": {
+      "title": "Tú mandas 👑",
+      "body": "Como admin, puedes personalizar tu grupo, ver quién ha predicho y enviar recordatorios por WhatsApp.",
+      "primary": "¡Vamos!",
+      "next": "Tip de admin →"
+    }
+  },
   "Og": {
     "joinTitle": "Únete a {groupName} en Predibol",
     "joinDescription": "{groupName} te invita a predecir el Mundial 2026. ¿Aceptas el reto?"

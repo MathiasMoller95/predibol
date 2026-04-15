@@ -8,6 +8,13 @@ import { useToast } from "@/components/ui/toast-provider";
 import { formatMatchTime } from "@/lib/format-match-time";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import InviteCardShareButton from "@/components/share/invite-card";
+import OnboardingOverlay, {
+  hasVisitedAlbum,
+  hasVisitedPicks,
+  isOnboardingHintsEnabled,
+  markVisitedAlbum,
+  markVisitedPicks,
+} from "@/components/OnboardingOverlay";
 import { getFlag } from "@/lib/team-metadata";
 import type { GroupAccessMode } from "@/types/supabase";
 import type { BracketHubStatusKey } from "@/lib/knockout-bracket-utils";
@@ -28,6 +35,7 @@ export type RecentResultRow = {
 export type GroupHubData = {
   locale: string;
   groupId: string;
+  currentUserId: string;
   slug: string;
   groupName: string;
   /** Public storage URL; optional */
@@ -58,6 +66,7 @@ export type GroupHubData = {
   powersRemaining: { doubleDown: number; spy: number; shield: number };
   powersLimits: { doubleDown: number; spy: number; shield: number };
   stickerCount: number;
+  onboardingCompletedAt: string | null;
 };
 
 function bracketCardMeta(t: ReturnType<typeof useTranslations<"GroupHub">>, status: BracketHubStatusKey): string {
@@ -101,6 +110,9 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
   const t = useTranslations("GroupHub");
   const tAccess = useTranslations("AccessCode");
   const { showToast } = useToast();
+  const [hintsEnabled, setHintsEnabled] = useState(false);
+  const [visitedPicks, setVisitedPicks] = useState(true);
+  const [visitedAlbum, setVisitedAlbum] = useState(true);
 
   const fullUrl = useMemo(() => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -121,6 +133,12 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
   }, [data.accessCode, data.accessMode, data.groupName, fullUrl, tAccess]);
 
   const lockState = useLockCountdown(data.nextMatch?.lockedAt ?? null, 60_000);
+
+  useEffect(() => {
+    setHintsEnabled(isOnboardingHintsEnabled());
+    setVisitedPicks(hasVisitedPicks());
+    setVisitedAlbum(hasVisitedAlbum());
+  }, []);
 
   async function onCopyInvite() {
     try {
@@ -161,6 +179,17 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
 
   return (
     <div className="mt-4 space-y-4">
+      <OnboardingOverlay
+        locale={data.locale}
+        groupId={data.groupId}
+        groupName={data.groupName}
+        memberCount={data.memberCount}
+        exactPoints={data.pointsExact}
+        isAdmin={data.isAdmin}
+        onboardingCompletedAt={data.onboardingCompletedAt}
+        currentUserId={data.currentUserId}
+      />
+
       <header className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           {data.logoUrl ? (
@@ -260,6 +289,11 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                 href: `/${data.locale}/dashboard/group/${data.groupId}/picks`,
                 title: t("actions.picks"),
                 meta: data.picksComplete ? t("actions.completed") : t("actions.pending"),
+                showNew: hintsEnabled && !data.picksComplete && !visitedPicks,
+                onVisit: () => {
+                  markVisitedPicks();
+                  setVisitedPicks(true);
+                },
                 show: true,
               },
               {
@@ -274,6 +308,11 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                 href: `/${data.locale}/dashboard/group/${data.groupId}/album`,
                 title: t("actions.album"),
                 meta: t("actions.albumProgress", { count: data.stickerCount }),
+                showNew: hintsEnabled && !visitedAlbum,
+                onVisit: () => {
+                  markVisitedAlbum();
+                  setVisitedAlbum(true);
+                },
                 show: true,
               },
               {
@@ -341,9 +380,17 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                   key={card.href}
                   href={card.href}
                   style={delayStyle}
+                  onClick={() => (card as { onVisit?: () => void }).onVisit?.()}
                   className={`${baseMotion} flex min-h-[100px] flex-col rounded-xl border border-dark-600 bg-dark-800 p-4 transition-all duration-200 hover:scale-[1.02] hover:border-gpri/30 hover:shadow-lg hover:shadow-gpri/10`}
                 >
-                  <span className="text-sm font-semibold text-white">{card.title}</span>
+                  <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                    <span className="min-w-0 truncate">{card.title}</span>
+                    {(card as { showNew?: boolean }).showNew ? (
+                      <span className="rounded-full bg-gpri/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gpri ring-1 ring-gpri/30">
+                        NEW
+                      </span>
+                    ) : null}
+                  </span>
                   <span className="mt-2 text-xs leading-snug text-slate-400">{card.meta}</span>
                 </Link>
               );

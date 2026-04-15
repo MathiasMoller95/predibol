@@ -192,6 +192,47 @@
     "profile": "Profile",
     "superAdmin": "⚙️ Super Admin"
   },
+  "Onboarding": {
+    "skip": "Skip tutorial",
+    "next": "Got it →",
+    "progress": "Step {current}/{total}",
+    "step1": {
+      "title": "🏟️ Welcome to {groupName}!",
+      "subtitle": "You're about to compete against {memberCount} players. Let's get you match-ready in 30 seconds.",
+      "primary": "Let's go ⚽"
+    },
+    "step2": {
+      "title": "Call Your Shots",
+      "body": "Predict the score of every match. The closer you are, the more points you earn.",
+      "example": "Exact score = {points} pts!",
+      "hint": "Tip: tap the 🎯 Matches card to start."
+    },
+    "step3": {
+      "title": "Your Secret Weapons",
+      "body": "You have 3 superpowers to outsmart your rivals:",
+      "doubleDown": "2x points when you're sure",
+      "spy": "Peek at a rival's prediction",
+      "shield": "Block spies from seeing yours",
+      "note": "Use them wisely — they're limited!"
+    },
+    "step4": {
+      "title": "Collect Them All",
+      "body": "Every correct prediction earns you team stickers — Bronze, Silver, or Gold. Can you collect all 48?",
+      "plus": "Plus: pick your World Cup champion, compete against our AI rival 🤖, and track your virtual P&L 💰"
+    },
+    "step5": {
+      "title": "You're Match-Ready!",
+      "body": "You're all set! Start predicting and climb the leaderboard.",
+      "primary": "Make my first prediction →",
+      "secondary": "Explore the hub first"
+    },
+    "admin": {
+      "title": "You're the boss 👑",
+      "body": "As admin, you can customize your group's look, track who's predicted, and send WhatsApp reminders to your crew.",
+      "primary": "Let's go!",
+      "next": "Admin tip →"
+    }
+  },
   "Og": {
     "joinTitle": "Join {groupName} on Predibol",
     "joinDescription": "{groupName} invited you to predict the 2026 World Cup. Do you accept the challenge?"
