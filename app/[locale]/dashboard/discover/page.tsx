@@ -7,17 +7,6 @@ type Props = {
   params: { locale: string };
 };
 
-type GroupWithCount = {
-  id: string;
-  name: string;
-  slug: string;
-  primary_color: string | null;
-  description: string | null;
-  admin_id: string;
-  is_public: boolean;
-  group_members: { count: number }[] | null;
-};
-
 export default async function DiscoverPage({ params }: Props) {
   const { locale } = params;
   setRequestLocale(locale);
@@ -32,18 +21,17 @@ export default async function DiscoverPage({ params }: Props) {
     redirect(`/${locale}/login`);
   }
 
-  const { data: rawGroups } = await supabase
-    .from("groups")
-    .select("id,name,slug,primary_color,description,admin_id,is_public, group_members(count)")
-    .eq("is_public", true);
+  const { data: rpcRows } = await supabase.rpc("get_public_groups_with_counts");
 
-  const withCounts = ((rawGroups ?? []) as unknown as GroupWithCount[])
-    .map((g) => {
-      const agg = g.group_members;
-      const c = Array.isArray(agg) && agg[0] != null && typeof agg[0].count === "number" ? agg[0].count : 0;
-      return { ...g, memberCount: c };
-    })
-    .sort((a, b) => b.memberCount - a.memberCount);
+  const withCounts = (rpcRows ?? []).map((row) => ({
+    id: row.id as string,
+    name: row.name as string,
+    slug: row.slug as string,
+    primary_color: row.primary_color as string | null,
+    description: (row.description as string | null) ?? "",
+    admin_id: row.admin_id as string,
+    memberCount: Number(row.member_count ?? 0),
+  }));
 
   const ids = withCounts.map((g) => g.id);
   let memberSet = new Set<string>();

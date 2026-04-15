@@ -370,6 +370,21 @@ export type Database = {
           created_at: string;
         }[];
       };
+      get_public_groups_with_counts: {
+        Args: Record<string, never>;
+        Returns: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string;
+          primary_color: string | null;
+          colors: Json | null;
+          logo_url: string | null;
+          admin_id: string;
+          access_mode: string;
+          member_count: number;
+        }[];
+      };
       verify_group_access_code: {
         Args: { group_slug: string; entered_code: string };
         Returns: boolean;

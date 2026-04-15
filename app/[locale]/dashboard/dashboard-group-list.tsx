@@ -9,18 +9,18 @@ import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 export type GroupSummary = {
   id: string;
   name: string;
-  adminId: string;
   primaryColor: string | null;
   totalMembers: number;
   rank: number | null;
   points: number;
+  predictionsSubmitted: number;
+  totalMatches: number;
   nextMatch: { id: string; homeTeam: string; awayTeam: string; matchTime: string } | null;
   hasPredictionForNextMatch: boolean;
 };
 
 type Props = {
   locale: string;
-  currentUserId: string;
   profileTimeZone: string | null;
   groups: GroupSummary[];
 };
@@ -53,7 +53,7 @@ function EmptyStateIllustration() {
   );
 }
 
-export default function DashboardGroupList({ locale, currentUserId, profileTimeZone, groups }: Props) {
+export default function DashboardGroupList({ locale, profileTimeZone, groups }: Props) {
   const t = useTranslations("Dashboard");
   const intlLocale = useLocale();
   const effectiveTz = useEffectiveTimeZone(profileTimeZone);
@@ -94,10 +94,15 @@ export default function DashboardGroupList({ locale, currentUserId, profileTimeZ
           ? `${t("nextMatchDate", { home: group.nextMatch.homeTeam, away: group.nextMatch.awayTeam })} — ${formatMatchTime(group.nextMatch.matchTime, effectiveTz, intlLocale)}`
           : t("noUpcomingMatches");
 
+        const total = group.totalMatches;
+        const submitted = group.predictionsSubmitted;
+        const progressPct = total > 0 ? Math.min(100, (submitted / total) * 100) : 0;
+
         return (
-          <div
+          <Link
             key={group.id}
-            className="animate-page-in relative overflow-hidden rounded-xl border border-dark-600 bg-dark-800 transition-all duration-200 hover:scale-[1.02] hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10 hover:bg-dark-700"
+            href={`/${locale}/dashboard/group/${group.id}`}
+            className="animate-page-in relative block overflow-hidden rounded-xl border border-dark-600 bg-dark-800 p-4 pl-6 transition-all duration-200 hover:scale-[1.02] hover:border-emerald-500/30 hover:bg-dark-700 hover:shadow-lg hover:shadow-emerald-500/10 sm:p-5"
             style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}
           >
             <div
@@ -106,62 +111,46 @@ export default function DashboardGroupList({ locale, currentUserId, profileTimeZ
               aria-hidden
             />
 
-            <Link href={`/${locale}/dashboard/group/${group.id}`} className="block cursor-pointer p-4 pl-6 sm:p-5">
-              <h3 className="text-lg font-bold text-white">{group.name}</h3>
-              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-                <span className="font-bold text-gold">{rankLine}</span>
-                <span className="text-slate-600">•</span>
-                <span className="font-bold text-emerald-400">{t("points", { points: group.points })}</span>
-              </div>
-              <div className="mt-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("nextMatch")}</p>
-                <p className="mt-1 text-sm text-slate-400">{nextMatchLine}</p>
-              </div>
+            <h3 className="text-lg font-bold text-white">{group.name}</h3>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+              <span className="font-bold text-gold">{rankLine}</span>
+              <span className="text-slate-600">•</span>
+              <span className="font-bold text-emerald-400">{t("points", { points: group.points })}</span>
+            </div>
 
-              {group.nextMatch ? (
-                <div className="mt-3">
-                  <span
-                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                      group.hasPredictionForNextMatch
-                        ? "bg-emerald-900/40 text-emerald-400"
-                        : "bg-amber-900/40 text-amber-400"
-                    }`}
-                  >
-                    {group.hasPredictionForNextMatch ? `✓ ${t("predictionSubmitted")}` : `⚠ ${t("predictionMissing")}`}
-                  </span>
+            <div className="mt-3">
+              <p className="text-xs font-medium text-slate-400">
+                {t("predictionsProgress", { submitted, total })}
+              </p>
+              {total > 0 ? (
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-dark-600">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-gpri transition-[width] duration-300"
+                    style={{ width: `${progressPct}%` }}
+                  />
                 </div>
               ) : null}
-            </Link>
-
-            <div className="flex flex-wrap items-center gap-3 border-t border-dark-600 px-4 py-3 pl-6 text-xs">
-              <Link
-                href={`/${locale}/dashboard/group/${group.id}/predict`}
-                className="font-medium text-slate-500 transition-colors hover:text-emerald-400"
-              >
-                {t("predict")}
-              </Link>
-              <Link
-                href={`/${locale}/dashboard/group/${group.id}/leaderboard`}
-                className="font-medium text-slate-500 transition-colors hover:text-emerald-400"
-              >
-                {t("leaderboard")}
-              </Link>
-              <Link
-                href={`/${locale}/dashboard/group/${group.id}/picks`}
-                className="font-medium text-slate-500 transition-colors hover:text-emerald-400"
-              >
-                {t("picks")}
-              </Link>
-              {group.adminId === currentUserId ? (
-                <Link
-                  href={`/${locale}/dashboard/group/${group.id}/admin`}
-                  className="font-medium text-slate-500 transition-colors hover:text-emerald-400"
-                >
-                  {t("admin")}
-                </Link>
-              ) : null}
             </div>
-          </div>
+
+            <div className="mt-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("nextMatch")}</p>
+              <p className="mt-1 text-sm text-slate-400">{nextMatchLine}</p>
+            </div>
+
+            {group.nextMatch ? (
+              <div className="mt-3">
+                <span
+                  className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                    group.hasPredictionForNextMatch
+                      ? "bg-emerald-900/40 text-emerald-400"
+                      : "bg-amber-900/40 text-amber-400"
+                  }`}
+                >
+                  {group.hasPredictionForNextMatch ? `✓ ${t("predictionSubmitted")}` : `⚠ ${t("predictionMissing")}`}
+                </span>
+              </div>
+            ) : null}
+          </Link>
         );
       })}
     </div>

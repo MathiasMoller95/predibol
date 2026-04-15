@@ -37,30 +37,43 @@ export default async function DashboardPage({ params }: Props) {
   let groups: Array<{
     id: string;
     name: string;
-    admin_id: string;
     primary_color: string | null;
   }> = [];
 
   let memberCounts: Record<string, number> = {};
-  const leaderboardByGroup: Record<string, { rank: number | null; total_points: number }> = {};
+  const leaderboardByGroup: Record<
+    string,
+    { rank: number | null; total_points: number; predictions_made: number }
+  > = {};
   let predictedGroupsForNextMatch = new Set<string>();
 
   const nowIso = new Date().toISOString();
-  const { data: nextMatch } = await supabase
-    .from("matches")
-    .select("id,home_team,away_team,match_time,status,locked_at")
-    .eq("status", "scheduled")
-    .gt("match_time", nowIso)
-    .order("match_time", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+  const [nextMatchResult, totalMatchesResult, matchesRemainingResult] = await Promise.all([
+    supabase
+      .from("matches")
+      .select("id,home_team,away_team,match_time,status,locked_at")
+      .eq("status", "scheduled")
+      .gt("match_time", nowIso)
+      .order("match_time", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+    supabase.from("matches").select("id", { count: "exact", head: true }),
+    supabase
+      .from("matches")
+      .select("id", { count: "exact", head: true })
+      .in("status", ["scheduled", "live"]),
+  ]);
+
+  const nextMatch = nextMatchResult.data;
+  const totalMatchCount = totalMatchesResult.count ?? 0;
+  const matchesRemainingCount = matchesRemainingResult.count ?? 0;
 
   if (groupIds.length > 0) {
     const [{ data: groupRows }, { data: leaderboardRows }] = await Promise.all([
-      supabase.from("groups").select("id,name,admin_id,primary_color").in("id", groupIds),
+      supabase.from("groups").select("id,name,primary_color").in("id", groupIds),
       supabase
         .from("leaderboard")
-        .select("group_id,rank,total_points")
+        .select("group_id,rank,total_points,predictions_made")
         .eq("user_id", user.id)
         .in("group_id", groupIds),
     ]);
@@ -70,6 +83,7 @@ export default async function DashboardPage({ params }: Props) {
       leaderboardByGroup[row.group_id as string] = {
         rank: (row.rank as number | null) ?? null,
         total_points: (row.total_points as number) ?? 0,
+        predictions_made: (row.predictions_made as number) ?? 0,
       };
     });
 
@@ -106,11 +120,12 @@ export default async function DashboardPage({ params }: Props) {
       return {
         id: group.id,
         name: group.name,
-        adminId: group.admin_id,
         primaryColor: group.primary_color,
         totalMembers,
         rank: lb?.rank ?? null,
         points: lb?.total_points ?? 0,
+        predictionsSubmitted: lb?.predictions_made ?? 0,
+        totalMatches: totalMatchCount,
         nextMatch: nextMatch
           ? {
               id: nextMatch.id as string,
@@ -136,7 +151,12 @@ export default async function DashboardPage({ params }: Props) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
-            <p className="mt-1 text-sm text-slate-500">{t("subtitle")}</p>
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+              <span className="landing-wc26-text font-semibold">{t("subtitleFifa")}</span>
+              <span className="text-slate-500" aria-hidden>
+                🇺🇸🇨🇦🇲🇽 ⚽
+              </span>
+            </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <a
@@ -158,7 +178,11 @@ export default async function DashboardPage({ params }: Props) {
           {beforeWorldCup ? t("worldCupCountdown", { days: worldCupDays }) : t("worldCupLive")}
         </p>
 
-        <DashboardGroupList locale={locale} currentUserId={user.id} profileTimeZone={profileTimeZone} groups={summaries} />
+        <p className="mt-2 text-center text-xs text-slate-500">
+          {t("matchesRemaining", { count: matchesRemainingCount })}
+        </p>
+
+        <DashboardGroupList locale={locale} profileTimeZone={profileTimeZone} groups={summaries} />
       </section>
     </main>
   );

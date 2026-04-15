@@ -580,6 +580,17 @@
   "Powers": {
     "title": "⚡ Superpowers",
     "error": "Something went wrong",
+    "helpModal": {
+      "title": "Superpowers",
+      "openAria": "Learn what each superpower does",
+      "closeAria": "Close",
+      "doubleDownTitle": "⚡ Double Down",
+      "doubleDownDescription": "Doubles the points you earn (or lose) on this match. Use it when you're confident in your prediction.",
+      "spyTitle": "🔍 Spy",
+      "spyDescription": "Peek at another player's prediction before the match locks. But beware — if they used a Shield, you'll see nothing.",
+      "shieldTitle": "🛡️ Shield",
+      "shieldDescription": "Protects your prediction from being spied on. Other players using Spy on you will see 'shielded' instead of your score."
+    },
     "doubleDown": {
       "name": "x2 Double Down",
       "description": "Double your points on this match",
@@ -833,6 +844,9 @@
   "Dashboard": {
     "title": "My Groups",
     "subtitle": "World Cup 2026",
+    "subtitleFifa": "FIFA World Cup 2026",
+    "predictionsProgress": "{submitted}/{total} predictions submitted",
+    "matchesRemaining": "{count, plural, one {# match remaining} other {# matches remaining}}",
     "createGroup": "Create Group",
     "discoverWorlds": "Discover Worlds",
     "orDiscover": "Or discover existing worlds",

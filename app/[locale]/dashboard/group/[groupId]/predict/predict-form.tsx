@@ -8,6 +8,7 @@ import { formatGroupOddsCompactLine } from "@/lib/group-match-odds";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
 import ProjectedGroupStandingsTable from "@/components/ProjectedGroupStandingsTable";
+import SuperpowersHelpModal from "@/components/SuperpowersHelpModal";
 import type { PredictionScores } from "@/lib/projected-standings";
 import { getFlag, getGroup } from "@/lib/team-metadata";
 import type { PowerType } from "@/lib/constants";
@@ -1358,7 +1359,10 @@ function PowerPanel({
 
   return (
     <div className="mt-3">
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">{tp("title")}</p>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="min-w-0 flex-1 text-[11px] font-medium uppercase tracking-wide text-slate-500">{tp("title")}</p>
+        <SuperpowersHelpModal />
+      </div>
       <div className="flex flex-wrap gap-2">
         {powers.map(({ type, icon, label, activeClass, limit }) => {
           const isActive = activePowers?.has(type) ?? false;

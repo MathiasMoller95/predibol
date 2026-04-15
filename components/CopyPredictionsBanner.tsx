@@ -64,7 +64,7 @@ export default function CopyPredictionsBanner({ targetGroupId, options }: Props)
   }
 
   return (
-    <div className="mb-6 rounded-xl border border-gpri/30 bg-gpri/5 p-4 sm:p-5">
+    <div className="mb-6 rounded-xl border border-gpri/30 bg-[#111720] p-4 sm:p-5">
       <p className="text-sm font-medium text-white">
         {t("bannerPrompt", { groupName })}
       </p>
@@ -91,7 +91,7 @@ export default function CopyPredictionsBanner({ targetGroupId, options }: Props)
           type="button"
           disabled={pending}
           onClick={() => void onCopy()}
-          className={`inline-flex min-h-[44px] items-center justify-center rounded-lg bg-gpri px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60 ${PRIMARY_BUTTON_CLASSES}`}
+          className={`inline-flex min-h-[44px] items-center justify-center rounded-lg bg-gpri px-4 py-2.5 text-sm font-semibold text-white hover:bg-gpri/90 disabled:opacity-60 ${PRIMARY_BUTTON_CLASSES}`}
         >
           {pending ? t("copying") : t("copyButton")}
         </button>
@@ -99,7 +99,7 @@ export default function CopyPredictionsBanner({ targetGroupId, options }: Props)
           type="button"
           disabled={pending}
           onClick={() => setDismissed(true)}
-          className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-dark-500 bg-dark-700 px-4 py-2.5 text-sm font-medium text-slate-200 hover:bg-dark-600 disabled:opacity-60"
+          className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-white/20 bg-transparent px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-white/5 disabled:opacity-60"
         >
           {t("dismissButton")}
         </button>

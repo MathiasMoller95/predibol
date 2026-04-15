@@ -580,6 +580,17 @@
   "Powers": {
     "title": "⚡ Superpoderes",
     "error": "Algo salió mal",
+    "helpModal": {
+      "title": "Superpoderes",
+      "openAria": "Información sobre superpoderes",
+      "closeAria": "Cerrar",
+      "doubleDownTitle": "⚡ Double Down",
+      "doubleDownDescription": "Duplica los puntos que ganas (o pierdes) en este partido. Úsalo cuando confíes en tu pronóstico.",
+      "spyTitle": "🔍 Espiar",
+      "spyDescription": "Mira la predicción de otro jugador antes de que cierre el partido. Ojo: si usó un Escudo, no verás nada.",
+      "shieldTitle": "🛡️ Escudo",
+      "shieldDescription": "Protege tu predicción para que no puedan espiarla. Quien use Espiar contra ti verá «protegido» en lugar de tu marcador."
+    },
     "doubleDown": {
       "name": "x2 Double Down",
       "description": "Duplica tus puntos en este partido",
@@ -833,6 +844,9 @@
   "Dashboard": {
     "title": "Mis grupos",
     "subtitle": "Copa Mundial 2026",
+    "subtitleFifa": "Copa Mundial de la FIFA 2026",
+    "predictionsProgress": "{submitted}/{total} predicciones enviadas",
+    "matchesRemaining": "{count, plural, one {# partido restante} other {# partidos restantes}}",
     "createGroup": "Crear grupo",
     "discoverWorlds": "Descubrir grupos",
     "orDiscover": "O descubre mundos existentes",
