@@ -41,10 +41,8 @@ export default async function DashboardPage({ params }: Props) {
   }> = [];
 
   let memberCounts: Record<string, number> = {};
-  const leaderboardByGroup: Record<
-    string,
-    { rank: number | null; total_points: number; predictions_made: number }
-  > = {};
+  const leaderboardByGroup: Record<string, { rank: number | null; total_points: number }> = {};
+  let predictionCountByGroup: Record<string, number> = {};
   let predictedGroupsForNextMatch = new Set<string>();
 
   const nowIso = new Date().toISOString();
@@ -69,13 +67,14 @@ export default async function DashboardPage({ params }: Props) {
   const matchesRemainingCount = matchesRemainingResult.count ?? 0;
 
   if (groupIds.length > 0) {
-    const [{ data: groupRows }, { data: leaderboardRows }] = await Promise.all([
+    const [{ data: groupRows }, { data: leaderboardRows }, { data: userPredictionRows }] = await Promise.all([
       supabase.from("groups").select("id,name,primary_color").in("id", groupIds),
       supabase
         .from("leaderboard")
-        .select("group_id,rank,total_points,predictions_made")
+        .select("group_id,rank,total_points")
         .eq("user_id", user.id)
         .in("group_id", groupIds),
+      supabase.from("predictions").select("group_id").eq("user_id", user.id).in("group_id", groupIds),
     ]);
 
     groups = (groupRows ?? []) as typeof groups;
@@ -83,9 +82,14 @@ export default async function DashboardPage({ params }: Props) {
       leaderboardByGroup[row.group_id as string] = {
         rank: (row.rank as number | null) ?? null,
         total_points: (row.total_points as number) ?? 0,
-        predictions_made: (row.predictions_made as number) ?? 0,
       };
     });
+
+    predictionCountByGroup = {};
+    for (const row of userPredictionRows ?? []) {
+      const gid = row.group_id as string;
+      predictionCountByGroup[gid] = (predictionCountByGroup[gid] ?? 0) + 1;
+    }
 
     const countPairs = await Promise.all(
       groupIds.map(async (groupId) => {
@@ -124,7 +128,7 @@ export default async function DashboardPage({ params }: Props) {
         totalMembers,
         rank: lb?.rank ?? null,
         points: lb?.total_points ?? 0,
-        predictionsSubmitted: lb?.predictions_made ?? 0,
+        predictionsSubmitted: predictionCountByGroup[group.id] ?? 0,
         totalMatches: totalMatchCount,
         nextMatch: nextMatch
           ? {

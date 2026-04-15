@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useToast } from "@/components/ui/toast-provider";
-import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 export type CopyPredictionOption = {
   groupId: string;
@@ -64,7 +63,7 @@ export default function CopyPredictionsBanner({ targetGroupId, options }: Props)
   }
 
   return (
-    <div className="mb-6 rounded-xl border border-gpri/30 bg-[#111720] p-4 sm:p-5">
+    <div className="mb-6 rounded-xl border border-white/10 bg-[#111720] p-4 sm:p-5 ring-1 ring-emerald-500/15">
       <p className="text-sm font-medium text-white">
         {t("bannerPrompt", { groupName })}
       </p>
@@ -75,7 +74,7 @@ export default function CopyPredictionsBanner({ targetGroupId, options }: Props)
           <select
             value={sourceId}
             onChange={(e) => setSourceId(e.target.value)}
-            className="mt-1 w-full max-w-md rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none focus:border-gpri focus:ring-1 focus:ring-gpri/50"
+            className="mt-1 w-full max-w-md rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/40"
           >
             {options.map((o) => (
               <option key={o.groupId} value={o.groupId}>
@@ -91,7 +90,7 @@ export default function CopyPredictionsBanner({ targetGroupId, options }: Props)
           type="button"
           disabled={pending}
           onClick={() => void onCopy()}
-          className={`inline-flex min-h-[44px] items-center justify-center rounded-lg bg-gpri px-4 py-2.5 text-sm font-semibold text-white hover:bg-gpri/90 disabled:opacity-60 ${PRIMARY_BUTTON_CLASSES}`}
+          className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-emerald-500 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100"
         >
           {pending ? t("copying") : t("copyButton")}
         </button>

@@ -34,7 +34,7 @@ export default function Navbar({ displayName, email, locale, userId }: Props) {
         <div className="flex min-w-0 flex-1 items-center gap-4 sm:gap-6">
           <Link
             href={`/${locale}/dashboard`}
-            aria-label={t("myGroups")}
+            aria-label="Predibol"
             className="flex shrink-0 items-center gap-1.5 text-lg font-bold tracking-tight transition-colors hover:text-emerald-300"
           >
             <svg viewBox="0 0 64 64" className="h-6 w-6" aria-hidden>
@@ -45,6 +45,12 @@ export default function Navbar({ displayName, email, locale, userId }: Props) {
               </text>
             </svg>
             <span className="hidden text-emerald-400 sm:inline">Predibol</span>
+          </Link>
+          <Link
+            href={`/${locale}/dashboard`}
+            className="shrink-0 text-sm text-slate-400 transition-colors hover:text-white"
+          >
+            {t("myGroups")}
           </Link>
           <Link
             href={`/${locale}/dashboard/discover`}
