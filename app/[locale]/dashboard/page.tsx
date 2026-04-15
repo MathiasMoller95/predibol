@@ -150,8 +150,8 @@ export default async function DashboardPage({ params }: Props) {
   );
 
   return (
-    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
-      <section className="mx-auto w-full max-w-6xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 pb-8 pt-4 sm:pt-6 sm:pb-8">
+      <section className="mx-auto w-full max-w-6xl rounded-xl border border-dark-600 bg-dark-800 px-4 pt-4 pb-5 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">{t("title")}</h1>

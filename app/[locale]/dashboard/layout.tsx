@@ -33,7 +33,7 @@ export default async function DashboardLayout({ children, params }: Props) {
     <>
       <Navbar displayName={displayName} email={user.email ?? ""} locale={locale} userId={user.id} />
       <ToastProvider>
-        <div className="pt-14">{children}</div>
+        <div className="min-h-0">{children}</div>
         <footer className="border-t border-dark-600/40 py-5">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 text-center text-xs text-slate-500">
             <Link href={`/${locale}/privacy`} className="hover:text-slate-400 hover:underline">

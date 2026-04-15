@@ -1,6 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
 import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
@@ -364,11 +363,8 @@ export default async function GroupHubPage({ params }: Props) {
   };
 
   return (
-    <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
-      <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
-        <Link href={`/${locale}/dashboard`} className="text-sm font-medium text-gpri hover:text-gpri/90">
-          {common("backToGroups")}
-        </Link>
+    <main className="animate-page-in min-h-screen bg-dark-900 px-4 pb-8 pt-4 sm:pt-6 sm:pb-8">
+      <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 px-4 pt-4 pb-5 sm:p-6">
         <GroupHubClient data={hubData} />
       </section>
     </main>

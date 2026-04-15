@@ -70,10 +70,6 @@ export type GroupHubData = {
   stickerCount: number;
 };
 
-function pad2(n: number) {
-  return n.toString().padStart(2, "0");
-}
-
 function bracketCardMeta(t: ReturnType<typeof useTranslations<"GroupHub">>, status: BracketHubStatusKey): string {
   switch (status) {
     case "comingSoon":
@@ -115,7 +111,6 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
   const t = useTranslations("GroupHub");
   const tAccess = useTranslations("AccessCode");
   const { showToast } = useToast();
-  const accent = data.primaryColor ?? "#10b981";
 
   const fullUrl = useMemo(() => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -157,12 +152,6 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
   }
 
 
-  const scoringSummary = t("scoringRules", {
-    result: data.pointsResult,
-    difference: data.pointsDiff,
-    exact: data.pointsExact,
-  });
-
   const predictionsMeta = useMemo(() => {
     const { totalMatches, predictionsMadeCount } = data;
     if (totalMatches <= 0) {
@@ -180,111 +169,79 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
   const rankLabel =
     data.userRank != null ? t("actions.yourRank", { rank: data.userRank }) : t("actions.yourRankPending");
 
-  const countdownParts = useMemo(() => {
-    if (!data.nextMatch || lockState.closed) return null;
-    const ms = Math.max(0, lockState.msLeft);
-    const days = Math.floor(ms / 86_400_000);
-    const hours = Math.floor((ms % 86_400_000) / 3_600_000);
-    const minutes = Math.floor((ms % 3_600_000) / 60_000);
-    return { days, hours, minutes };
-  }, [data.nextMatch, lockState.closed, lockState.msLeft]);
-
   return (
-    <div className="mt-6 space-y-8">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            {data.logoUrl ? (
-              <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-dark-900">
-                <Image
-                  src={data.logoUrl}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="h-full w-full object-cover"
-                  unoptimized
-                />
-              </span>
-            ) : (
-              <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-dark-900 text-lg font-bold text-slate-500"
-                aria-hidden
-              >
-                ⚽
-              </span>
-            )}
-            <h1 className="text-3xl font-bold text-white">{data.groupName}</h1>
-            {data.isAdmin ? (
-              <span className="rounded-full bg-gpri/20 px-2 py-0.5 text-xs font-medium text-gpri ring-1 ring-gpri/30">
-                {t("adminBadge")}
-              </span>
-            ) : null}
-          </div>
-          <p className="mt-2 text-sm text-slate-400">
-            {t("memberCount", { count: data.memberCount })} · {scoringSummary}
-          </p>
-        </div>
-        <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
-          <span
-            className="h-3 w-3 rounded-full ring-2 ring-white/20"
-            style={{ backgroundColor: accent }}
-            aria-hidden
-          />
-          <span
-            className="hidden h-1 w-full max-w-[120px] rounded-full sm:block"
-            style={{ backgroundColor: accent }}
-            aria-hidden
-          />
+    <div className="mt-4 space-y-4">
+      <header className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          {data.logoUrl ? (
+            <span className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-dark-900">
+              <Image
+                src={data.logoUrl}
+                alt=""
+                width={32}
+                height={32}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
+            </span>
+          ) : (
+            <span
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-dark-900 text-base font-bold text-slate-500"
+              aria-hidden
+            >
+              ⚽
+            </span>
+          )}
+          <h1 className="text-lg font-bold text-white sm:text-xl">{data.groupName}</h1>
+          {data.isAdmin ? (
+            <span className="rounded-full bg-gpri/20 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gpri ring-1 ring-gpri/30">
+              {t("adminBadge")}
+            </span>
+          ) : null}
         </div>
       </header>
 
       <section
-        className="animate-page-in rounded-xl border border-dark-600 bg-dark-800 p-5 motion-reduce:animate-none"
+        className="animate-page-in rounded-lg border border-dark-600 bg-dark-800 px-3 py-2 motion-reduce:animate-none"
         aria-labelledby="next-match-heading"
       >
-        <h2 id="next-match-heading" className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <h2 id="next-match-heading" className="sr-only">
           {t("nextMatch.title")}
         </h2>
         {!data.nextMatch ? (
-          <p className="mt-3 text-sm text-slate-400">{t("nextMatch.noUpcoming")}</p>
+          <p className="text-sm text-slate-400">{t("nextMatch.noUpcoming")}</p>
         ) : (
-          <div className="mt-3">
-            <p className="text-lg font-semibold text-white">
-              <span aria-hidden>{getFlag(data.nextMatch.homeTeam)}</span> {data.nextMatch.homeTeam}{" "}
-              <span className="text-slate-500">{t("nextMatch.vs")}</span> {data.nextMatch.awayTeam}{" "}
-              <span aria-hidden>{getFlag(data.nextMatch.awayTeam)}</span>
-            </p>
-            <p className="mt-1 text-xs text-slate-500">
-              {formatMatchTime(data.nextMatch.matchTime, data.profileTimezone, data.locale)}
-            </p>
-
-            {lockState.closed ? (
-              <p className="mt-3 text-sm font-medium text-amber-400/90">{t("nextMatch.predictionsClosed")}</p>
-            ) : countdownParts ? (
-              <p className="mt-3 text-sm text-gpri/90" aria-live="polite">
-                {t("nextMatch.locksIn", {
-                  days: countdownParts.days,
-                  hours: pad2(countdownParts.hours),
-                  minutes: pad2(countdownParts.minutes),
-                })}
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+              <p className="min-w-0 flex-1 text-xs leading-snug text-slate-200 sm:text-sm">
+                <span aria-hidden>{getFlag(data.nextMatch.homeTeam)}</span> {data.nextMatch.homeTeam}{" "}
+                <span className="text-slate-500">{t("nextMatch.vs")}</span> {data.nextMatch.awayTeam}{" "}
+                <span aria-hidden>{getFlag(data.nextMatch.awayTeam)}</span>
+                <span className="text-slate-600"> · </span>
+                <span className="text-slate-500">
+                  {formatMatchTime(data.nextMatch.matchTime, data.profileTimezone, data.locale)}
+                </span>
               </p>
+              {!data.nextMatchPrediction && !lockState.closed ? (
+                <Link
+                  href={`/${data.locale}/dashboard/group/${data.groupId}/predict`}
+                  className="shrink-0 text-xs font-semibold text-gpri underline-offset-2 hover:text-gpri/90 hover:underline sm:text-sm"
+                >
+                  {t("nextMatch.predictNow")}
+                </Link>
+              ) : null}
+            </div>
+            {lockState.closed ? (
+              <p className="text-xs font-medium text-amber-400/90">{t("nextMatch.predictionsClosed")}</p>
             ) : null}
-
             {data.nextMatchPrediction ? (
-              <p className="mt-3 text-sm text-slate-300">
+              <p className="text-xs text-slate-400 sm:text-sm">
                 <span className="text-gpri">✓</span>{" "}
                 {t("nextMatch.yourPrediction", {
                   home: data.nextMatchPrediction.home,
                   away: data.nextMatchPrediction.away,
                 })}
               </p>
-            ) : !lockState.closed ? (
-              <Link
-                href={`/${data.locale}/dashboard/group/${data.groupId}/predict`}
-                className="mt-4 inline-flex min-h-[44px] items-center text-sm font-semibold text-gpri underline-offset-4 hover:text-gpri/90 hover:underline"
-              >
-                {t("nextMatch.predictNow")}
-              </Link>
             ) : null}
           </div>
         )}
