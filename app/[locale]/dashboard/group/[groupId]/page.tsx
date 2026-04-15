@@ -38,7 +38,6 @@ export default async function GroupHubPage({ params }: Props) {
   const { locale, groupId } = params;
   setRequestLocale(locale);
 
-  const common = await getTranslations("Common");
   const supabase = await createClient();
   const {
     data: { user },
