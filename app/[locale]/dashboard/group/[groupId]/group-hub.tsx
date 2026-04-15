@@ -478,7 +478,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
                   {tAccess("copyCode")}
                 </button>
               ) : null}
-              <InviteCardShareButton groupName={data.groupName} locale={data.locale} />
+              <InviteCardShareButton groupName={data.groupName} locale={data.locale} logoUrl={data.logoUrl} />
             </div>
             {data.accessMode === "protected" && data.accessCode ? (
               <p className="w-full text-center text-sm font-mono text-gsec sm:text-left">

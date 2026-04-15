@@ -38,6 +38,7 @@ export default async function DashboardPage({ params }: Props) {
     id: string;
     name: string;
     primary_color: string | null;
+    logo_url: string | null;
   }> = [];
 
   let memberCounts: Record<string, number> = {};
@@ -68,7 +69,7 @@ export default async function DashboardPage({ params }: Props) {
 
   if (groupIds.length > 0) {
     const [{ data: groupRows }, { data: leaderboardRows }, { data: userPredictionRows }] = await Promise.all([
-      supabase.from("groups").select("id,name,primary_color").in("id", groupIds),
+      supabase.from("groups").select("id,name,primary_color,logo_url").in("id", groupIds),
       supabase
         .from("leaderboard")
         .select("group_id,rank,total_points")
@@ -125,6 +126,7 @@ export default async function DashboardPage({ params }: Props) {
         id: group.id,
         name: group.name,
         primaryColor: group.primary_color,
+        logoUrl: group.logo_url,
         totalMembers,
         rank: lb?.rank ?? null,
         points: lb?.total_points ?? 0,

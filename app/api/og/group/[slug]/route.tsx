@@ -14,10 +14,21 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
   let logoDataUrl: string | null = null;
   if (logoUrl) {
     try {
-      const res = await fetch(logoUrl);
+      const ctrl = new AbortController();
+      const id = setTimeout(() => ctrl.abort(), 2000);
+      const res = await fetch(logoUrl, {
+        cache: "no-store",
+        signal: ctrl.signal,
+        headers: {
+          // Some CDNs behave better with an explicit accept.
+          accept: "image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8,*/*;q=0.1",
+        },
+      });
+      clearTimeout(id);
       if (res.ok) {
         const buf = await res.arrayBuffer();
-        const ct = res.headers.get("content-type") ?? "image/png";
+        const ctRaw = (res.headers.get("content-type") ?? "").toLowerCase();
+        const ct = ctRaw.startsWith("image/") ? ctRaw.split(";")[0] : "image/png";
         const bytes = new Uint8Array(buf);
         let binary = "";
         for (let i = 0; i < bytes.byteLength; i++) {

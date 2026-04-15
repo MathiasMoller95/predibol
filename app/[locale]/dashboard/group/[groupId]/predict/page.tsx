@@ -5,6 +5,7 @@ import { AI_PLAYER_ID } from "@/lib/constants";
 import CopyPredictionsBanner, { type CopyPredictionOption } from "@/components/CopyPredictionsBanner";
 import PredictForm from "./predict-form";
 import Link from "next/link";
+import Image from "next/image";
 
 type Props = {
   params: { locale: string; groupId: string };
@@ -14,6 +15,7 @@ type GroupRecord = {
   id: string;
   name: string;
   admin_id: string;
+  logo_url: string | null;
   powers_double_down: number;
   powers_spy: number;
   powers_shield: number;
@@ -60,7 +62,7 @@ export default async function GroupPredictPage({ params }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,admin_id,powers_double_down,powers_spy,powers_shield")
+    .select("id,name,admin_id,logo_url,powers_double_down,powers_spy,powers_shield")
     .eq("id", groupId)
     .single();
 
@@ -258,7 +260,28 @@ export default async function GroupPredictPage({ params }: Props) {
         >
           {common("backToGroup", { groupName: typedGroup.name })}
         </Link>
-        <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+        <div className="mt-2 flex items-center gap-2">
+          {typedGroup.logo_url ? (
+            <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-dark-900">
+              <Image
+                src={typedGroup.logo_url}
+                alt=""
+                fill
+                sizes="36px"
+                className="object-cover"
+                unoptimized
+              />
+            </span>
+          ) : (
+            <span
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-dark-900 text-base font-bold text-slate-500"
+              aria-hidden
+            >
+              ⚽
+            </span>
+          )}
+          <h1 className="min-w-0 truncate text-2xl font-bold text-white">{t("title")}</h1>
+        </div>
         <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
 
         {copyOptions.length > 0 ? (

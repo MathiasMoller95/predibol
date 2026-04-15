@@ -19,9 +19,48 @@ const SCALE = 2;
 type Props = {
   groupName: string;
   locale: string;
+  logoUrl?: string | null;
 };
 
-export function drawInviteCard(ctx: CanvasRenderingContext2D, groupName: string, joinUs: string, tagline: string) {
+function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  const rr = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
+}
+
+function drawGroupLogo(ctx: CanvasRenderingContext2D, img: CanvasImageSource) {
+  const w = LOGICAL;
+  const size = 200;
+  const x = (w - size) / 2;
+  const y = w * 0.18;
+
+  ctx.save();
+  const r = 44;
+  roundRectPath(ctx, x, y, size, size, r);
+  ctx.clip();
+  ctx.drawImage(img, x, y, size, size);
+  ctx.restore();
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(16,185,129,0.35)";
+  ctx.lineWidth = 6;
+  roundRectPath(ctx, x, y, size, size, r);
+  ctx.stroke();
+  ctx.restore();
+}
+
+export function drawInviteCard(
+  ctx: CanvasRenderingContext2D,
+  groupName: string,
+  joinUs: string,
+  tagline: string,
+  logoImg?: CanvasImageSource | null,
+) {
   const w = LOGICAL;
   const h = LOGICAL;
 
@@ -30,6 +69,9 @@ export function drawInviteCard(ctx: CanvasRenderingContext2D, groupName: string,
   drawFootballWatermark(ctx, w * 0.5, h * 0.62, 140);
 
   drawPredibolLogo(ctx, w / 2, h * 0.14, 44);
+  if (logoImg) {
+    drawGroupLogo(ctx, logoImg);
+  }
 
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
@@ -68,11 +110,23 @@ export function drawInviteCard(ctx: CanvasRenderingContext2D, groupName: string,
   ctx.fillText(tg, w / 2, footerY + 54);
 }
 
-export default function InviteCardShareButton({ groupName, locale }: Props) {
+export default function InviteCardShareButton({ groupName, locale, logoUrl }: Props) {
   const t = useTranslations("Share");
   const { showToast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [busy, setBusy] = useState(false);
+  const [logoImg, setLogoImg] = useState<HTMLImageElement | null>(null);
+
+  const loadLogo = useCallback(async (url: string) => {
+    return await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.decoding = "async";
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("logo load failed"));
+      img.src = url;
+    });
+  }, []);
 
   const run = useCallback(async () => {
     if (busy) return;
@@ -87,7 +141,16 @@ export default function InviteCardShareButton({ groupName, locale }: Props) {
       ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
       const joinUs = t("invite.joinUs");
       const tagline = getShareText(locale);
-      drawInviteCard(ctx, groupName, joinUs, tagline);
+      let resolvedLogo = logoImg;
+      if (!resolvedLogo && logoUrl) {
+        try {
+          resolvedLogo = await loadLogo(logoUrl);
+          setLogoImg(resolvedLogo);
+        } catch {
+          resolvedLogo = null;
+        }
+      }
+      drawInviteCard(ctx, groupName, joinUs, tagline, resolvedLogo);
       const outcome = await shareOrDownload(canvas, "predibol-invite.png");
       if (outcome !== "cancelled") {
         showToast(t("invite.toast"), "success");
@@ -97,7 +160,7 @@ export default function InviteCardShareButton({ groupName, locale }: Props) {
     } finally {
       setBusy(false);
     }
-  }, [busy, groupName, locale, showToast, t]);
+  }, [busy, groupName, locale, loadLogo, logoImg, logoUrl, showToast, t]);
 
   return (
     <>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { formatMatchTime } from "@/lib/format-match-time";
@@ -10,6 +11,7 @@ export type GroupSummary = {
   id: string;
   name: string;
   primaryColor: string | null;
+  logoUrl: string | null;
   totalMembers: number;
   rank: number | null;
   points: number;
@@ -111,7 +113,28 @@ export default function DashboardGroupList({ locale, profileTimeZone, groups }: 
               aria-hidden
             />
 
-            <h3 className="text-lg font-bold text-white">{group.name}</h3>
+            <div className="flex items-center gap-2">
+              {group.logoUrl ? (
+                <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-dark-900">
+                  <Image
+                    src={group.logoUrl}
+                    alt=""
+                    fill
+                    sizes="36px"
+                    className="object-cover"
+                    unoptimized
+                  />
+                </span>
+              ) : (
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-dark-900 text-base font-bold text-slate-500"
+                  aria-hidden
+                >
+                  ⚽
+                </span>
+              )}
+              <h3 className="min-w-0 truncate text-lg font-bold text-white">{group.name}</h3>
+            </div>
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
               <span className="font-bold text-gold">{rankLine}</span>
               <span className="text-slate-600">•</span>
