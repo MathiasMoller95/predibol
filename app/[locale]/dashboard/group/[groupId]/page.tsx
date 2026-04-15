@@ -3,11 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
 import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
-import GroupHubClient, {
-  type GroupHubData,
-  type LeaderboardPreviewRow,
-  type RecentResultRow,
-} from "./group-hub";
+import GroupHubClient, { type GroupHubData, type RecentResultRow } from "./group-hub";
 import type { GroupAccessMode } from "@/types/supabase";
 import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
 import { mergeGroupLeaderboardRows, type LeaderboardDbRow } from "@/lib/group-leaderboard-merge";
@@ -225,27 +221,7 @@ export default async function GroupHubPage({ params }: Props) {
     (uid) => displayForHub(uid, uid === user.id),
   );
 
-  const topFive = mergedHubBoard.slice(0, 5);
-  const topIds = topFive.map((r) => r.user_id);
-  const inTop5 = topIds.includes(user.id);
   const selfMerged = mergedHubBoard.find((r) => r.user_id === user.id);
-
-  const leaderboardTop: LeaderboardPreviewRow[] = topFive.map((r) => ({
-    userId: r.user_id,
-    rank: r.rank,
-    points: r.total_points,
-    displayName: r.display_name,
-  }));
-
-  const showLeaderboardSelfRow = Boolean(selfMerged && !inTop5);
-  const leaderboardSelf: LeaderboardPreviewRow | null = showLeaderboardSelfRow
-    ? {
-        userId: user.id,
-        rank: selfMerged!.rank,
-        points: selfMerged!.total_points,
-        displayName: selfMerged!.display_name,
-      }
-    : null;
 
   const finished = (finishedRes.data ?? []) as {
     id: string;
@@ -349,9 +325,6 @@ export default async function GroupHubPage({ params }: Props) {
     predictionsMadeCount: predCountRes.count ?? 0,
     userRank: selfMerged?.rank ?? null,
     picksComplete,
-    leaderboardTop,
-    showLeaderboardSelfRow,
-    leaderboardSelf,
     recentResults,
     accessMode: hubAccessMode,
     accessCode: hubAccessCode,

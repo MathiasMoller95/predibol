@@ -12,13 +12,6 @@ import { getFlag } from "@/lib/team-metadata";
 import type { GroupAccessMode } from "@/types/supabase";
 import type { BracketHubStatusKey } from "@/lib/knockout-bracket-utils";
 
-export type LeaderboardPreviewRow = {
-  userId: string;
-  rank: number | null;
-  points: number;
-  displayName: string;
-};
-
 export type RecentResultRow = {
   matchId: string;
   homeTeam: string;
@@ -58,9 +51,6 @@ export type GroupHubData = {
   predictionsMadeCount: number;
   userRank: number | null;
   picksComplete: boolean;
-  leaderboardTop: LeaderboardPreviewRow[];
-  showLeaderboardSelfRow: boolean;
-  leaderboardSelf: LeaderboardPreviewRow | null;
   recentResults: RecentResultRow[];
   accessMode: GroupAccessMode;
   accessCode: string | null;
@@ -372,62 +362,6 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
           </span>
         </div>
       </section>
-
-      <section className="rounded-xl border border-dark-600 bg-dark-800 p-5">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 className="text-lg font-semibold text-white">{t("leaderboardPreview.title")}</h2>
-          <Link
-            href={`/${data.locale}/dashboard/group/${data.groupId}/leaderboard`}
-            className="text-sm font-medium text-gpri hover:text-gpri/90"
-          >
-            {t("leaderboardPreview.seeAll")}
-          </Link>
-        </div>
-        {data.leaderboardTop.length === 0 ? (
-          <p className="mt-4 text-sm text-slate-400">{t("leaderboardPreview.empty")}</p>
-        ) : (
-          <ul className="mt-4 space-y-2">
-            {data.leaderboardTop.map((row) => {
-              const r = row.rank;
-              const medal = row.rank === 1 ? "🥇 " : row.rank === 2 ? "🥈 " : row.rank === 3 ? "🥉 " : "";
-              const tierBorder =
-                r === 1
-                  ? "border-l-4 border-yellow-400"
-                  : r === 2
-                    ? "border-l-4 border-slate-300"
-                    : r === 3
-                      ? "border-l-4 border-amber-600"
-                      : "";
-              return (
-                <li
-                  key={row.userId}
-                  className={`flex items-center justify-between gap-3 rounded-lg border border-dark-600 bg-dark-900/40 px-3 py-2 text-sm ${tierBorder}`}
-                >
-                  <span className="min-w-0 truncate text-slate-200">
-                    <span aria-hidden>{medal}</span>
-                    {row.rank ?? "—"} · {row.displayName}
-                  </span>
-                  <span className="shrink-0 font-mono tabular-nums font-semibold text-gpri">{row.points}</span>
-                </li>
-              );
-            })}
-            {data.showLeaderboardSelfRow && data.leaderboardSelf ? (
-              <>
-                <li className="py-1 text-center text-xs text-slate-500">···</li>
-                <li className="flex items-center justify-between gap-3 rounded-lg border border-dark-600 bg-gpri/15 px-3 py-2 text-sm ring-1 ring-inset ring-gpri/30">
-                  <span className="min-w-0 truncate font-medium text-slate-100">
-                    {data.leaderboardSelf.rank ?? "—"} · {data.leaderboardSelf.displayName}
-                  </span>
-                  <span className="shrink-0 font-mono tabular-nums font-semibold text-gpri">
-                    {data.leaderboardSelf.points}
-                  </span>
-                </li>
-              </>
-            ) : null}
-          </ul>
-        )}
-      </section>
-
 
       <section className="rounded-xl border border-dark-600 bg-dark-800 p-5">
         <div className="flex flex-wrap items-end justify-between gap-2">
