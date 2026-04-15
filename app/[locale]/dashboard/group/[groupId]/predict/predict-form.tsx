@@ -744,12 +744,20 @@ export default function PredictForm({
                       ) : (() => {
                         const bothFilled = currentInput.predictedHome !== "" && currentInput.predictedAway !== ""
                           && !Number.isNaN(Number(currentInput.predictedHome)) && !Number.isNaN(Number(currentInput.predictedAway));
+                        const saving = busy || isSaving;
+                        const canSave = bothFilled && !saving;
                         return (
                           <button
                             type="button"
-                            disabled={busy || isSaving || !bothFilled}
+                            disabled={saving || !bothFilled}
                             onClick={() => void saveSingleMatch(match)}
-                            className={`mt-4 w-full min-h-[48px] rounded-lg border border-gpri/50 bg-gpri/20 px-4 py-2 text-sm font-semibold text-gsec hover:bg-gpri/15 disabled:opacity-50 disabled:cursor-not-allowed ${PRIMARY_BUTTON_CLASSES}`}
+                            className={`mt-4 w-full min-h-[48px] rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all duration-150 disabled:cursor-not-allowed ${
+                              canSave
+                                ? "bg-gpri text-white hover:brightness-110 active:scale-[0.97]"
+                                : saving && bothFilled
+                                  ? "cursor-wait bg-gpri/85 text-white"
+                                  : "border border-dark-600 bg-dark-700 text-slate-500"
+                            }`}
                           >
                             {busy ? t("saveSaving") : saved ? t("update") : t("save")}
                           </button>
