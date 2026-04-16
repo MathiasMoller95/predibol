@@ -6,8 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/toast-provider";
 import { formatMatchTime } from "@/lib/format-match-time";
-import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
-import InviteCardShareButton from "@/components/share/invite-card";
+import InviteShareButton from "@/components/share/invite-card";
 import OnboardingOverlay, {
   hasVisitedAlbum,
   hasVisitedPicks,
@@ -41,6 +40,7 @@ export type GroupHubData = {
   /** Public storage URL; optional */
   logoUrl: string | null;
   primaryColor: string | null;
+  secondaryColor: string | null;
   isAdmin: boolean;
   memberCount: number;
   pointsResult: number;
@@ -108,7 +108,6 @@ function useLockCountdown(lockedAtIso: string | null, tickMs: number) {
 
 export default function GroupHubClient({ data }: { data: GroupHubData }) {
   const t = useTranslations("GroupHub");
-  const tAccess = useTranslations("AccessCode");
   const { showToast } = useToast();
   const [hintsEnabled, setHintsEnabled] = useState(false);
   const [visitedPicks, setVisitedPicks] = useState(true);
@@ -120,18 +119,6 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
     return `${origin}/${data.locale}/join/${data.slug}`;
   }, [data.locale, data.slug]);
 
-  const whatsappHref = useMemo(() => {
-    const text =
-      data.accessMode === "protected" && data.accessCode
-        ? tAccess("whatsappProtected", {
-            groupName: data.groupName,
-            link: fullUrl,
-            code: data.accessCode,
-          })
-        : tAccess("whatsappOpen", { groupName: data.groupName, link: fullUrl });
-    return `https://wa.me/?text=${encodeURIComponent(text)}`;
-  }, [data.accessCode, data.accessMode, data.groupName, fullUrl, tAccess]);
-
   const lockState = useLockCountdown(data.nextMatch?.lockedAt ?? null, 60_000);
 
   useEffect(() => {
@@ -139,25 +126,6 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
     setVisitedPicks(hasVisitedPicks());
     setVisitedAlbum(hasVisitedAlbum());
   }, []);
-
-  async function onCopyInvite() {
-    try {
-      await navigator.clipboard.writeText(fullUrl);
-      showToast(t("invite.copied"), "success");
-    } catch {
-      showToast(t("invite.copyFailed"), "error");
-    }
-  }
-
-  async function onCopyAccessCode() {
-    if (!data.accessCode) return;
-    try {
-      await navigator.clipboard.writeText(data.accessCode);
-      showToast(tAccess("codeCopied"), "success");
-    } catch {
-      showToast(t("invite.copyFailed"), "error");
-    }
-  }
 
 
   const predictionsMeta = useMemo(() => {
@@ -457,43 +425,20 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
       {data.isAdmin ? (
         <section className="rounded-xl border border-dark-600 bg-dark-800 p-5">
           <h2 className="text-lg font-semibold text-white">{t("invite.title")}</h2>
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <div className="min-w-0 flex-1 break-all rounded-lg border border-dark-600 bg-dark-900 p-3 font-mono text-xs text-slate-300 sm:text-sm">
-              {fullUrl}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => void onCopyInvite()}
-                className={`shrink-0 rounded-lg border border-dark-500 bg-dark-700 px-4 py-2.5 text-sm font-medium text-slate-200 hover:border-gpri/50 hover:bg-dark-600 ${PRIMARY_BUTTON_CLASSES}`}
-              >
-                {t("copyLink")}
-              </button>
-              {data.accessMode === "protected" && data.accessCode ? (
-                <button
-                  type="button"
-                  onClick={() => void onCopyAccessCode()}
-                  className={`shrink-0 rounded-lg border border-dark-500 bg-dark-700 px-4 py-2.5 text-sm font-medium text-slate-200 hover:border-gpri/50 hover:bg-dark-600 ${PRIMARY_BUTTON_CLASSES}`}
-                >
-                  {tAccess("copyCode")}
-                </button>
-              ) : null}
-              <InviteCardShareButton groupName={data.groupName} locale={data.locale} logoUrl={data.logoUrl} />
-            </div>
-            {data.accessMode === "protected" && data.accessCode ? (
-              <p className="w-full text-center text-sm font-mono text-gsec sm:text-left">
-                {tAccess("linkAndCode", { code: data.accessCode })}
-              </p>
-            ) : null}
+          <div className="mt-4">
+            <InviteShareButton
+              groupName={data.groupName}
+              locale={data.locale}
+              inviteUrl={fullUrl}
+              logoUrl={data.logoUrl}
+              primaryColor={data.primaryColor}
+              secondaryColor={data.secondaryColor}
+              accessMode={data.accessMode}
+              accessCode={data.accessCode}
+              onCopied={() => showToast(t("invite.copied"), "success")}
+              onCopyFailed={() => showToast(t("invite.copyFailed"), "error")}
+            />
           </div>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`mt-3 inline-flex w-full min-h-[44px] items-center justify-center rounded-lg bg-gpri px-4 py-2 text-sm font-medium text-white hover:brightness-110 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
-          >
-            {t("shareWhatsApp")}
-          </a>
         </section>
       ) : null}
     </div>

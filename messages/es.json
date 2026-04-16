@@ -918,6 +918,15 @@
     "invite": {
       "button": "🎨 Compartir tarjeta",
       "joinUs": "¡Únete a nuestro grupo!",
+      "shareWithFriendsMobile": "📱 Compartir con amigos",
+      "copyInviteLinkDesktop": "💻 Copiar enlace de invitación",
+      "downloadInviteCard": "Descargar tarjeta",
+      "linkCopied": "¡Enlace copiado!",
+      "inviteMessage": "¡Únete a {groupName} en Predibol!",
+      "cardTaglinePool": "¡Únete a la pool!",
+      "pillSuperpowers": "Superpoderes",
+      "pillStickerAlbum": "Álbum de Stickers",
+      "pillAiRival": "Rival IA",
       "toast": "Tarjeta lista para compartir",
       "error": "No se pudo crear la imagen."
     }

@@ -307,6 +307,7 @@ export default async function GroupHubPage({ params }: Props) {
     groupName: typedGroup.name,
     logoUrl: typedGroup.logo_url,
     primaryColor: theme.primary,
+    secondaryColor: theme.secondary,
     isAdmin,
     memberCount,
     pointsResult: typedGroup.points_correct_result,
