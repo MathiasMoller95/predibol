@@ -379,11 +379,11 @@
   },
   "GroupBottomNav": {
     "navAria": "Secciones del grupo",
+    "group": "Grupo",
     "matches": "Partidos",
     "ranking": "Ranking",
     "bracket": "Cuadro",
-    "champion": "Campeón",
-    "album": "Álbum"
+    "champion": "Campeón"
   },
   "Album": {
     "title": "🎴 Álbum de cromos",
@@ -688,6 +688,43 @@
     "empty": "No hay partidos proximos disponibles.",
     "settledTitle": "Partidos cerrados",
     "noUpcoming": "No hay partidos próximos por ahora.",
+    "locksIn": "Cierra en {time}",
+    "pointsPreview": "Si aciertas: +{points} pts",
+    "tabs": {
+      "ariaLabel": "Secciones de pronósticos",
+      "upcoming": "Próximos",
+      "live": "En vivo",
+      "results": "Resultados"
+    },
+    "badges": {
+      "today": "HOY",
+      "tomorrow": "MAÑANA"
+    },
+    "live": {
+      "pollHint": "Los marcadores se actualizan cada ~60 segundos.",
+      "inProgress": "En juego",
+      "yourPrediction": "Tu predicción: {home}-{away}",
+      "currentPoints": "Puntos actuales: +{points}",
+      "noPredictionYet": "Sin predicción guardada para este partido.",
+      "doubleDownActive": "2× activo"
+    },
+    "resultsTab": {
+      "empty": "Aún no hay partidos terminados con tus pronósticos."
+    },
+    "results": {
+      "finalBadge": "FINAL",
+      "pointsEarned": "+{points} pts",
+      "pointsZero": "0 pts",
+      "doubleDownLine": "⚡ 2× → +{points} pts",
+      "breakdownSeparator": " · ",
+      "breakdownResultHit": "Resultado ✓ (+{points})",
+      "breakdownResultMiss": "Resultado ✗",
+      "breakdownDiffHit": "Diferencia ✓ (+{points})",
+      "breakdownDiffMiss": "Diferencia ✗",
+      "breakdownExactHit": "Exacto ✓ (+{points})",
+      "breakdownExactMiss": "Exacto ✗",
+      "breakdownAdvancingHit": "Avanza ✓ (+{points})"
+    },
     "yourPick": "Tu pronóstico: {home}-{away}",
     "homeScore": "Goles local",
     "awayScore": "Goles visitante",
@@ -715,7 +752,7 @@
       "saveError": "No se pudieron guardar los pronosticos."
     },
     "groupLabel": "Grupo {letter}",
-    "groupProgress": "{count}/6 pronosticados",
+    "groupProgress": "{count}/{total} pronosticados",
     "backToGroups": "Volver a grupos",
     "knockoutTitle": "Fase eliminatoria",
     "tapToPredict": "Toca para jugar →",
@@ -744,7 +781,7 @@
     "projected": {
       "title": "Clasificación proyectada",
       "disclaimer": "Solo con los partidos que pronosticaste en este grupo. Los no pronosticados no cuentan.",
-      "predictedFraction": "{count}/6 pronosticados",
+      "predictedFraction": "{count}/{total} pronosticados",
       "completeNudge": "Pronostica los seis partidos del grupo para una proyección más completa.",
       "colPos": "Pos",
       "colTeam": "Equipo",

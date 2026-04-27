@@ -43,7 +43,8 @@ export default function ProjectedGroupStandingsTable({
     return null;
   }
 
-  const incomplete = predictedCount < 6;
+  const totalLetterMatches = letterMatches.length;
+  const incomplete = totalLetterMatches > 0 && predictedCount < totalLetterMatches;
 
   return (
     <div className="mt-8 rounded-xl border border-dark-600 bg-dark-900/50 p-4">
@@ -51,7 +52,7 @@ export default function ProjectedGroupStandingsTable({
         <h3 className="text-sm font-semibold text-white">
           {t("title")}{" "}
           <span className="font-normal text-slate-400">
-            ({t("predictedFraction", { count: predictedCount })})
+            ({t("predictedFraction", { count: predictedCount, total: totalLetterMatches })})
           </span>
         </h3>
       </div>

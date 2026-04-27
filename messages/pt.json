@@ -379,11 +379,11 @@
   },
   "GroupBottomNav": {
     "navAria": "Navegação do grupo",
+    "group": "Grupo",
     "matches": "Partidas",
     "ranking": "Ranking",
     "bracket": "Chave",
-    "champion": "Campeão",
-    "album": "Álbum"
+    "champion": "Campeão"
   },
   "Album": {
     "title": "🎴 Álbum de figurinhas",
@@ -688,6 +688,43 @@
     "empty": "Nao ha partidas futuras disponiveis.",
     "settledTitle": "Partidas encerradas",
     "noUpcoming": "Não há partidas futuras no momento.",
+    "locksIn": "Fecha em {time}",
+    "pointsPreview": "Se acertar: +{points} pts",
+    "tabs": {
+      "ariaLabel": "Seções de palpites",
+      "upcoming": "Próximos",
+      "live": "Ao vivo",
+      "results": "Resultados"
+    },
+    "badges": {
+      "today": "HOJE",
+      "tomorrow": "AMANHÃ"
+    },
+    "live": {
+      "pollHint": "Os placares são atualizados a cada ~60 segundos.",
+      "inProgress": "Em andamento",
+      "yourPrediction": "Seu palpite: {home}-{away}",
+      "currentPoints": "Pontos atuais: +{points}",
+      "noPredictionYet": "Nenhum palpite salvo para esta partida.",
+      "doubleDownActive": "2× ativo"
+    },
+    "resultsTab": {
+      "empty": "Ainda não há partidas finalizadas com seus palpites."
+    },
+    "results": {
+      "finalBadge": "FINAL",
+      "pointsEarned": "+{points} pts",
+      "pointsZero": "0 pts",
+      "doubleDownLine": "⚡ 2× → +{points} pts",
+      "breakdownSeparator": " · ",
+      "breakdownResultHit": "Resultado ✓ (+{points})",
+      "breakdownResultMiss": "Resultado ✗",
+      "breakdownDiffHit": "Diferença ✓ (+{points})",
+      "breakdownDiffMiss": "Diferença ✗",
+      "breakdownExactHit": "Exato ✓ (+{points})",
+      "breakdownExactMiss": "Exato ✗",
+      "breakdownAdvancingHit": "Classificação ✓ (+{points})"
+    },
     "yourPick": "Seu palpite: {home}-{away}",
     "homeScore": "Gols do mandante",
     "awayScore": "Gols do visitante",
@@ -715,7 +752,7 @@
       "saveError": "Nao foi possivel salvar os palpites."
     },
     "groupLabel": "Grupo {letter}",
-    "groupProgress": "{count}/6 palpites",
+    "groupProgress": "{count}/{total} palpites",
     "backToGroups": "Voltar aos grupos",
     "knockoutTitle": "Fase eliminatoria",
     "tapToPredict": "Toque para prever →",
@@ -744,7 +781,7 @@
     "projected": {
       "title": "Classificação projetada",
       "disclaimer": "Apenas com as partidas que você palpitou neste grupo. As não palpitadas são ignoradas.",
-      "predictedFraction": "{count}/6 palpites",
+      "predictedFraction": "{count}/{total} palpites",
       "completeNudge": "Palpite os seis jogos do grupo para uma projeção mais completa.",
       "colPos": "Pos",
       "colTeam": "Equipe",

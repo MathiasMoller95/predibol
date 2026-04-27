@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GitBranch, LayoutGrid, Star, Target, Trophy } from "lucide-react";
+import { GitBranch, Home, Star, Target, Trophy } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 type Props = {
@@ -10,29 +10,23 @@ type Props = {
   groupId: string;
 };
 
-const SEGMENTS = ["predict", "leaderboard", "bracket", "picks", "album"] as const;
+const SEGMENTS = ["hub", "predict", "leaderboard", "bracket", "picks"] as const;
 type Segment = (typeof SEGMENTS)[number];
 
-const ICONS: Record<
-  Segment,
-  typeof Target
-> = {
+const ICONS: Record<Segment, typeof Target> = {
+  hub: Home,
   predict: Target,
   leaderboard: Trophy,
   bracket: GitBranch,
   picks: Star,
-  album: LayoutGrid,
 };
 
-const LABEL_KEYS: Record<
-  Segment,
-  "matches" | "ranking" | "bracket" | "champion" | "album"
-> = {
+const LABEL_KEYS: Record<Segment, "group" | "matches" | "ranking" | "bracket" | "champion"> = {
+  hub: "group",
   predict: "matches",
   leaderboard: "ranking",
   bracket: "bracket",
   picks: "champion",
-  album: "album",
 };
 
 function normalizePath(p: string) {
@@ -47,9 +41,14 @@ export default function GroupBottomNav({ locale, groupId }: Props) {
   const path = normalizePath(pathname);
 
   function isActive(segment: Segment): boolean {
+    if (segment === "hub") return path === base;
     if (path === base) return false;
     const prefix = `${base}/${segment}`;
     return path === prefix || path.startsWith(`${prefix}/`);
+  }
+
+  function hrefFor(segment: Segment): string {
+    return segment === "hub" ? base : `${base}/${segment}`;
   }
 
   return (
@@ -59,7 +58,7 @@ export default function GroupBottomNav({ locale, groupId }: Props) {
     >
       <ul className="mx-auto flex max-w-lg items-stretch justify-between gap-0 px-1 pt-1">
         {SEGMENTS.map((segment) => {
-          const href = `${base}/${segment}`;
+          const href = hrefFor(segment);
           const active = isActive(segment);
           const Icon = ICONS[segment];
           const labelKey = LABEL_KEYS[segment];

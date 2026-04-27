@@ -12,6 +12,15 @@ import SuperpowersHelpModal from "@/components/SuperpowersHelpModal";
 import type { PredictionScores } from "@/lib/projected-standings";
 import { getFlag, getGroup } from "@/lib/team-metadata";
 import type { PowerType } from "@/lib/constants";
+import type { CopyPredictionOption } from "@/components/CopyPredictionsBanner";
+import CopyPredictionsBanner from "@/components/CopyPredictionsBanner";
+import PredictionTabs from "@/components/PredictionTabs";
+import { LiveMatchesSection, type LiveMatchRow } from "@/components/LiveMatchCard";
+import ResultMatchCard from "@/components/ResultMatchCard";
+import PointsPreview from "@/components/PointsPreview";
+import WhoHasPredicted from "@/components/WhoHasPredicted";
+import type { GroupScoringRow } from "@/lib/match-points-client";
+import { maxPossiblePoints } from "@/lib/match-points-client";
 
 const SCORE_INPUT_CLASS =
   "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50 placeholder:text-gray-600 placeholder:text-center";
@@ -33,6 +42,7 @@ type MatchRecord = {
   ai_home_score: number | null;
   ai_away_score: number | null;
   knockout_label: string | null;
+  advancing_team?: string | null;
 };
 
 type PredictionRecord = {
@@ -66,11 +76,43 @@ function phaseOrderIndex(phase: string) {
   return i === -1 ? 999 : i;
 }
 
+function dayKeyInTz(iso: string, tz: string): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(iso));
+}
+
+function lockCountdownMs(matchList: MatchRecord[]): number | null {
+  const now = Date.now();
+  let best: number | null = null;
+  for (const m of matchList) {
+    const t = new Date(m.locked_at).getTime();
+    const ms = t - now;
+    if (ms > 0 && ms <= 86400000) {
+      if (best === null || ms < best) best = ms;
+    }
+  }
+  return best;
+}
+
+function formatDurationMs(ms: number): string {
+  const h = Math.floor(ms / 3600000);
+  const min = Math.floor((ms % 3600000) / 60000);
+  return `${h}h ${min.toString().padStart(2, "0")}m`;
+}
+
 type FinishedPickRow = MatchRecord & {
   home_score: number;
   away_score: number;
+  advancing_team: string | null;
   predicted_home: number;
   predicted_away: number;
+  predicted_winner: "home" | "away" | "draw" | null;
+  predicted_advancing: string | null;
+  points_earned: number;
 };
 
 export type GroupMember = { userId: string; displayName: string };
@@ -79,15 +121,30 @@ export type PowerLimits = { doubleDown: number; spy: number; shield: number };
 export type SpyResult = { home: number; away: number } | null;
 
 type Props = {
-  matches: MatchRecord[];
+  upcomingMatches: MatchRecord[];
+  liveMatches: LiveMatchRow[];
+  finishedMatches: FinishedPickRow[];
+  groupScoring: GroupScoringRow;
+  stickersByMatch: Record<string, { team: string; tier: string }[]>;
+  predictionLookup: Record<
+    string,
+    {
+      predicted_home: number;
+      predicted_away: number;
+      predicted_winner: "home" | "away" | "draw" | null;
+      predicted_advancing: string | null;
+      points_earned?: number | null;
+    }
+  >;
   initialPredictions: PredictionRecord[];
   profileTimeZone: string | null;
-  finishedPicks: FinishedPickRow[];
   groupMembers: GroupMember[];
   powerUsage: PowerUsageRow[];
   powerLimits: PowerLimits;
   predictionsByMatch: Record<string, string[]>;
   currentUserId: string;
+  copyPredictionOptions: CopyPredictionOption[];
+  copyPredictionTargetGroupId: string;
 };
 
 type PredictionInput = {
@@ -197,15 +254,21 @@ function validateKnockoutNeedsWinner(match: MatchRecord, input: PredictionInput 
 }
 
 export default function PredictForm({
-  matches,
+  upcomingMatches,
+  liveMatches,
+  finishedMatches,
+  groupScoring,
+  stickersByMatch,
+  predictionLookup,
   initialPredictions,
   profileTimeZone,
-  finishedPicks,
   groupMembers,
   powerUsage,
   powerLimits,
   predictionsByMatch,
   currentUserId,
+  copyPredictionOptions,
+  copyPredictionTargetGroupId,
 }: Props) {
   const locale = useLocale();
   const t = useTranslations("Predictions");
@@ -216,6 +279,7 @@ export default function PredictForm({
   const [savingMatchId, setSavingMatchId] = useState<string | null>(null);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [savedMatchIds, setSavedMatchIds] = useState(() => new Set(initialPredictions.map((p) => p.match_id)));
+  const [pointsPreviewForMatch, setPointsPreviewForMatch] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setSavedMatchIds(new Set(initialPredictions.map((p) => p.match_id)));
@@ -390,16 +454,19 @@ export default function PredictForm({
 
   const groupedMatches = useMemo(() => {
     const groups: Record<string, MatchRecord[]> = {};
-    matches.forEach((match) => {
+    upcomingMatches.forEach((match) => {
       const key = getDayKey(match.match_time);
       groups[key] = groups[key] ?? [];
       groups[key].push(match);
     });
 
     return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
-  }, [matches]);
+  }, [upcomingMatches]);
 
-  const groupStageMatches = useMemo(() => matches.filter((match) => match.phase === "group"), [matches]);
+  const groupStageMatches = useMemo(
+    () => upcomingMatches.filter((match) => match.phase === "group"),
+    [upcomingMatches],
+  );
 
   const mergedGroupPredictionScores = useMemo((): PredictionScores => {
     const preds: PredictionScores = {};
@@ -413,7 +480,10 @@ export default function PredictForm({
     }
     return preds;
   }, [groupStageMatches, inputs]);
-  const knockoutMatches = useMemo(() => matches.filter((match) => match.phase !== "group"), [matches]);
+  const knockoutMatches = useMemo(
+    () => upcomingMatches.filter((match) => match.phase !== "group"),
+    [upcomingMatches],
+  );
   const knockoutByPhase = useMemo(() => {
     const map = new Map<string, MatchRecord[]>();
     knockoutMatches.forEach((m) => {
@@ -434,14 +504,59 @@ export default function PredictForm({
       if (!entry.teams.includes(match.away_team)) entry.teams.push(match.away_team);
     });
 
-    return Object.values(byLetter)
+    const todayKey = dayKeyInTz(new Date().toISOString(), effectiveTz);
+    const tomorrowKey = dayKeyInTz(new Date(Date.now() + 86400000).toISOString(), effectiveTz);
+
+    type Card = {
+      letter: string;
+      teams: string[];
+      matches: MatchRecord[];
+      predictedCount: number;
+      total: number;
+      allDone: boolean;
+      dateBanner: "today" | "tomorrow" | "none";
+      lockSoonMs: number | null;
+    };
+
+    const cards: Card[] = Object.values(byLetter)
       .filter((entry) => entry.letter !== "?")
-      .sort((a, b) => a.letter.localeCompare(b.letter))
       .map((entry) => {
-        const predictedCount = entry.matches.filter((m) => savedMatchIds.has(m.id)).length;
-        return { ...entry, predictedCount };
+        const sortedMatches = [...entry.matches].sort((a, b) =>
+          a.match_time.localeCompare(b.match_time),
+        );
+        const predictedCount = sortedMatches.filter((m) => savedMatchIds.has(m.id)).length;
+        const total = sortedMatches.length;
+        const allDone = total > 0 && predictedCount >= total;
+        const matchDayKeys = sortedMatches.map((m) => dayKeyInTz(m.match_time, effectiveTz));
+        const hasToday = matchDayKeys.some((k) => k === todayKey);
+        const hasTomorrow = matchDayKeys.some((k) => k === tomorrowKey);
+        let dateBanner: "today" | "tomorrow" | "none" = "none";
+        if (hasToday) dateBanner = "today";
+        else if (hasTomorrow) dateBanner = "tomorrow";
+        const lockSoonMs = lockCountdownMs(sortedMatches);
+        return {
+          letter: entry.letter,
+          teams: entry.teams,
+          matches: sortedMatches,
+          predictedCount,
+          total,
+          allDone,
+          dateBanner,
+          lockSoonMs,
+        };
       });
-  }, [groupStageMatches, savedMatchIds]);
+
+    return cards.sort((a, b) => {
+      const tier = (c: Card) =>
+        c.dateBanner === "today" ? 0 : c.dateBanner === "tomorrow" ? 1 : 2;
+      const ta = tier(a);
+      const tb = tier(b);
+      if (ta !== tb) return ta - tb;
+      if (a.allDone !== b.allDone) return a.allDone ? 1 : -1;
+      if (a.predictedCount !== b.predictedCount) return a.predictedCount - b.predictedCount;
+      return a.letter.localeCompare(b.letter);
+    });
+  }, [groupStageMatches, savedMatchIds, effectiveTz]);
 
   async function postPredictions(
     entries: PredictionPayload[],
@@ -466,6 +581,11 @@ export default function PredictForm({
       setSavedMatchIds((prev) => {
         const next = new Set(prev);
         entries.forEach((e) => next.add(e.matchId));
+        return next;
+      });
+      setPointsPreviewForMatch((prev) => {
+        const next = { ...prev };
+        for (const e of entries) next[e.matchId] = true;
         return next;
       });
       showToast(t(messageKey), "success");
@@ -512,7 +632,7 @@ export default function PredictForm({
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nowDate = new Date();
-    const due = matches.filter((match) => new Date(match.locked_at) > nowDate);
+    const due = upcomingMatches.filter((match) => new Date(match.locked_at) > nowDate);
     for (const match of due) {
       if (validateKnockoutDraw(match, inputs[match.id])) {
         showToast(t("selectAdvances"), "error");
@@ -537,46 +657,43 @@ export default function PredictForm({
   const showGlobalSave =
     !expandedGroup && (knockoutMatches.length > 0 || (groupCards.length === 0 && groupedMatches.length > 0));
 
-  const settledBlock =
-    finishedPicks.length > 0 ? (
-      <section className="mt-6 space-y-3 rounded-xl border border-dark-600 bg-dark-900/40 p-4">
-        <h2 className="text-sm font-semibold text-white">{t("settledTitle")}</h2>
-        <ul className="space-y-3">
-          {finishedPicks.map((m) => (
-              <li key={m.id} className="rounded-lg border border-dark-600 bg-dark-800 px-3 py-3 text-sm text-slate-300">
-                <p className="font-medium text-white">
-                  <span aria-hidden>{getFlag(m.home_team)}</span> {m.home_team}{" "}
-                  <span className="tabular-nums text-gsec">
-                    {m.home_score}-{m.away_score}
-                  </span>{" "}
-                  {m.away_team} <span aria-hidden>{getFlag(m.away_team)}</span>
-                </p>
-                <p className="mt-1 text-xs text-slate-400">
-                  {t("yourPick", { home: m.predicted_home, away: m.predicted_away })}
-                </p>
-              </li>
-          ))}
-        </ul>
-      </section>
-    ) : null;
+  const doubleDownMatchIds = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of powerUsage) {
+      if (p.powerType === "double_down") s.add(p.matchId);
+    }
+    return s;
+  }, [powerUsage]);
 
-  if (matches.length === 0) {
+  const utterlyEmpty =
+    upcomingMatches.length === 0 &&
+    liveMatches.length === 0 &&
+    finishedMatches.length === 0;
+
+  if (utterlyEmpty) {
     return (
-      <div className="mt-2 space-y-4">
-        {settledBlock}
-        {finishedPicks.length === 0 ? (
-          <p className="mt-6 text-sm text-slate-400">{t("empty")}</p>
-        ) : (
-          <p className="text-sm text-slate-500">{t("noUpcoming")}</p>
-        )}
+      <div className="mt-2">
+        <p className="text-sm text-slate-400">{t("empty")}</p>
       </div>
     );
   }
 
   return (
-    <div className="mt-2 space-y-6">
-      {settledBlock}
-      <form className="mt-6 space-y-6" onSubmit={onSubmit}>
+    <div className="mt-2">
+      <PredictionTabs
+        showLiveTab={liveMatches.length > 0}
+        upcomingContent={
+          <>
+            {copyPredictionOptions.length > 0 ? (
+              <CopyPredictionsBanner
+                targetGroupId={copyPredictionTargetGroupId}
+                options={copyPredictionOptions}
+              />
+            ) : null}
+            {upcomingMatches.length === 0 ? (
+              <p className="mt-4 text-sm text-slate-500">{t("noUpcoming")}</p>
+            ) : (
+              <form className="mt-4 space-y-6" onSubmit={onSubmit}>
       {groupCards.length > 0 ? (
         expandedGroup ? (
           <div key={`expand-${expandedGroup}`} className="animate-page-in">
@@ -592,8 +709,7 @@ export default function PredictForm({
               <div className="mt-4 space-y-6">
               {groupCards
                 .find((g) => g.letter === expandedGroup)
-                ?.matches.sort((a, b) => a.match_time.localeCompare(b.match_time))
-                .map((match) => {
+                ?.matches.map((match) => {
                   const lockPassed = new Date(match.locked_at) <= new Date();
                   const currentInput = inputs[match.id] ?? { ...emptyPredictionInput };
                   const saved = savedMatchIds.has(match.id);
@@ -613,6 +729,12 @@ export default function PredictForm({
                       className={`rounded-xl bg-dark-800 p-4 ${cardBorder}`}
                     >
                       <p className="text-right text-sm text-slate-400">{t("matchDate", { date: formatMatchWhen(match) })}</p>
+                      {(() => {
+                        const ms = lockCountdownMs([match]);
+                        return ms != null ? (
+                          <p className="mt-1 text-right text-[11px] text-amber-400/90">{t("locksIn", { time: formatDurationMs(ms) })}</p>
+                        ) : null;
+                      })()}
 
                       <div className="mt-3 flex items-center gap-2 text-lg font-semibold text-white">
                         <span aria-hidden>{getFlag(match.home_team)}</span>
@@ -746,21 +868,36 @@ export default function PredictForm({
                           && !Number.isNaN(Number(currentInput.predictedHome)) && !Number.isNaN(Number(currentInput.predictedAway));
                         const saving = busy || isSaving;
                         const canSave = bothFilled && !saving;
+                        const previewPts = maxPossiblePoints(groupScoring, !!hasDD);
                         return (
-                          <button
-                            type="button"
-                            disabled={saving || !bothFilled}
-                            onClick={() => void saveSingleMatch(match)}
-                            className={`mt-4 w-full min-h-[48px] rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all duration-150 disabled:cursor-not-allowed ${
-                              canSave
-                                ? "bg-gpri text-white hover:brightness-110 active:scale-[0.97]"
-                                : saving && bothFilled
-                                  ? "cursor-wait bg-gpri/85 text-white"
-                                  : "border border-dark-600 bg-dark-700 text-slate-500"
-                            }`}
-                          >
-                            {busy ? t("saveSaving") : saved ? t("update") : t("save")}
-                          </button>
+                          <>
+                            <button
+                              type="button"
+                              disabled={saving || !bothFilled}
+                              onClick={() => void saveSingleMatch(match)}
+                              className={`mt-4 w-full min-h-[48px] rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all duration-150 disabled:cursor-not-allowed ${
+                                canSave
+                                  ? "bg-gpri text-white hover:brightness-110 active:scale-[0.97]"
+                                  : saving && bothFilled
+                                    ? "cursor-wait bg-gpri/85 text-white"
+                                    : "border border-dark-600 bg-dark-700 text-slate-500"
+                              }`}
+                            >
+                              {busy ? t("saveSaving") : saved ? t("update") : t("save")}
+                            </button>
+                            <PointsPreview
+                              visible={!!pointsPreviewForMatch[match.id]}
+                              pointsDisplay={previewPts}
+                              messageTemplate={t("pointsPreview")}
+                              onDismiss={() =>
+                                setPointsPreviewForMatch((p) => {
+                                  const n = { ...p };
+                                  delete n[match.id];
+                                  return n;
+                                })
+                              }
+                            />
+                          </>
                         );
                       })()}
                     </div>
@@ -789,7 +926,7 @@ export default function PredictForm({
             <section>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {groupCards.map((group, cardIndex) => {
-                  const allPredicted = group.predictedCount >= 6;
+                  const allPredicted = group.allDone;
                   const partial = group.predictedCount > 0 && !allPredicted;
                   const accent =
                     group.predictedCount === 0
@@ -811,6 +948,16 @@ export default function PredictForm({
                       : "text-gpri";
 
                   const oddsLine = formatGroupOddsCompactLine(group.teams, group.matches);
+                  const dateBadge =
+                    group.dateBanner === "today" ? (
+                      <span className="animate-pulse rounded-full bg-red-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-400 ring-1 ring-red-500/40">
+                        {t("badges.today")}
+                      </span>
+                    ) : group.dateBanner === "tomorrow" ? (
+                      <span className="rounded-full bg-slate-700/80 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400 ring-1 ring-slate-600">
+                        {t("badges.tomorrow")}
+                      </span>
+                    ) : null;
 
                   return (
                     <button
@@ -818,12 +965,15 @@ export default function PredictForm({
                       type="button"
                       onClick={() => setExpandedGroup(group.letter)}
                       style={{ animationDelay: `${Math.min(cardIndex * 80, 500)}ms` }}
-                      className={`group/card animate-page-in cursor-pointer rounded-lg border ${accent} bg-dark-800 p-3 text-left transition-all duration-200 hover:border-gpri/40 hover:bg-dark-700 active:scale-[0.98]`}
+                      className={`group/card animate-page-in cursor-pointer rounded-lg border ${accent} bg-dark-800 ${allPredicted ? "p-2.5" : "p-3"} text-left transition-all duration-200 hover:border-gpri/40 hover:bg-dark-700 active:scale-[0.98]`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <p className="text-base font-semibold text-white">
-                          {t("groupLabel", { letter: group.letter })}
-                        </p>
+                        <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                          <p className="text-base font-semibold text-white">
+                            {t("groupLabel", { letter: group.letter })}
+                          </p>
+                          {dateBadge}
+                        </div>
                         <span
                           className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${
                             allPredicted
@@ -833,7 +983,7 @@ export default function PredictForm({
                                 : "bg-dark-700 text-slate-400 ring-1 ring-dark-500"
                           }`}
                         >
-                          {group.predictedCount}/6
+                          {group.predictedCount}/{group.total}
                         </span>
                       </div>
                       <ul className="mt-2 space-y-1 text-sm text-slate-300">
@@ -848,7 +998,14 @@ export default function PredictForm({
                           {oddsLine}
                         </p>
                       ) : null}
-                      <p className="mt-2 text-xs text-slate-400">{t("groupProgress", { count: group.predictedCount })}</p>
+                      {group.lockSoonMs != null ? (
+                        <p className="mt-1 text-[11px] text-amber-400/90">
+                          {t("locksIn", { time: formatDurationMs(group.lockSoonMs) })}
+                        </p>
+                      ) : null}
+                      <p className="mt-2 text-xs text-slate-400">
+                        {t("groupProgress", { count: group.predictedCount, total: group.total })}
+                      </p>
                       <div className="mt-3 flex items-end justify-between gap-2 border-t border-dark-600 pt-2">
                         <span className={`text-xs font-medium leading-snug ${ctaClass}`}>{ctaText}</span>
                         <span className="text-lg font-light text-gpri" aria-hidden>
@@ -1321,6 +1478,63 @@ export default function PredictForm({
         </button>
       ) : null}
     </form>
+            )}
+          </>
+        }
+        liveContent={
+          <LiveMatchesSection
+            initialMatches={liveMatches}
+            groupScoring={groupScoring}
+            predictionLookup={
+              predictionLookup as Record<
+                string,
+                | {
+                    predicted_home: number;
+                    predicted_away: number;
+                    predicted_winner: "home" | "away" | "draw" | null;
+                    predicted_advancing: string | null;
+                  }
+                | undefined
+              >
+            }
+            powerActiveByMatch={activePowers}
+            predictionsByMatch={predictionsByMatch}
+            groupMembers={groupMembers}
+            currentUserId={currentUserId}
+          />
+        }
+        resultsContent={
+          <div className="space-y-4 pt-2">
+            {finishedMatches.length === 0 ? (
+              <p className="text-sm text-slate-500">{t("resultsTab.empty")}</p>
+            ) : (
+              finishedMatches.map((m) => (
+                <ResultMatchCard
+                  key={m.id}
+                  match={{
+                    id: m.id,
+                    phase: m.phase,
+                    home_team: m.home_team,
+                    away_team: m.away_team,
+                    match_time: m.match_time,
+                    home_score: m.home_score,
+                    away_score: m.away_score,
+                    advancing_team: m.advancing_team ?? null,
+                    predicted_home: m.predicted_home,
+                    predicted_away: m.predicted_away,
+                    predicted_winner: m.predicted_winner,
+                    predicted_advancing: m.predicted_advancing,
+                    points_earned: m.points_earned,
+                  }}
+                  groupScoring={groupScoring}
+                  stickers={stickersByMatch[m.id] ?? []}
+                  hasDoubleDown={doubleDownMatchIds.has(m.id)}
+                />
+              ))
+            )}
+          </div>
+        }
+      />
 
       {spyModalMatchId && (
         <SpyModal
@@ -1445,54 +1659,6 @@ function SpyResultCard({
   return (
     <div className="mt-2 rounded-lg border border-blue-800/40 bg-blue-900/20 px-3 py-2 text-xs text-blue-300">
       {tp("spy.result", { name: targetName, score: `${result.home}-${result.away}` })}
-    </div>
-  );
-}
-
-function WhoHasPredicted({
-  groupMembers,
-  predicted,
-  currentUserId,
-  tp,
-}: {
-  matchId: string;
-  groupMembers: GroupMember[];
-  predicted: string[];
-  currentUserId: string;
-  tp: TranslationFn;
-}) {
-  if (groupMembers.length <= 1) return null;
-  const predictedSet = new Set(predicted);
-  return (
-    <div className="mt-3">
-      <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-slate-500">
-        {tp("groupPredictions.title")}
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        {groupMembers.map((m) => {
-          const done = predictedSet.has(m.userId);
-          const isYou = m.userId === currentUserId;
-          const initials = m.displayName
-            .split(" ")
-            .map((w) => w[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase();
-          return (
-            <span
-              key={m.userId}
-              title={m.displayName}
-              className={`inline-flex h-6 min-w-[28px] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold ${
-                done
-                  ? "bg-gpri/20 text-gpri"
-                  : "bg-dark-900/60 text-gray-600"
-              } ${isYou ? "ring-1 ring-gpri/50" : ""}`}
-            >
-              {initials}
-            </span>
-          );
-        })}
-      </div>
     </div>
   );
 }

@@ -379,11 +379,11 @@
   },
   "GroupBottomNav": {
     "navAria": "Group sections",
+    "group": "Group",
     "matches": "Matches",
     "ranking": "Ranking",
     "bracket": "Bracket",
-    "champion": "Champion",
-    "album": "Album"
+    "champion": "Champion"
   },
   "Album": {
     "title": "🎴 Sticker Album",
@@ -688,6 +688,43 @@
     "empty": "No upcoming matches available.",
     "settledTitle": "Settled predictions",
     "noUpcoming": "No upcoming matches right now.",
+    "locksIn": "Locks in {time}",
+    "pointsPreview": "If you nail it: +{points} pts",
+    "tabs": {
+      "ariaLabel": "Prediction sections",
+      "upcoming": "Upcoming",
+      "live": "Live",
+      "results": "Results"
+    },
+    "badges": {
+      "today": "TODAY",
+      "tomorrow": "TOMORROW"
+    },
+    "live": {
+      "pollHint": "Scores refresh about every 60 seconds.",
+      "inProgress": "In progress",
+      "yourPrediction": "Your prediction: {home}-{away}",
+      "currentPoints": "Current points: +{points}",
+      "noPredictionYet": "No saved prediction for this match.",
+      "doubleDownActive": "2× active"
+    },
+    "resultsTab": {
+      "empty": "No finished matches with your predictions yet."
+    },
+    "results": {
+      "finalBadge": "FINAL",
+      "pointsEarned": "+{points} pts",
+      "pointsZero": "0 pts",
+      "doubleDownLine": "⚡ 2× → +{points} pts",
+      "breakdownSeparator": " · ",
+      "breakdownResultHit": "Result ✓ (+{points})",
+      "breakdownResultMiss": "Result ✗",
+      "breakdownDiffHit": "Difference ✓ (+{points})",
+      "breakdownDiffMiss": "Difference ✗",
+      "breakdownExactHit": "Exact ✓ (+{points})",
+      "breakdownExactMiss": "Exact ✗",
+      "breakdownAdvancingHit": "Advancing ✓ (+{points})"
+    },
     "yourPick": "Your prediction: {home}-{away}",
     "homeScore": "Home score",
     "awayScore": "Away score",
@@ -715,7 +752,7 @@
       "saveError": "Could not save predictions."
     },
     "groupLabel": "Group {letter}",
-    "groupProgress": "{count}/6 predicted",
+    "groupProgress": "{count}/{total} predicted",
     "backToGroups": "Back to groups",
     "knockoutTitle": "Knockout stage",
     "tapToPredict": "Tap to predict →",
@@ -744,7 +781,7 @@
     "projected": {
       "title": "Projected standings",
       "disclaimer": "Based only on matches you have predicted in this group. Unpredicted matches are ignored.",
-      "predictedFraction": "{count}/6 predicted",
+      "predictedFraction": "{count}/{total} predicted",
       "completeNudge": "Predict all six group matches for a fuller projection.",
       "colPos": "Pos",
       "colTeam": "Team",
