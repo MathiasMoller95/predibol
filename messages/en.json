@@ -300,6 +300,11 @@
   "GroupHub": {
     "memberCount": "{count} members",
     "adminBadge": "Admin",
+    "aiCompare": {
+      "ahead": "You: {youPts} pts · 🤖 IA: {aiPts} pts · You're beating the AI! 💪",
+      "behind": "You: {youPts} pts · 🤖 IA: {aiPts} pts · AI is {n} pts ahead 🤖",
+      "tied": "You: {youPts} pts · 🤖 IA: {aiPts} pts · Tied with AI!"
+    },
     "scoringRules": "{result}-{difference}-{exact} pts",
     "inviteFriends": "Invite friends",
     "copyLink": "Copy link",
@@ -601,7 +606,8 @@
     "colCorrectResults": "Correct results",
     "colExactScores": "Exact scores",
     "colPredictionsMade": "Predictions",
-    "notPlayedYet": "Not played yet"
+    "notPlayedYet": "Not played yet",
+    "rankNewAria": "New on the leaderboard"
   },
   "VirtualBets": {
     "tab": {
@@ -700,6 +706,10 @@
       "today": "TODAY",
       "tomorrow": "TOMORROW"
     },
+    "compact": {
+      "more": "▼ More",
+      "less": "▲ Hide"
+    },
     "live": {
       "pollHint": "Scores refresh about every 60 seconds.",
       "inProgress": "In progress",
@@ -709,7 +719,14 @@
       "doubleDownActive": "2× active"
     },
     "resultsTab": {
-      "empty": "No finished matches with your predictions yet."
+      "empty": "No finished matches with your predictions yet.",
+      "emptyState": {
+        "lead": "When matches wrap up, your points will show here. Until then — keep predicting.",
+        "firstMatchHeading": "Next kick-off globally",
+        "firstMatchLine": "{home} vs {away}",
+        "scheduledFor": "{time}",
+        "daysAway": "{days, plural, =0 {Starting today or very soon} one {# day to go} other {# days to go}}"
+      }
     },
     "results": {
       "finalBadge": "FINAL",
@@ -726,8 +743,8 @@
       "breakdownAdvancingHit": "Advancing ✓ (+{points})"
     },
     "yourPick": "Your prediction: {home}-{away}",
-    "homeScore": "Home score",
-    "awayScore": "Away score",
+    "homeScore": "Goals · {team}",
+    "awayScore": "Goals · {team}",
     "advancesLabel": "Team that advances",
     "advancesIfNotDraw": "Team that advances (not a draw after 90′)",
     "whoAdvances": "Who advances if the score is a draw after 90 minutes?",
@@ -943,7 +960,14 @@
     "admin": "Admin",
     "nextMatchDate": "Next: {home} vs {away}",
     "worldCupCountdown": "World Cup starts in {days, plural, one {1 day} other {# days}}",
-    "worldCupLive": "The World Cup is on"
+    "worldCupLive": "The World Cup is on",
+    "myGroupsHeading": "Your groups",
+    "matchDayToday": "TODAY",
+    "matchDayMatchesShort": "{count, plural, one {# match} other {# matches}}",
+    "matchDayMissing": "You're missing {count} predictions",
+    "matchDayLocksIn": "Locks in {time}",
+    "matchDayUrgentAria": "Match-day reminder: incomplete predictions — open predictions page",
+    "matchDayAllSet": "All set for today! {count, plural, one {# match predicted} other {# matches predicted}}"
   },
   "Share": {
     "ranking": {

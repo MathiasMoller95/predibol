@@ -8,6 +8,8 @@ import { AI_PLAYER_ID } from "@/lib/constants";
 export type LeaderboardBoardRow = {
   user_id: string;
   rank: number | null;
+  /** Stored from DB before scoring run (see score-match snapshot). Used for Δ display. */
+  snapshot_previous_rank: number | null;
   total_points: number;
   correct_results: number;
   exact_scores: number;
@@ -16,6 +18,8 @@ export type LeaderboardBoardRow = {
   virtual_bets_won: number;
   virtual_bets_lost: number;
   display_name: string;
+  /** Consecutive scoring matches streak (filled by page when >= 3). */
+  positiveStreak?: number;
 };
 
 type Props = {
@@ -80,20 +84,6 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
         </button>
       </div>
 
-      {tab === "points" && rows.length > 0 ? (
-        <div className="mt-4">
-          <RankingSnapshotShareButton
-            groupName={groupName}
-            locale={locale}
-            rankings={rows.slice(0, 5).map((r, i) => ({
-              rank: r.rank ?? i + 1,
-              name: r.display_name,
-              points: r.total_points,
-            }))}
-          />
-        </div>
-      ) : null}
-
       {tab === "pnl" ? (
         <p className="mt-4 text-xs text-slate-500 bg-gray-800/50 rounded px-3 py-2 text-center">
           {tv("disclaimer")}
@@ -128,6 +118,10 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                   const isAI = row.user_id === AI_PLAYER_ID;
                   const isSelf = !isAI && row.user_id === currentUserId;
                   const r = row.rank;
+                  const prevSnap = row.snapshot_previous_rank;
+                  const delta = prevSnap != null && r != null ? prevSnap - r : null;
+                  const rankNewBadge =
+                    prevSnap == null && row.predictions_made > 0 && r != null;
                   const topThree = r != null && r >= 1 && r <= 3;
                   const medal = r === 1 ? "🥇 " : r === 2 ? "🥈 " : r === 3 ? "🥉 " : "";
                   const tierBorder = isAI
@@ -154,6 +148,30 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                           topThree ? "text-gold" : "text-slate-200"
                         }`}
                       >
+                        {delta !== null && delta !== 0 ? (
+                          <>
+                            <span
+                              className={`inline-flex items-baseline gap-0 tabular-nums text-xs font-bold ${
+                                delta > 0 ? "text-emerald-400" : "text-red-400"
+                              }`}
+                            >
+                              {delta > 0 ? `↑${delta}` : `↓${Math.abs(delta)}`}
+                            </span>
+                            <span className="mx-1 text-[10px] text-slate-600" aria-hidden>
+                              ·
+                            </span>
+                          </>
+                        ) : null}
+                        {rankNewBadge ? (
+                          <>
+                            <span className="text-xs" title={t("rankNewAria")}>
+                              🆕
+                            </span>
+                            <span className="mx-1 text-[10px] text-slate-600" aria-hidden>
+                              ·
+                            </span>
+                          </>
+                        ) : null}
                         <span aria-hidden>{medal}</span>
                         {row.rank ?? "—"}
                         {isSelf ? (
@@ -165,6 +183,11 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
                       <td className="py-3 pr-4 text-slate-300">
                         <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
                           {row.display_name}
+                          {row.positiveStreak != null && row.positiveStreak >= 3 ? (
+                            <span className="text-xs font-bold text-amber-400 tabular-nums">
+                              🔥{row.positiveStreak}
+                            </span>
+                          ) : null}
                           {isAI ? (
                             <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-xs font-medium text-purple-400">
                               IA
@@ -253,6 +276,20 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
           </tbody>
         </table>
       </div>
+
+      {tab === "points" && rows.length > 0 ? (
+        <div className="mt-6 flex justify-center">
+          <RankingSnapshotShareButton
+            groupName={groupName}
+            locale={locale}
+            rankings={rows.slice(0, 5).map((r, i) => ({
+              rank: r.rank ?? i + 1,
+              name: r.display_name,
+              points: r.total_points,
+            }))}
+          />
+        </div>
+      ) : null}
 
       {tab === "pnl" && !anyVirtualBets ? (
         <p className="mt-4 text-center text-sm text-slate-500">{tv("noBets")}</p>

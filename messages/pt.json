@@ -300,6 +300,11 @@
   "GroupHub": {
     "memberCount": "{count} membros",
     "adminBadge": "Admin",
+    "aiCompare": {
+      "ahead": "Você: {youPts} pts · 🤖 IA: {aiPts} pts · Está ganhando da IA! 💪",
+      "behind": "Você: {youPts} pts · 🤖 IA: {aiPts} pts · A IA está {n} pts à frente 🤖",
+      "tied": "Você: {youPts} pts · 🤖 IA: {aiPts} pts · Empate com a IA!"
+    },
     "scoringRules": "{result}-{difference}-{exact} pts",
     "inviteFriends": "Convidar amigos",
     "copyLink": "Copiar link",
@@ -601,7 +606,8 @@
     "colCorrectResults": "Resultados certos",
     "colExactScores": "Placares exatos",
     "colPredictionsMade": "Palpites",
-    "notPlayedYet": "Ainda não jogou"
+    "notPlayedYet": "Ainda não jogou",
+    "rankNewAria": "Novo na classificação"
   },
   "VirtualBets": {
     "tab": {
@@ -700,6 +706,10 @@
       "today": "HOJE",
       "tomorrow": "AMANHÃ"
     },
+    "compact": {
+      "more": "▼ Mais",
+      "less": "▲ Ocultar"
+    },
     "live": {
       "pollHint": "Os placares são atualizados a cada ~60 segundos.",
       "inProgress": "Em andamento",
@@ -709,7 +719,14 @@
       "doubleDownActive": "2× ativo"
     },
     "resultsTab": {
-      "empty": "Ainda não há partidas finalizadas com seus palpites."
+      "empty": "Ainda não há partidas finalizadas com seus palpites.",
+      "emptyState": {
+        "lead": "Quando os jogos terminarem, seus pontos aparecem aqui.",
+        "firstMatchHeading": "Próximo jogo (global)",
+        "firstMatchLine": "{home} x {away}",
+        "scheduledFor": "{time}",
+        "daysAway": "{days, plural, =0 {Hoje ou muito em breve} one {Falta # dia} other {Faltam # dias}}"
+      }
     },
     "results": {
       "finalBadge": "FINAL",
@@ -726,8 +743,8 @@
       "breakdownAdvancingHit": "Classificação ✓ (+{points})"
     },
     "yourPick": "Seu palpite: {home}-{away}",
-    "homeScore": "Gols do mandante",
-    "awayScore": "Gols do visitante",
+    "homeScore": "Gols · {team}",
+    "awayScore": "Gols · {team}",
     "advancesLabel": "Time que avanca",
     "advancesIfNotDraw": "Time que avanca (nao e empate aos 90′)",
     "whoAdvances": "Quem avanca se o placar for empate aos 90 minutos?",
@@ -943,7 +960,14 @@
     "admin": "Admin",
     "nextMatchDate": "Proxima: {home} vs {away}",
     "worldCupCountdown": "Faltam {days, plural, one {1 dia} other {# dias}} para a Copa",
-    "worldCupLive": "A Copa do Mundo está em andamento"
+    "worldCupLive": "A Copa do Mundo está em andamento",
+    "myGroupsHeading": "Seus grupos",
+    "matchDayToday": "HOJE",
+    "matchDayMatchesShort": "{count, plural, one {# partida} other {# partidas}}",
+    "matchDayMissing": "Faltam {count} palpites",
+    "matchDayLocksIn": "Fecha em {time}",
+    "matchDayUrgentAria": "Dia de jogo — faltam palpites — abrir página de previsões",
+    "matchDayAllSet": "Tudo pronto para hoje! {count, plural, one {# partida apostada} other {# partidas apostadas}}"
   },
   "Share": {
     "ranking": {

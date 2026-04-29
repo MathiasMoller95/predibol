@@ -300,6 +300,11 @@
   "GroupHub": {
     "memberCount": "{count} miembros",
     "adminBadge": "Admin",
+    "aiCompare": {
+      "ahead": "Tú: {youPts} pts · 🤖 IA: {aiPts} pts · ¡Le vas ganando! 💪",
+      "behind": "Tú: {youPts} pts · 🤖 IA: {aiPts} pts · La IA te lleva {n} pts 🤖",
+      "tied": "Tú: {youPts} pts · 🤖 IA: {aiPts} pts · ¡Empate con la IA!"
+    },
     "scoringRules": "{result}-{difference}-{exact} pts",
     "inviteFriends": "Invitar amigos",
     "copyLink": "Copiar enlace",
@@ -601,7 +606,8 @@
     "colCorrectResults": "Aciertos",
     "colExactScores": "Marcadores exactos",
     "colPredictionsMade": "Pronosticos",
-    "notPlayedYet": "Aún sin jugar"
+    "notPlayedYet": "Aún sin jugar",
+    "rankNewAria": "Nuevo en la tabla"
   },
   "VirtualBets": {
     "tab": {
@@ -700,6 +706,10 @@
       "today": "HOY",
       "tomorrow": "MAÑANA"
     },
+    "compact": {
+      "more": "▼ Más",
+      "less": "▲ Ocultar"
+    },
     "live": {
       "pollHint": "Los marcadores se actualizan cada ~60 segundos.",
       "inProgress": "En juego",
@@ -709,7 +719,14 @@
       "doubleDownActive": "2× activo"
     },
     "resultsTab": {
-      "empty": "Aún no hay partidos terminados con tus pronósticos."
+      "empty": "Aún no hay partidos terminados con tus pronósticos.",
+      "emptyState": {
+        "lead": "Cuando terminen los partidos, tus puntos aparecerán aquí.",
+        "firstMatchHeading": "Primer partido mundial próximo",
+        "firstMatchLine": "{home} vs {away}",
+        "scheduledFor": "{time}",
+        "daysAway": "{days, plural, =0 {Hoy o muy pronto} one {Falta # día} other {Faltan # días}}"
+      }
     },
     "results": {
       "finalBadge": "FINAL",
@@ -726,8 +743,8 @@
       "breakdownAdvancingHit": "Avanza ✓ (+{points})"
     },
     "yourPick": "Tu pronóstico: {home}-{away}",
-    "homeScore": "Goles local",
-    "awayScore": "Goles visitante",
+    "homeScore": "Goles · {team}",
+    "awayScore": "Goles · {team}",
     "advancesLabel": "Equipo que avanza",
     "advancesIfNotDraw": "Equipo que avanza (no hay empate a los 90′)",
     "whoAdvances": "Quien avanza si el marcador es empate a los 90 minutos?",
@@ -943,7 +960,14 @@
     "admin": "Admin",
     "nextMatchDate": "Proximo: {home} vs {away}",
     "worldCupCountdown": "Faltan {days, plural, one {1 día} other {# días}} para el Mundial",
-    "worldCupLive": "El Mundial está en juego"
+    "worldCupLive": "El Mundial está en juego",
+    "myGroupsHeading": "Tus grupos",
+    "matchDayToday": "HOY",
+    "matchDayMatchesShort": "{count, plural, one {# partido} other {# partidos}}",
+    "matchDayMissing": "Te faltan {count} predicciones",
+    "matchDayLocksIn": "Cierra en {time}",
+    "matchDayUrgentAria": "Urgencia día de partido: faltan predicciones — abrir página de pronósticos",
+    "matchDayAllSet": "¡Todo listo para hoy! {count, plural, one {# partido pronosticado} other {# partidos pronosticados}}"
   },
   "Share": {
     "ranking": {

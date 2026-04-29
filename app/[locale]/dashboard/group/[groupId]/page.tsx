@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
 import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
+import { AI_PLAYER_ID } from "@/lib/constants";
 import GroupHubClient, { type GroupHubData, type RecentResultRow } from "./group-hub";
 import type { GroupAccessMode } from "@/types/supabase";
 import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
@@ -282,6 +283,14 @@ export default async function GroupHubPage({ params }: Props) {
     .eq("group_id", typedGroup.id);
   const stickerCount: number = stickerCountRes?.count ?? 0;
 
+  const lbRaw = (hubLeaderboardRes.data ?? []) as { user_id: string; total_points: number }[];
+  const lbUser = lbRaw.find((r) => r.user_id === user.id);
+  const lbAi = lbRaw.find((r) => r.user_id === AI_PLAYER_ID);
+  const aiCompare =
+    lbAi != null
+      ? { userPoints: lbUser?.total_points ?? 0, aiPoints: lbAi.total_points ?? 0 }
+      : null;
+
   const recentResults: RecentResultRow[] = finished.map((m) => {
     const pr = predByMatch.get(m.id);
     const hs = m.home_score ?? 0;
@@ -336,6 +345,7 @@ export default async function GroupHubPage({ params }: Props) {
     powersLimits,
     stickerCount,
     onboardingCompletedAt,
+    aiCompare,
   };
 
   return (

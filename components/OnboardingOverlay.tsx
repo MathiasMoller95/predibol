@@ -3,6 +3,7 @@
 import confetti from "canvas-confetti";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { track } from "@vercel/analytics";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
@@ -208,13 +209,13 @@ export default function OnboardingOverlay({
             <Link
               href={`/${locale}/dashboard/group/${groupId}/predict`}
               className={`inline-flex min-h-[44px] items-center justify-center rounded-lg bg-gpri px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110 ${PRIMARY_BUTTON_CLASSES}`}
-              onClick={() => void completeOnboarding({ currentUserId, onDone: () => setOpen(false) })}
+              onClick={() => void completeOnboarding({ currentUserId, skipped: false, onDone: () => setOpen(false) })}
             >
               {t("step5.primary")}
             </Link>
             <button
               type="button"
-              onClick={() => void completeOnboarding({ currentUserId, onDone: () => setOpen(false) })}
+              onClick={() => void completeOnboarding({ currentUserId, skipped: true, onDone: () => setOpen(false) })}
               className="text-sm font-medium text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
             >
               {t("step5.secondary")}
@@ -239,7 +240,7 @@ export default function OnboardingOverlay({
         <div className="mt-5">
           <button
             type="button"
-            onClick={() => void completeOnboarding({ currentUserId, onDone: () => setOpen(false) })}
+            onClick={() => void completeOnboarding({ currentUserId, skipped: false, onDone: () => setOpen(false) })}
             className={`inline-flex min-h-[44px] w-full items-center justify-center rounded-lg bg-gpri px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110 sm:w-auto ${PRIMARY_BUTTON_CLASSES}`}
           >
             {t("admin.primary")}
@@ -266,7 +267,7 @@ export default function OnboardingOverlay({
 
           <button
             type="button"
-            onClick={() => void completeOnboarding({ currentUserId, onDone: () => setOpen(false) })}
+            onClick={() => void completeOnboarding({ currentUserId, skipped: true, onDone: () => setOpen(false) })}
             className="absolute right-4 top-4 text-sm text-gray-500 hover:text-gray-300"
           >
             {t("skip")}
@@ -299,11 +300,25 @@ export default function OnboardingOverlay({
   );
 }
 
-async function completeOnboarding({ currentUserId, onDone }: { currentUserId: string; onDone: () => void }) {
+async function completeOnboarding({
+  currentUserId,
+  onDone,
+  skipped,
+}: {
+  currentUserId: string;
+  onDone: () => void;
+  skipped: boolean;
+}) {
   enableOnboardingHintsForSession();
   try {
     const supabase = createClient();
-    await supabase.from("profiles").update({ onboarding_completed_at: new Date().toISOString() }).eq("id", currentUserId);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ onboarding_completed_at: new Date().toISOString() })
+      .eq("id", currentUserId);
+    if (!error) {
+      track("onboarding_completed", { skipped });
+    }
   } catch {
     // ignore network errors; user should never be blocked
   } finally {

@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -52,6 +53,7 @@ export default function CopyPredictionsBanner({ targetGroupId, options }: Props)
         return;
       }
       const n = data.copiedCount ?? 0;
+      track("predictions_copied", { copiedCount: n });
       showToast(t("successToast", { count: n }), "success");
       setDone(true);
       router.refresh();

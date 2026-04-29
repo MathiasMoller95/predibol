@@ -1,7 +1,9 @@
+import * as Sentry from "@sentry/nextjs";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ToastProvider } from "@/components/ui/toast-provider";
+import SentryUserSync from "@/components/sentry-user-sync";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
 import Navbar from "./components/navbar";
@@ -29,8 +31,11 @@ export default async function DashboardLayout({ children, params }: Props) {
 
   const displayName = resolveDisplayName(profile?.display_name, null, user.email);
 
+  Sentry.setUser({ id: user.id, email: user.email ?? undefined });
+
   return (
     <>
+      <SentryUserSync />
       <Navbar displayName={displayName} email={user.email ?? ""} locale={locale} userId={user.id} />
       <ToastProvider>
         <div className="min-h-0">{children}</div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/toast-provider";
@@ -19,14 +20,18 @@ import { LiveMatchesSection, type LiveMatchRow } from "@/components/LiveMatchCar
 import ResultMatchCard from "@/components/ResultMatchCard";
 import PointsPreview from "@/components/PointsPreview";
 import WhoHasPredicted from "@/components/WhoHasPredicted";
+import { Loader2, Lock, Save } from "lucide-react";
 import type { GroupScoringRow } from "@/lib/match-points-client";
 import { maxPossiblePoints } from "@/lib/match-points-client";
-
-const SCORE_INPUT_CLASS =
-  "mt-2 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 text-center text-2xl font-semibold tabular-nums text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50 placeholder:text-gray-600 placeholder:text-center";
+import { dayKeyInTz } from "@/lib/date-in-tz";
+import { formatDurationMs } from "@/lib/format-duration-ms";
 
 const SCORE_INPUT_KNOCKOUT_CLASS =
   "mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50 disabled:bg-dark-700 disabled:text-slate-500 placeholder:text-gray-600 placeholder:text-center";
+
+/** Expanded group-stage compact row (square inputs, horizontal layout). */
+const COMPACT_GROUP_SCORE_CLASS =
+  "h-12 w-12 shrink-0 rounded-lg border border-white/10 bg-dark-900 text-center text-xl font-semibold tabular-nums text-white outline-none transition focus:border-gpri focus:ring-2 focus:ring-gpri/35 disabled:opacity-75 disabled:bg-dark-800 placeholder:text-gray-600";
 
 type MatchRecord = {
   id: string;
@@ -76,15 +81,7 @@ function phaseOrderIndex(phase: string) {
   return i === -1 ? 999 : i;
 }
 
-function dayKeyInTz(iso: string, tz: string): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(iso));
-}
-
+/** Smallest ms until lock in the next 24h among `matchList`, or null if none qualifies. */
 function lockCountdownMs(matchList: MatchRecord[]): number | null {
   const now = Date.now();
   let best: number | null = null;
@@ -96,12 +93,6 @@ function lockCountdownMs(matchList: MatchRecord[]): number | null {
     }
   }
   return best;
-}
-
-function formatDurationMs(ms: number): string {
-  const h = Math.floor(ms / 3600000);
-  const min = Math.floor((ms % 3600000) / 60000);
-  return `${h}h ${min.toString().padStart(2, "0")}m`;
 }
 
 type FinishedPickRow = MatchRecord & {
@@ -145,6 +136,8 @@ type Props = {
   currentUserId: string;
   copyPredictionOptions: CopyPredictionOption[];
   copyPredictionTargetGroupId: string;
+  /** Earliest globally scheduled future match (cross-group), for Results empty state. */
+  firstKickoffMatch?: MatchRecord | null;
 };
 
 type PredictionInput = {
@@ -269,12 +262,19 @@ export default function PredictForm({
   currentUserId,
   copyPredictionOptions,
   copyPredictionTargetGroupId,
+  firstKickoffMatch = null,
 }: Props) {
   const locale = useLocale();
   const t = useTranslations("Predictions");
   const tp = useTranslations("Powers");
   const { showToast } = useToast();
   const effectiveTz = useEffectiveTimeZone(profileTimeZone);
+  const resultsKickoffDays = useMemo(() => {
+    if (!firstKickoffMatch?.match_time) return null;
+    const ms = new Date(firstKickoffMatch.match_time).getTime() - Date.now();
+    return Math.max(0, Math.ceil(ms / 86400000));
+  }, [firstKickoffMatch?.match_time]);
+
   const [isSaving, setIsSaving] = useState(false);
   const [savingMatchId, setSavingMatchId] = useState<string | null>(null);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
@@ -433,6 +433,7 @@ export default function PredictForm({
             setSpyTargets((p) => ({ ...p, [matchId]: targetUserId }));
             fetchSpyResult(matchId, targetUserId);
           }
+          track("power_used", { groupId: copyPredictionTargetGroupId, powerType: pt });
           const toastKey = pt === "double_down" ? "doubleDown" : pt;
           showToast(tp(`${toastKey}.activated`), "success");
         }
@@ -440,7 +441,7 @@ export default function PredictForm({
         setPowerBusy((p) => ({ ...p, [key]: false }));
       }
     },
-    [activePowers, powerBusy, showToast, tp, fetchSpyResult],
+    [activePowers, copyPredictionTargetGroupId, powerBusy, showToast, tp, fetchSpyResult],
   );
 
   useEffect(() => {
@@ -493,6 +494,11 @@ export default function PredictForm({
     });
     return Array.from(map.entries()).sort((a, b) => phaseOrderIndex(a[0]) - phaseOrderIndex(b[0]));
   }, [knockoutMatches]);
+
+  const todayMatchDayKey = useMemo(
+    () => dayKeyInTz(new Date().toISOString(), effectiveTz),
+    [effectiveTz],
+  );
 
   const groupCards = useMemo(() => {
     const byLetter: Record<string, { letter: string; teams: string[]; matches: MatchRecord[] }> = {};
@@ -576,6 +582,10 @@ export default function PredictForm({
       if (!response.ok) {
         showToast(t("messages.saveError"), "error");
         return false;
+      }
+
+      for (const e of entries) {
+        track("prediction_saved", { groupId: copyPredictionTargetGroupId, matchId: e.matchId });
       }
 
       setSavedMatchIds((prev) => {
@@ -706,203 +716,68 @@ export default function PredictForm({
                 ← {t("backToGroups")}
               </button>
 
-              <div className="mt-4 space-y-6">
-              {groupCards
-                .find((g) => g.letter === expandedGroup)
-                ?.matches.map((match) => {
-                  const lockPassed = new Date(match.locked_at) <= new Date();
-                  const currentInput = inputs[match.id] ?? { ...emptyPredictionInput };
-                  const saved = savedMatchIds.has(match.id);
-                  const busy = savingMatchId === match.id;
-                  const matchPowers = activePowers[match.id];
-                  const hasDD = matchPowers?.has("double_down");
-                  const hasShield = matchPowers?.has("shield");
-                  const cardBorder = hasDD
-                    ? "border-l-4 border-amber-500 shadow-[inset_0_0_12px_rgba(245,158,11,0.08)]"
-                    : hasShield
-                      ? "border-l-4 border-gpri"
-                      : "border border-dark-600";
+              <div className="mt-4 space-y-2">
+                {groupCards
+                  .find((g) => g.letter === expandedGroup)
+                  ?.matches.map((match) => {
+                    const lockPassed = new Date(match.locked_at) <= new Date();
+                    const currentInput = inputs[match.id] ?? { ...emptyPredictionInput };
+                    const busy = savingMatchId === match.id;
+                    const matchPowers = activePowers[match.id];
+                    const hasDD = !!matchPowers?.has("double_down");
+                    const locksMsOne = lockCountdownMs([match]);
+                    const lockSoonLabel =
+                      locksMsOne != null ? formatDurationMs(locksMsOne) : null;
+                    const isToday =
+                      dayKeyInTz(match.match_time, effectiveTz) === todayMatchDayKey;
 
-                  return (
-                    <div
-                      key={match.id}
-                      className={`rounded-xl bg-dark-800 p-4 ${cardBorder}`}
-                    >
-                      <p className="text-right text-sm text-slate-400">{t("matchDate", { date: formatMatchWhen(match) })}</p>
-                      {(() => {
-                        const ms = lockCountdownMs([match]);
-                        return ms != null ? (
-                          <p className="mt-1 text-right text-[11px] text-amber-400/90">{t("locksIn", { time: formatDurationMs(ms) })}</p>
-                        ) : null;
-                      })()}
-
-                      <div className="mt-3 flex items-center gap-2 text-lg font-semibold text-white">
-                        <span aria-hidden>{getFlag(match.home_team)}</span>
-                        <span>{match.home_team}</span>
-                      </div>
-                      {lockPassed ? (
-                        <p className="mt-2 flex min-h-[56px] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-3 text-2xl font-semibold tabular-nums text-slate-200">
-                          {currentInput.predictedHome || "—"}
-                        </p>
-                      ) : (
-                        <input
-                          type="number"
-                          min={0}
-                          inputMode="numeric"
-                          placeholder="-"
-                          value={currentInput.predictedHome}
-                          onChange={(event) =>
-                            setInputs((prev) => ({
-                              ...prev,
-                              [match.id]: { ...currentInput, predictedHome: event.target.value },
-                            }))
-                          }
-                          className={SCORE_INPUT_CLASS}
-                        />
-                      )}
-
-                      <p className="my-4 text-center text-sm font-medium text-slate-500">{t("vs")}</p>
-
-                      <div className="flex items-center gap-2 text-lg font-semibold text-white">
-                        <span aria-hidden>{getFlag(match.away_team)}</span>
-                        <span>{match.away_team}</span>
-                      </div>
-                      {lockPassed ? (
-                        <p className="mt-2 flex min-h-[56px] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-3 text-2xl font-semibold tabular-nums text-slate-200">
-                          {currentInput.predictedAway || "—"}
-                        </p>
-                      ) : (
-                        <input
-                          type="number"
-                          min={0}
-                          inputMode="numeric"
-                          placeholder="-"
-                          value={currentInput.predictedAway}
-                          onChange={(event) =>
-                            setInputs((prev) => ({
-                              ...prev,
-                              [match.id]: { ...currentInput, predictedAway: event.target.value },
-                            }))
-                          }
-                          className={SCORE_INPUT_CLASS}
-                        />
-                      )}
-
-                      {match.home_win_odds != null &&
-                      match.draw_odds != null &&
-                      match.away_win_odds != null ? (
-                        <div className="mt-4 rounded-lg border border-dark-600 bg-dark-800 px-3 py-2.5 text-xs text-slate-300">
-                          <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                            📊 {t("marketOdds")}
-                          </p>
-                          <div className="grid grid-cols-3 gap-1 text-center tabular-nums sm:gap-2">
-                            <div>
-                              <span className="mr-0.5" aria-hidden>
-                                {getFlag(match.home_team)}
-                              </span>
-                              {Number(match.home_win_odds).toFixed(2)}
-                            </div>
-                            <div className="text-slate-400">
-                              {t("draw")} {Number(match.draw_odds).toFixed(2)}
-                            </div>
-                            <div>
-                              <span className="mr-0.5" aria-hidden>
-                                {getFlag(match.away_team)}
-                              </span>
-                              {Number(match.away_win_odds).toFixed(2)}
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-
-                      {match.ai_home_score != null && match.ai_away_score != null ? (
-                        <div className="mt-3 rounded-lg border border-indigo-800/40 bg-indigo-900/20 px-3 py-2.5 text-xs text-indigo-300">
-                          <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-indigo-400">
-                            🤖 {t("aiPrediction")}
-                          </p>
-                          <p className="text-sm">
-                            🤖 {match.home_team} {match.ai_home_score} - {match.ai_away_score} {match.away_team}
-                          </p>
-                        </div>
-                      ) : null}
-
-                      {/* Superpowers panel */}
-                      {!lockPassed && (
-                        <PowerPanel
-                          matchId={match.id}
-                          activePowers={activePowers[match.id]}
-                          remaining={remaining}
-                          busy={powerBusy}
-                          onToggle={togglePower}
-                          tp={tp}
-                          limits={powerLimits}
-                        />
-                      )}
-
-                      {/* Spy result */}
-                      {activePowers[match.id]?.has("spy") && spyTargets[match.id] && (
-                        <SpyResultCard
-                          matchId={match.id}
-                          targetName={groupMembers.find((m) => m.userId === spyTargets[match.id])?.displayName ?? "?"}
-                          result={spyResults[match.id]}
-                          tp={tp}
-                        />
-                      )}
-
-                      {/* Who has predicted badges */}
-                      <WhoHasPredicted
-                        matchId={match.id}
-                        groupMembers={groupMembers}
-                        predicted={predictionsByMatch[match.id] ?? []}
-                        currentUserId={currentUserId}
+                    return (
+                      <CompactGroupPredictionRow
+                        key={match.id}
+                        match={match}
+                        lockPassed={lockPassed}
+                        saved={savedMatchIds.has(match.id)}
+                        busy={busy}
+                        isSaving={isSaving}
+                        isToday={isToday}
+                        currentInput={currentInput}
+                        onPatchInput={(patch) =>
+                          setInputs((prev) => ({
+                            ...prev,
+                            [match.id]: { ...(prev[match.id] ?? emptyPredictionInput), ...patch },
+                          }))
+                        }
+                        formatMatchWhen={formatMatchWhen}
+                        lockSoonLabel={lockSoonLabel}
+                        activePowers={activePowers[match.id]}
+                        remaining={remaining}
+                        powerBusy={powerBusy}
+                        togglePower={togglePower}
                         tp={tp}
+                        limits={powerLimits}
+                        predictionsByMember={predictionsByMatch[match.id] ?? []}
+                        groupMembers={groupMembers}
+                        currentUserId={currentUserId}
+                        spyTargetDisplayName={
+                          spyTargets[match.id]
+                            ? groupMembers.find((m) => m.userId === spyTargets[match.id])?.displayName ?? null
+                            : null
+                        }
+                        spyResult={spyResults[match.id]}
+                        onSave={() => void saveSingleMatch(match)}
+                        pointsPreviewVisible={!!pointsPreviewForMatch[match.id]}
+                        onDismissPreview={() =>
+                          setPointsPreviewForMatch((p) => {
+                            const next = { ...p };
+                            delete next[match.id];
+                            return next;
+                          })
+                        }
+                        previewPoints={maxPossiblePoints(groupScoring, hasDD)}
+                        t={t}
                       />
-
-                      {lockPassed ? (
-                        <p className="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-slate-400">
-                          <span aria-hidden>🔒</span>
-                          {t("locked")}
-                        </p>
-                      ) : (() => {
-                        const bothFilled = currentInput.predictedHome !== "" && currentInput.predictedAway !== ""
-                          && !Number.isNaN(Number(currentInput.predictedHome)) && !Number.isNaN(Number(currentInput.predictedAway));
-                        const saving = busy || isSaving;
-                        const canSave = bothFilled && !saving;
-                        const previewPts = maxPossiblePoints(groupScoring, !!hasDD);
-                        return (
-                          <>
-                            <button
-                              type="button"
-                              disabled={saving || !bothFilled}
-                              onClick={() => void saveSingleMatch(match)}
-                              className={`mt-4 w-full min-h-[48px] rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all duration-150 disabled:cursor-not-allowed ${
-                                canSave
-                                  ? "bg-gpri text-white hover:brightness-110 active:scale-[0.97]"
-                                  : saving && bothFilled
-                                    ? "cursor-wait bg-gpri/85 text-white"
-                                    : "border border-dark-600 bg-dark-700 text-slate-500"
-                              }`}
-                            >
-                              {busy ? t("saveSaving") : saved ? t("update") : t("save")}
-                            </button>
-                            <PointsPreview
-                              visible={!!pointsPreviewForMatch[match.id]}
-                              pointsDisplay={previewPts}
-                              messageTemplate={t("pointsPreview")}
-                              onDismiss={() =>
-                                setPointsPreviewForMatch((p) => {
-                                  const n = { ...p };
-                                  delete n[match.id];
-                                  return n;
-                                })
-                              }
-                            />
-                          </>
-                        );
-                      })()}
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
 
               <ProjectedGroupStandingsTable
@@ -1074,7 +949,9 @@ export default function PredictForm({
                             <>
                               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <label className="text-xs text-slate-300">
-                                  {t("homeScore")}
+                                  {t("homeScore", {
+                                    team: `${getFlag(match.home_team)} ${match.home_team}`,
+                                  })}
                                   <input
                                     type="number"
                                     min={0}
@@ -1094,7 +971,9 @@ export default function PredictForm({
                                   />
                                 </label>
                                 <label className="text-xs text-slate-300">
-                                  {t("awayScore")}
+                                  {t("awayScore", {
+                                    team: `${getFlag(match.away_team)} ${match.away_team}`,
+                                  })}
                                   <input
                                     type="number"
                                     min={0}
@@ -1310,7 +1189,9 @@ export default function PredictForm({
                       ) : (
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                           <label className="text-xs text-slate-300">
-                            {t("homeScore")}
+                            {t("homeScore", {
+                              team: `${getFlag(match.home_team)} ${match.home_team}`,
+                            })}
                             <input
                               type="number"
                               min={0}
@@ -1330,7 +1211,9 @@ export default function PredictForm({
                             />
                           </label>
                           <label className="text-xs text-slate-300">
-                            {t("awayScore")}
+                            {t("awayScore", {
+                              team: `${getFlag(match.away_team)} ${match.away_team}`,
+                            })}
                             <input
                               type="number"
                               min={0}
@@ -1506,7 +1389,51 @@ export default function PredictForm({
         resultsContent={
           <div className="space-y-4 pt-2">
             {finishedMatches.length === 0 ? (
-              <p className="text-sm text-slate-500">{t("resultsTab.empty")}</p>
+              <div className="relative isolate min-h-[220px] overflow-hidden rounded-xl border border-white/[0.08] bg-dark-900/50 px-5 py-10 text-center">
+                <svg
+                  className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 text-white opacity-[0.05]"
+                  viewBox="0 0 120 120"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden
+                >
+                  <path
+                    d="M60 20c-22 0-40 18-40 40s18 40 40 40 40-18 40-40"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeDasharray="4 6"
+                  />
+                  <circle cx="60" cy="60" r="28" stroke="currentColor" strokeWidth="2" />
+                  <circle cx="60" cy="60" r="6" fill="currentColor" opacity="0.35" />
+                </svg>
+                <div className="relative z-10 mx-auto flex max-w-md flex-col items-center gap-3">
+                  <p className="text-sm leading-relaxed text-slate-400">{t("resultsTab.emptyState.lead")}</p>
+                  {firstKickoffMatch && resultsKickoffDays != null ? (
+                    <div className="mt-1 w-full space-y-2 text-slate-300">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        {t("resultsTab.emptyState.firstMatchHeading")}
+                      </p>
+                      <p className="text-lg font-semibold text-white">
+                        {t("resultsTab.emptyState.firstMatchLine", {
+                          home: firstKickoffMatch.home_team,
+                          away: firstKickoffMatch.away_team,
+                        })}
+                      </p>
+                      <p className="text-sm text-slate-400">
+                        {t("resultsTab.emptyState.scheduledFor", {
+                          time: formatMatchTime(firstKickoffMatch.match_time, effectiveTz, locale),
+                        })}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {t("resultsTab.emptyState.daysAway", { days: resultsKickoffDays })}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-xs text-slate-500">{t("resultsTab.empty")}</p>
+                  )}
+                </div>
+              </div>
             ) : (
               finishedMatches.map((m) => (
                 <ResultMatchCard
@@ -1556,6 +1483,293 @@ export default function PredictForm({
 
 type TranslationFn = (key: string, values?: Record<string, string | number>) => string;
 
+function clampGroupScoreDigits(raw: string): string {
+  if (raw === "") return "";
+  const n = Math.floor(Number(raw));
+  if (!Number.isFinite(n) || Number.isNaN(n)) return "";
+  return String(Math.min(99, Math.max(0, n)));
+}
+
+function CompactGroupPredictionRow({
+  match,
+  lockPassed,
+  saved,
+  busy,
+  isSaving,
+  isToday,
+  currentInput,
+  onPatchInput,
+  formatMatchWhen,
+  lockSoonLabel,
+  activePowers,
+  remaining,
+  powerBusy,
+  togglePower,
+  tp,
+  limits,
+  predictionsByMember,
+  groupMembers,
+  currentUserId,
+  spyTargetDisplayName,
+  spyResult,
+  onSave,
+  previewPoints,
+  pointsPreviewVisible,
+  onDismissPreview,
+  t,
+}: {
+  match: MatchRecord;
+  lockPassed: boolean;
+  saved: boolean;
+  busy: boolean;
+  isSaving: boolean;
+  isToday: boolean;
+  currentInput: PredictionInput;
+  onPatchInput: (patch: Partial<PredictionInput>) => void;
+  formatMatchWhen: (match: MatchRecord) => string;
+  lockSoonLabel: string | null;
+  activePowers: Set<PowerType> | undefined;
+  remaining: Record<PowerType, number>;
+  powerBusy: Record<string, boolean>;
+  togglePower: (matchId: string, pt: PowerType, targetUserId?: string) => void;
+  tp: TranslationFn;
+  limits: PowerLimits;
+  predictionsByMember: string[];
+  groupMembers: GroupMember[];
+  currentUserId: string;
+  spyTargetDisplayName: string | null;
+  spyResult: { home: number; away: number; shielded: boolean } | null | undefined;
+  onSave: () => void;
+  previewPoints: number;
+  pointsPreviewVisible: boolean;
+  onDismissPreview: () => void;
+  t: TranslationFn;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const spyShowResult = !!(activePowers?.has("spy") && spyTargetDisplayName);
+
+  const shellClass =
+    lockPassed === true
+      ? "rounded-lg border border-white/10 bg-dark-800 p-3 opacity-[0.88] ring-1 ring-white/10"
+      : isToday
+        ? "rounded-lg border border-white/5 border-l-[3px] border-l-amber-500 bg-dark-800 p-3 ring-1 ring-amber-500/25"
+        : saved
+          ? "rounded-lg border border-white/10 border-l-4 border-l-gpri bg-dark-800 p-3"
+          : "rounded-lg border border-white/5 bg-dark-800 p-3";
+
+  const oddsOk =
+    match.home_win_odds != null &&
+    match.draw_odds != null &&
+    match.away_win_odds != null;
+  const aiOk = match.ai_home_score != null && match.ai_away_score != null;
+  const canExpandExtras = oddsOk || aiOk;
+
+  const bothFilled =
+    currentInput.predictedHome !== "" &&
+    currentInput.predictedAway !== "" &&
+    !Number.isNaN(Number(currentInput.predictedHome)) &&
+    !Number.isNaN(Number(currentInput.predictedAway));
+  const saving = busy || isSaving;
+  const canSave = bothFilled && !saving && !lockPassed;
+
+  return (
+    <div className={shellClass}>
+      <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
+        {isToday && !lockPassed ? (
+          <span className="mr-1 animate-pulse rounded-full bg-red-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-400 ring-1 ring-red-500/40">
+            {t("badges.today")}
+          </span>
+        ) : null}
+        {/* Home */}
+        <div className="flex min-w-0 max-w-[40%] flex-1 items-center gap-0.5 sm:gap-1">
+          <span className="shrink-0" aria-hidden>
+            {getFlag(match.home_team)}
+          </span>
+          <span
+            title={match.home_team}
+            className="truncate text-sm font-semibold leading-tight text-white max-[374px]:max-w-[10ch] sm:max-w-[12ch]"
+          >
+            {match.home_team}
+          </span>
+        </div>
+        {/* Inputs center */}
+        <div className="flex shrink-0 items-center gap-1.5 px-0.5">
+          {lockPassed ? (
+            <>
+              <span className="flex h-12 min-w-[2.75rem] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-2 text-xl font-semibold tabular-nums text-slate-200">
+                {currentInput.predictedHome || "—"}
+              </span>
+              <span className="font-medium text-slate-500">—</span>
+              <span className="flex h-12 min-w-[2.75rem] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-2 text-xl font-semibold tabular-nums text-slate-200">
+                {currentInput.predictedAway || "—"}
+              </span>
+            </>
+          ) : (
+            <>
+              <input
+                type="number"
+                min={0}
+                max={99}
+                inputMode="numeric"
+                aria-label={t("homeScore", { team: match.home_team })}
+                placeholder="—"
+                value={currentInput.predictedHome}
+                onChange={(e) =>
+                  onPatchInput({ predictedHome: clampGroupScoreDigits(e.target.value) })
+                }
+                className={COMPACT_GROUP_SCORE_CLASS}
+              />
+              <span className="pb-1 text-sm font-medium text-slate-500" aria-hidden>
+                —
+              </span>
+              <input
+                type="number"
+                min={0}
+                max={99}
+                inputMode="numeric"
+                aria-label={t("awayScore", { team: match.away_team })}
+                placeholder="—"
+                value={currentInput.predictedAway}
+                onChange={(e) =>
+                  onPatchInput({ predictedAway: clampGroupScoreDigits(e.target.value) })
+                }
+                className={COMPACT_GROUP_SCORE_CLASS}
+              />
+            </>
+          )}
+        </div>
+        {/* Away */}
+        <div className="flex min-w-0 max-w-[40%] flex-1 items-center justify-end gap-0.5 sm:gap-1">
+          <span
+            title={match.away_team}
+            className="truncate text-right text-sm font-semibold leading-tight text-white max-[374px]:max-w-[10ch] sm:max-w-[12ch]"
+          >
+            {match.away_team}
+          </span>
+          <span className="shrink-0" aria-hidden>
+            {getFlag(match.away_team)}
+          </span>
+        </div>
+        {/* Save / lock */}
+        <div className="ml-auto flex shrink-0">
+          {lockPassed ? (
+            <div
+              className="flex h-11 min-h-[44px] min-w-[44px] items-center justify-center text-slate-500"
+              title={t("locked")}
+              aria-label={t("locked")}
+              role="img"
+            >
+              <Lock className="h-5 w-5" strokeWidth={2} aria-hidden />
+            </div>
+          ) : (
+            <button
+              type="button"
+              aria-label={
+                saving && bothFilled ? t("saveSaving") : saved ? t("update") : t("save")
+              }
+              disabled={saving || !bothFilled}
+              onClick={onSave}
+              className={`flex h-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50 ${
+                canSave ? "bg-gpri text-white hover:brightness-110" : ""
+              } ${
+                saving && bothFilled
+                  ? "cursor-wait bg-gpri/90 text-white disabled:opacity-100"
+                  : ""
+              } ${
+                !canSave && !(saving && bothFilled)
+                  ? "border border-dark-700 bg-dark-900/70 text-slate-600"
+                  : ""
+              }`}
+            >
+              {busy ? (
+                <Loader2 className="h-6 w-6 animate-spin" aria-hidden />
+              ) : (
+                <Save className="h-6 w-6" aria-hidden strokeWidth={2} />
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {!lockPassed ? (
+        <PointsPreview
+          visible={pointsPreviewVisible}
+          pointsDisplay={previewPoints}
+          messageTemplate={t("pointsPreview")}
+          onDismiss={onDismissPreview}
+        />
+      ) : null}
+
+      <p className="mt-1.5 truncate text-[10px] leading-tight text-slate-500">
+        {t("matchDate", { date: formatMatchWhen(match) })}
+        {lockSoonLabel !== null ? ` · ${t("locksIn", { time: lockSoonLabel })}` : ""}
+      </p>
+
+      {!lockPassed ? (
+        <PowerPanel
+          matchId={match.id}
+          variant="compact"
+          activePowers={activePowers}
+          remaining={remaining}
+          busy={powerBusy}
+          onToggle={togglePower}
+          tp={tp}
+          limits={limits}
+        />
+      ) : null}
+
+      {/* Spy */}
+      {spyShowResult ? (
+        <SpyResultCard
+          matchId={match.id}
+          targetName={spyTargetDisplayName!}
+          result={spyResult}
+          tp={tp}
+        />
+      ) : null}
+
+      <WhoHasPredicted
+        groupMembers={groupMembers}
+        predicted={predictionsByMember}
+        currentUserId={currentUserId}
+        tp={tp}
+        compact
+      />
+
+      {canExpandExtras ? (
+        <div className="mt-1.5 border-t border-white/5 pt-1.5">
+          <button
+            type="button"
+            className="text-[11px] font-medium text-slate-400 transition hover:text-slate-200"
+            onClick={() => setExpanded((x) => !x)}
+          >
+            {expanded ? t("compact.less") : t("compact.more")}
+          </button>
+          {expanded ? (
+            <div className="mt-2 space-y-1.5 text-xs text-slate-500">
+              {oddsOk ? (
+                <p className="break-words">
+                  <span aria-hidden>📊 </span>
+                  <span className="tabular-nums">
+                    {Number(match.home_win_odds).toFixed(2)} · {Number(match.draw_odds).toFixed(2)} ·{" "}
+                    {Number(match.away_win_odds).toFixed(2)}
+                  </span>
+                </p>
+              ) : null}
+              {aiOk ? (
+                <p className="break-words">
+                  <span aria-hidden>🤖 </span>
+                  {match.ai_home_score}-{match.ai_away_score} · {match.home_team} / {match.away_team}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function PowerPanel({
   matchId,
   activePowers,
@@ -1564,6 +1778,7 @@ function PowerPanel({
   onToggle,
   tp,
   limits,
+  variant = "full",
 }: {
   matchId: string;
   activePowers: Set<PowerType> | undefined;
@@ -1572,12 +1787,103 @@ function PowerPanel({
   onToggle: (matchId: string, pt: PowerType, targetUserId?: string) => void;
   tp: TranslationFn;
   limits: PowerLimits;
+  variant?: "full" | "compact";
 }) {
-  const powers: { type: PowerType; icon: string; label: string; activeClass: string; limit: number }[] = [
-    { type: "double_down", icon: "⚡", label: tp("doubleDown.name"), activeClass: "border-amber-500 bg-amber-500/20 text-amber-400", limit: limits.doubleDown },
-    { type: "spy", icon: "🔍", label: tp("spy.name"), activeClass: "border-blue-500 bg-blue-500/20 text-blue-400", limit: limits.spy },
-    { type: "shield", icon: "🛡️", label: tp("shield.name"), activeClass: "border-gpri bg-gpri/20 text-gpri", limit: limits.shield },
+  const powers: {
+    type: PowerType;
+    icon: string;
+    label: string;
+    activeClass: string;
+    limit: number;
+  }[] = [
+    {
+      type: "double_down",
+      icon: "⚡",
+      label: tp("doubleDown.name"),
+      activeClass: "border-amber-500 bg-amber-500/20 text-amber-400",
+      limit: limits.doubleDown,
+    },
+    {
+      type: "spy",
+      icon: "🔍",
+      label: tp("spy.name"),
+      activeClass: "border-blue-500 bg-blue-500/20 text-blue-400",
+      limit: limits.spy,
+    },
+    {
+      type: "shield",
+      icon: "🛡️",
+      label: tp("shield.name"),
+      activeClass: "border-gpri bg-gpri/20 text-gpri",
+      limit: limits.shield,
+    },
   ];
+
+  const powerButtons =
+    powers.map(({ type, icon, label, activeClass, limit }) => {
+      const isActive = activePowers?.has(type) ?? false;
+      const noRemaining = remaining[type] <= 0 && !isActive;
+      const isBusyFlag = busy[`${matchId}-${type}`];
+      const disabled = noRemaining || isBusyFlag;
+
+      if (variant === "compact") {
+        return (
+          <button
+            key={type}
+            type="button"
+            disabled={disabled}
+            title={label}
+            aria-label={label}
+            onClick={() => onToggle(matchId, type)}
+            className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[11px] font-semibold tabular-nums transition ${
+              isActive
+                ? activeClass
+                : disabled
+                  ? "cursor-not-allowed border-gray-700 bg-[#1a2332] text-gray-600 opacity-40"
+                  : "border-gray-700 bg-[#1a2332] text-gray-400 hover:border-gray-500"
+            }`}
+          >
+            <span aria-hidden>{icon}</span>
+            <span>
+              {remaining[type]}/{limit}
+            </span>
+          </button>
+        );
+      }
+
+      return (
+        <button
+          key={type}
+          type="button"
+          disabled={disabled}
+          onClick={() => onToggle(matchId, type)}
+          className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+            isActive
+              ? activeClass
+              : disabled
+                ? "border-gray-700 bg-[#1a2332] text-gray-600 opacity-30 cursor-not-allowed"
+                : "border-gray-700 bg-[#1a2332] text-gray-400 hover:border-gray-500"
+          }`}
+        >
+          <span>{icon}</span>
+          <span>{label}</span>
+          <span className="ml-1 rounded bg-dark-900/60 px-1 py-0.5 text-[10px] tabular-nums">
+            {remaining[type]}/{limit}
+          </span>
+        </button>
+      );
+    });
+
+  if (variant === "compact") {
+    return (
+      <div className="mt-2 flex w-full flex-wrap items-start justify-between gap-x-2 gap-y-1.5">
+        <div className="flex min-w-0 flex-1 flex-wrap gap-1.5">{powerButtons}</div>
+        <div className="ml-auto shrink-0 pt-px">
+          <SuperpowersHelpModal />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-3">
@@ -1585,42 +1891,13 @@ function PowerPanel({
         <p className="min-w-0 flex-1 text-[11px] font-medium uppercase tracking-wide text-slate-500">{tp("title")}</p>
         <SuperpowersHelpModal />
       </div>
-      <div className="flex flex-wrap gap-2">
-        {powers.map(({ type, icon, label, activeClass, limit }) => {
-          const isActive = activePowers?.has(type) ?? false;
-          const noRemaining = remaining[type] <= 0 && !isActive;
-          const isBusy = busy[`${matchId}-${type}`];
-          const disabled = noRemaining || isBusy;
-
-          return (
-            <button
-              key={type}
-              type="button"
-              disabled={disabled}
-              onClick={() => onToggle(matchId, type)}
-              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
-                isActive
-                  ? activeClass
-                  : disabled
-                    ? "border-gray-700 bg-[#1a2332] text-gray-600 opacity-30 cursor-not-allowed"
-                    : "border-gray-700 bg-[#1a2332] text-gray-400 hover:border-gray-500"
-              }`}
-            >
-              <span>{icon}</span>
-              <span>{label}</span>
-              <span className="ml-1 rounded bg-dark-900/60 px-1 py-0.5 text-[10px] tabular-nums">
-                {remaining[type]}/{limit}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-      {activePowers?.has("double_down") && (
+      <div className="flex flex-wrap gap-2">{powerButtons}</div>
+      {activePowers?.has("double_down") ? (
         <p className="mt-1.5 text-xs font-medium text-amber-400">{tp("doubleDown.activated")}</p>
-      )}
-      {activePowers?.has("shield") && (
+      ) : null}
+      {activePowers?.has("shield") ? (
         <p className="mt-1.5 text-xs font-medium text-gpri">{tp("shield.activated")}</p>
-      )}
+      ) : null}
     </div>
   );
 }

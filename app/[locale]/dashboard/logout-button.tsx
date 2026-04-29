@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -15,6 +16,7 @@ export default function LogoutButton() {
     setIsLoading(true);
     const supabase = createClient();
     await supabase.auth.signOut();
+    Sentry.setUser(null);
     router.replace(`/${locale}/login`);
     router.refresh();
   }

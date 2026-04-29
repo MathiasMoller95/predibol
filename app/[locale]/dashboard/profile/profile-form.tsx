@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { FormEvent, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -101,6 +102,7 @@ export default function ProfileForm({
     setSigningOut(true);
     const supabase = createClient();
     await supabase.auth.signOut();
+    Sentry.setUser(null);
     router.push(`/${locale}/login`);
   }
 

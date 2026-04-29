@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -146,6 +147,8 @@ export default function JoinGroupButton({ groupId, slug, accessMode, autoJoin, i
       setIsJoining(false);
       return;
     }
+
+    track("group_joined", { groupId, method: "invite" });
 
     router.replace(`/${locale}/dashboard/group/${groupId}`);
   }, [

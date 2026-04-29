@@ -16,12 +16,14 @@ export type LeaderboardDbRow = {
   virtual_pnl: number | null;
   virtual_bets_won: number | null;
   virtual_bets_lost: number | null;
+  rank?: number | null;
+  previous_rank?: number | null;
 };
 
 /**
  * LEFT JOIN semantics: one row per group member, stats from leaderboard when present else zeros.
- * Sort: points desc, then display name ascending (case-insensitive).
- * Rank: 1..n after sort (display rank; do not use DB rank).
+ * Sort: matches score-match leaderboard ordering (total_points desc, exact_scores desc, then display name asc).
+ * Rank: recomputed after sort so display matches leaderboard ordering with optional movement vs snapshot_previous_rank.
  */
 export function mergeGroupLeaderboardRows(
   members: GroupMemberForLeaderboard[],
@@ -35,6 +37,7 @@ export function mergeGroupLeaderboardRows(
     return {
       user_id: m.user_id,
       rank: null,
+      snapshot_previous_rank: row?.previous_rank ?? null,
       total_points: row?.total_points ?? 0,
       correct_results: row?.correct_results ?? 0,
       exact_scores: row?.exact_scores ?? 0,
@@ -48,6 +51,7 @@ export function mergeGroupLeaderboardRows(
 
   merged.sort((a, b) => {
     if (b.total_points !== a.total_points) return b.total_points - a.total_points;
+    if (b.exact_scores !== a.exact_scores) return b.exact_scores - a.exact_scores;
     return a.display_name.localeCompare(b.display_name, undefined, { sensitivity: "base" });
   });
 

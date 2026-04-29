@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -229,6 +230,10 @@ export default function CreateGroupPage() {
     }
 
     showToast(`${t("create.submit")} ✓`, "success");
+    track("group_created", {
+      tier: isPublic ? "public" : "private",
+      accessMode,
+    });
     router.push(`/${locale}/dashboard/group/${group.id}`);
   }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -67,6 +68,7 @@ export default function DiscoverGroupList({ locale, currentUserId, userEmail, gr
     setRows((prev) => prev.map((g) => (g.id === group.id ? { ...g, isMember: true } : g)));
     setJustJoinedId(group.id);
     setBusyId(null);
+    track("group_joined", { groupId: group.id, method: "discover" });
     window.setTimeout(() => {
       setJustJoinedId(null);
       router.replace(`/${locale}/dashboard/group/${group.id}`);

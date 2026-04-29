@@ -94,28 +94,28 @@ export default function ResultMatchCard({
 
   return (
     <article className="rounded-xl border border-dark-600 bg-dark-800 p-4">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div className="min-w-0 flex-1">
-          <p className="flex flex-wrap items-center justify-center gap-2 text-center text-lg font-bold text-white sm:text-xl">
-            <span className="inline-flex items-center gap-1">
-              <span aria-hidden>{getFlag(match.home_team)}</span>
-              {match.home_team}
-            </span>
-            <span className="tabular-nums text-gsec">
-              {match.home_score} - {match.away_score}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              {match.away_team}
-              <span aria-hidden>{getFlag(match.away_team)}</span>
-            </span>
-          </p>
+      <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
+          <span className="inline-flex min-w-0 flex-1 basis-[140px] items-center justify-end gap-1.5 text-base font-bold leading-tight text-white sm:text-lg">
+            <span aria-hidden>{getFlag(match.home_team)}</span>
+            <span className="truncate">{match.home_team}</span>
+          </span>
+          <span className="shrink-0 text-4xl font-black tabular-nums leading-none tracking-tight text-white sm:text-5xl">
+            {match.home_score}
+            <span className="mx-1 text-gsec">-</span>
+            {match.away_score}
+          </span>
+          <span className="inline-flex min-w-0 flex-1 basis-[140px] items-center justify-start gap-1.5 text-base font-bold leading-tight text-white sm:text-lg">
+            <span className="truncate">{match.away_team}</span>
+            <span aria-hidden>{getFlag(match.away_team)}</span>
+          </span>
         </div>
-        <span className="shrink-0 rounded-md border border-white/10 bg-dark-900/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+        <span className="mx-auto shrink-0 rounded-md border border-white/10 bg-dark-900/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500 sm:mx-0">
           {tr("finalBadge")}
         </span>
       </div>
 
-      <p className="mt-3 text-center text-xs text-slate-400">
+      <p className="mt-4 text-center text-sm text-slate-400">
         {t("yourPick", { home: match.predicted_home, away: match.predicted_away })}
       </p>
 

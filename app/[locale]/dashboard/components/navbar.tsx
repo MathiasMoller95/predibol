@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -25,6 +26,7 @@ export default function Navbar({ displayName, email, locale, userId }: Props) {
 
     const supabase = createClient();
     await supabase.auth.signOut();
+    Sentry.setUser(null);
     router.push(`/${locale}/login`);
   }
 

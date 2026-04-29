@@ -444,6 +444,14 @@ Deno.serve(async (req: Request) => {
   }
 
   for (const gid of groupIds) {
+    const { error: snapErr } = await supabase.rpc("snapshot_leaderboard_previous_rank", { gid });
+    if (snapErr) {
+      return new Response(JSON.stringify({ error: snapErr.message }), {
+        status: 500,
+        headers: jsonHeaders,
+      });
+    }
+
     const { data: allPreds, error: apErr } = await supabase
       .from("predictions")
       .select("user_id, predicted_home, predicted_away, points_earned, match_id")

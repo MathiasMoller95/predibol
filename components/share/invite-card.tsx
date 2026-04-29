@@ -2,6 +2,7 @@
 
 import { Monitor, Smartphone } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { track } from "@vercel/analytics";
 import { useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/toast-provider";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
@@ -14,6 +15,7 @@ const LOGICAL = 1080;
 const SCALE = 2;
 
 type Props = {
+  groupId?: string;
   groupName: string;
   locale: string;
   inviteUrl: string;
@@ -300,6 +302,7 @@ function detectMobile(): boolean {
 }
 
 export default function InviteShareButton({
+  groupId,
   groupName,
   locale,
   inviteUrl,
@@ -376,11 +379,14 @@ export default function InviteShareButton({
       await navigator.clipboard.writeText(inviteUrl);
       onCopied?.();
       showToast(t("invite.linkCopied"), "success");
+      if (groupId) {
+        track("invite_shared", { groupId, method: "copy" });
+      }
     } catch {
       onCopyFailed?.();
       showToast(t("invite.error"), "error");
     }
-  }, [inviteUrl, onCopied, onCopyFailed, showToast, t]);
+  }, [inviteUrl, onCopied, onCopyFailed, showToast, t, groupId]);
 
   const runPrimary = useCallback(async () => {
     if (!isMobile) {
@@ -397,6 +403,9 @@ export default function InviteShareButton({
           url: inviteUrl,
         });
         showToast(t("invite.toast"), "success");
+        if (groupId) {
+          track("invite_shared", { groupId, method: "native" });
+        }
         return;
       }
       throw new Error("share not available");
@@ -407,7 +416,7 @@ export default function InviteShareButton({
       }
       setFallbackMode(true);
     }
-  }, [copyLink, generateCardFile, inviteText, inviteUrl, isMobile, showToast, t]);
+  }, [copyLink, generateCardFile, groupId, inviteText, inviteUrl, isMobile, showToast, t]);
 
   const downloadCard = useCallback(async () => {
     const file = await generateCardFile();

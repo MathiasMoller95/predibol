@@ -67,6 +67,8 @@ export type GroupHubData = {
   powersLimits: { doubleDown: number; spy: number; shield: number };
   stickerCount: number;
   onboardingCompletedAt: string | null;
+  /** Comparison vs leaderboard AI rival; null if AI row not present for this group. */
+  aiCompare: { userPoints: number; aiPoints: number } | null;
 };
 
 function bracketCardMeta(t: ReturnType<typeof useTranslations<"GroupHub">>, status: BracketHubStatusKey): string {
@@ -145,6 +147,14 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
   const rankLabel =
     data.userRank != null ? t("actions.yourRank", { rank: data.userRank }) : t("actions.yourRankPending");
 
+  const aiCompareTone = useMemo(() => {
+    if (!data.aiCompare) return null;
+    const { userPoints: u, aiPoints: ai } = data.aiCompare;
+    if (u > ai) return "ahead" as const;
+    if (u < ai) return "behind" as const;
+    return "tied" as const;
+  }, [data.aiCompare]);
+
   return (
     <div className="mt-4 space-y-4">
       <OnboardingOverlay
@@ -187,6 +197,35 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
           ) : null}
         </div>
       </header>
+
+      {data.aiCompare != null && aiCompareTone !== null ? (
+        <p
+          className={
+            aiCompareTone === "ahead"
+              ? "animate-page-in truncate text-sm text-emerald-400"
+              : aiCompareTone === "behind"
+                ? "animate-page-in truncate text-sm text-amber-400/95"
+                : "animate-page-in truncate text-sm text-slate-400"
+          }
+          title={`${data.aiCompare.userPoints} vs ${data.aiCompare.aiPoints}`}
+        >
+          {aiCompareTone === "ahead"
+            ? t("aiCompare.ahead", {
+                youPts: data.aiCompare.userPoints,
+                aiPts: data.aiCompare.aiPoints,
+              })
+            : aiCompareTone === "behind"
+              ? t("aiCompare.behind", {
+                  youPts: data.aiCompare.userPoints,
+                  aiPts: data.aiCompare.aiPoints,
+                  n: Math.abs(data.aiCompare.userPoints - data.aiCompare.aiPoints),
+                })
+              : t("aiCompare.tied", {
+                  youPts: data.aiCompare.userPoints,
+                  aiPts: data.aiCompare.aiPoints,
+                })}
+        </p>
+      ) : null}
 
       <section
         className="animate-page-in rounded-lg border border-dark-600 bg-dark-800 px-3 py-2 motion-reduce:animate-none"
@@ -427,6 +466,7 @@ export default function GroupHubClient({ data }: { data: GroupHubData }) {
           <h2 className="text-lg font-semibold text-white">{t("invite.title")}</h2>
           <div className="mt-4">
             <InviteShareButton
+              groupId={data.groupId}
               groupName={data.groupName}
               locale={data.locale}
               inviteUrl={fullUrl}

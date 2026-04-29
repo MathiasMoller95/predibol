@@ -85,7 +85,7 @@ export default function DashboardGroupList({ locale, profileTimeZone, groups }: 
   }
 
   return (
-    <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
       {groups.map((group, index) => {
         const rankLine =
           group.rank != null

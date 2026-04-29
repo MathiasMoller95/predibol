@@ -1,10 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
 import { mergeGroupLeaderboardRows, type LeaderboardDbRow } from "@/lib/group-leaderboard-merge";
+import { positiveStreaksByUser } from "@/lib/leaderboard-streaks";
 import LeaderboardBoard from "./leaderboard-board";
 
 type Props = {
@@ -30,7 +30,6 @@ export default async function GroupLeaderboardPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Leaderboard");
-  const common = await getTranslations("Common");
   const supabase = await createClient();
   const {
     data: { user },
@@ -62,15 +61,16 @@ export default async function GroupLeaderboardPage({ params }: Props) {
     redirect(`/${locale}/dashboard`);
   }
 
-  const [{ data: boardRows }, { data: members }] = await Promise.all([
+  const [{ data: boardRows }, { data: members }, { data: predsForStreak }] = await Promise.all([
     supabase
       .from("leaderboard")
       .select(
-        "user_id,rank,total_points,correct_results,exact_scores,predictions_made,virtual_pnl,virtual_bets_won,virtual_bets_lost"
+        "user_id,rank,previous_rank,total_points,correct_results,exact_scores,predictions_made,virtual_pnl,virtual_bets_won,virtual_bets_lost"
       )
       .eq("group_id", groupId)
       .order("rank", { ascending: true, nullsFirst: false }),
     supabase.from("group_members").select("user_id,display_name").eq("group_id", groupId),
+    supabase.from("predictions").select("user_id,match_id,points_earned").eq("group_id", groupId),
   ]);
 
   const memberList = (members ?? []) as MemberRow[];
@@ -84,9 +84,9 @@ export default async function GroupLeaderboardPage({ params }: Props) {
     );
   }
 
-  const rows = mergeGroupLeaderboardRows(
+  const rowsMerged = mergeGroupLeaderboardRows(
     memberList,
-    (boardRows ?? []) as LeaderboardDbRow[],
+    (boardRows ?? []) as unknown as LeaderboardDbRow[],
     (uid) =>
       resolveDisplayName(
         profileByUserId.get(uid),
@@ -95,56 +95,58 @@ export default async function GroupLeaderboardPage({ params }: Props) {
       ),
   );
 
+  const mids = Array.from(new Set((predsForStreak ?? []).map((p) => p.match_id as string)));
+  let streakByUid: Record<string, number> = {};
+  if (mids.length > 0) {
+    const { data: mrows } = await supabase
+      .from("matches")
+      .select("id,match_time,status")
+      .in("id", mids)
+      .eq("status", "finished");
+
+    const timeByMid = new Map((mrows ?? []).map((m) => [m.id as string, m.match_time as string]));
+    const finishedRows = ((predsForStreak ?? []) as { user_id: string; match_id: string; points_earned: number | null }[])
+      .filter((p) => timeByMid.has(p.match_id))
+      .map((p) => ({
+        user_id: p.user_id,
+        points_earned: p.points_earned,
+        match_time_match: timeByMid.get(p.match_id)!,
+      }));
+    streakByUid = positiveStreaksByUser(finishedRows);
+  }
+
+  const rows = rowsMerged.map((r) => ({
+    ...r,
+    positiveStreak:
+      streakByUid[r.user_id] != null && streakByUid[r.user_id]! >= 3 ? streakByUid[r.user_id] : undefined,
+  }));
+
   return (
     <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
-        <Link
-          href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-gpri hover:text-gpri/90"
-        >
-          {common("backToGroup", { groupName: typedGroup.name })}
-        </Link>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-3">
-              {typedGroup.logo_url ? (
-                <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-dark-900">
-                  <Image
-                    src={typedGroup.logo_url}
-                    alt=""
-                    width={40}
-                    height={40}
-                    className="h-full w-full object-cover"
-                    unoptimized
-                  />
-                </span>
-              ) : (
-                <span
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-dark-900 text-lg text-slate-500"
-                  aria-hidden
-                >
-                  ⚽
-                </span>
-              )}
-              <div>
-                <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
-                <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href={`/${locale}/dashboard/group/${groupId}`}
-              className="inline-flex rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-gpri/40 hover:bg-dark-600"
+        <div className="flex flex-wrap items-center gap-3">
+          {typedGroup.logo_url ? (
+            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-dark-900">
+              <Image
+                src={typedGroup.logo_url}
+                alt=""
+                width={40}
+                height={40}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
+            </span>
+          ) : (
+            <span
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-dark-900 text-lg text-slate-500"
+              aria-hidden
             >
-              {t("backToGroup")}
-            </Link>
-            <Link
-              href={`/${locale}/dashboard/group/${groupId}/predict`}
-              className="inline-flex rounded-lg border border-gpri/50 bg-gpri/20 px-3 py-2 text-sm font-medium text-gsec transition hover:bg-gpri/15"
-            >
-              {t("openPredictions")}
-            </Link>
+              ⚽
+            </span>
+          )}
+          <div>
+            <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+            <p className="mt-1 text-sm text-slate-400">{t("subtitle", { groupName: typedGroup.name })}</p>
           </div>
         </div>
 

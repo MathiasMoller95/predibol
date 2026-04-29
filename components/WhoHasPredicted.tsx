@@ -9,21 +9,25 @@ export default function WhoHasPredicted({
   predicted,
   currentUserId,
   tp,
+  compact,
 }: {
   matchId?: string;
   groupMembers: WhoHasPredictedMember[];
   predicted: string[];
   currentUserId: string;
   tp: TranslationFn;
+  compact?: boolean;
 }) {
   if (groupMembers.length <= 1) return null;
   const predictedSet = new Set(predicted);
   return (
-    <div className="mt-3">
-      <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-slate-500">
-        {tp("groupPredictions.title")}
-      </p>
-      <div className="flex flex-wrap gap-1.5">
+    <div className={compact ? "mt-1.5" : "mt-3"}>
+      {compact ? null : (
+        <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-slate-500">
+          {tp("groupPredictions.title")}
+        </p>
+      )}
+      <div className={`flex flex-wrap ${compact ? "gap-1" : "gap-1.5"}`}>
         {groupMembers.map((m) => {
           const done = predictedSet.has(m.userId);
           const isYou = m.userId === currentUserId;

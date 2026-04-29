@@ -131,14 +131,26 @@ export default async function GroupPredictPage({ params }: Props) {
 
   const nowIso = new Date().toISOString();
 
-  const { data: upcomingRows } = await supabase
-    .from("matches")
-    .select(MATCH_SELECT_BASE)
-    .eq("status", "scheduled")
-    .gt("locked_at", nowIso)
-    .order("match_time", { ascending: true });
+  const [{ data: upcomingRows }, { data: firstKickoffGlobal }] = await Promise.all([
+    supabase
+      .from("matches")
+      .select(MATCH_SELECT_BASE)
+      .eq("status", "scheduled")
+      .gt("locked_at", nowIso)
+      .order("match_time", { ascending: true }),
+    supabase
+      .from("matches")
+      .select(MATCH_SELECT_BASE)
+      .eq("status", "scheduled")
+      .gt("locked_at", nowIso)
+      .order("match_time", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+  ]);
 
   const upcomingMatches = ((upcomingRows ?? []) as MatchRecord[]).filter((m) => m.status === "scheduled");
+  const firstKickoffMatch =
+    firstKickoffGlobal != null ? (firstKickoffGlobal as MatchRecord) : null;
 
   const { data: liveRows } = await supabase
     .from("matches")
@@ -345,6 +357,7 @@ export default async function GroupPredictPage({ params }: Props) {
           upcomingMatches={upcomingMatches}
           liveMatches={liveMatches}
           finishedMatches={finishedMatches}
+          firstKickoffMatch={firstKickoffMatch}
           groupScoring={groupScoring}
           stickersByMatch={stickersByMatch}
           predictionLookup={Object.fromEntries(allPredList.map((p) => [p.match_id, p]))}
