@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { MAX_GROUPS_PER_USER } from "@/lib/constants";
-import type { GroupAccessMode } from "@/types/supabase";
+import type { GroupAccessMode } from "@/types/database-enums";
 
 type TiebreakerRule = "most_exact_scores" | "most_correct_results" | "earliest_submission";
 

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/client";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
-import type { GroupAccessMode } from "@/types/supabase";
+import type { GroupAccessMode } from "@/types/database-enums";
 
 function randomSixDigitCode() {
   return Math.floor(100_000 + Math.random() * 900_000).toString();

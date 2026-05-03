@@ -15,7 +15,7 @@ import OnboardingOverlay, {
   markVisitedPicks,
 } from "@/components/OnboardingOverlay";
 import { getFlag } from "@/lib/team-metadata";
-import type { GroupAccessMode } from "@/types/supabase";
+import type { GroupAccessMode } from "@/types/database-enums";
 import type { BracketHubStatusKey } from "@/lib/knockout-bracket-utils";
 
 export type RecentResultRow = {

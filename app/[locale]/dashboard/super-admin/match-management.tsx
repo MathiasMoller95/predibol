@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/client";
 import { formatMatchTime } from "@/lib/format-match-time";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
-import type { MatchPhase, MatchStatus } from "@/types/supabase";
+import type { MatchPhase, MatchStatus } from "@/types/database-enums";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { teamFlags } from "@/lib/team-metadata";
 

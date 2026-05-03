@@ -5,7 +5,7 @@ import { resolveDisplayName } from "@/lib/display-name";
 import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
 import { AI_PLAYER_ID } from "@/lib/constants";
 import GroupHubClient, { type GroupHubData, type RecentResultRow } from "./group-hub";
-import type { GroupAccessMode } from "@/types/supabase";
+import type { GroupAccessMode } from "@/types/database-enums";
 import { computeBracketHubStatus } from "@/lib/knockout-bracket-utils";
 import { mergeGroupLeaderboardRows, type LeaderboardDbRow } from "@/lib/group-leaderboard-merge";
 import { resolveGroupTheme } from "@/lib/group-theme";

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { formatMatchTime } from "@/lib/format-match-time";
 import { useEffectiveTimeZone } from "@/lib/use-effective-timezone";
-import type { MatchPhase, MatchStatus } from "@/types/supabase";
+import type { MatchPhase, MatchStatus } from "@/types/database-enums";
 
 export type AdminMatch = {
   id: string;

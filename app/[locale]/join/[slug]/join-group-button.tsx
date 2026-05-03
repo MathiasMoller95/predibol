@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
-import type { GroupAccessMode } from "@/types/supabase";
+import type { GroupAccessMode } from "@/types/database-enums";
 
 type Props = {
   groupId: string;
