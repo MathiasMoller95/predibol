@@ -1146,6 +1146,18 @@
       "sendReminders": "Send reminders now",
       "updateOdds": "Update odds (run SQL)",
       "exportData": "Export data (coming soon)"
+    },
+    "sync": {
+      "title": "Sync Status",
+      "lastSync": "Last sync:",
+      "apiRemaining": "API calls remaining:",
+      "nextScheduled": "Next scheduled sync:",
+      "pollInterval": "Polling interval",
+      "lastError": "Last error",
+      "statusActive": "Auto-sync active",
+      "statusError": "Auto-sync error",
+      "forceSync": "Force Sync Now",
+      "manualOverrideActive": "Manual override active"
     }
   }
 }

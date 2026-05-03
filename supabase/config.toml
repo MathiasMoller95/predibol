@@ -14,3 +14,7 @@ verify_jwt = true
 # Cron invokes with DIGEST_CRON_SECRET (Authorization or x-cron-secret); JWT not used.
 [functions.send-weekly-digest]
 verify_jwt = false
+
+# Internal callers only (pg_cron, Super Admin proxy). Gateway JWT verification disabled.
+[functions.sync-matches]
+verify_jwt = false

@@ -6,6 +6,7 @@ import { isSuperAdmin } from "@/lib/auth";
 import { teamFlags } from "@/lib/team-metadata";
 import MatchManagement, { type SAMatch } from "./match-management";
 import GroupsOverview, { type SAGroup } from "./groups-overview";
+import SyncStatusCard, { type SyncState } from "./sync-status-card";
 
 type Props = { params: { locale: string } };
 
@@ -59,10 +60,23 @@ export default async function SuperAdminPage({ params }: Props) {
   const avgPredictions =
     m.users_with_predictions > 0 ? (m.total_predictions / m.users_with_predictions).toFixed(1) : "0";
 
+  const { data: syncStateRow } = await supabase
+    .from("api_football_sync_state")
+    .select("last_sync_at,last_ok_at,last_error,api_calls_remaining,next_planned_poll_seconds")
+    .eq("id", 1)
+    .maybeSingle();
+  const syncState: SyncState = {
+    last_sync_at: (syncStateRow?.last_sync_at as string | null) ?? null,
+    last_ok_at: (syncStateRow?.last_ok_at as string | null) ?? null,
+    last_error: (syncStateRow?.last_error as string | null) ?? null,
+    api_calls_remaining: (syncStateRow?.api_calls_remaining as number | null) ?? null,
+    next_planned_poll_seconds: (syncStateRow?.next_planned_poll_seconds as number | null) ?? null,
+  };
+
   const { data: matchRows } = await supabase
     .from("matches")
     .select(
-      "id,phase,home_team,away_team,match_time,home_score,away_score,status,knockout_label,home_source,away_source,advancing_team",
+      "id,phase,home_team,away_team,match_time,home_score,away_score,status,knockout_label,home_source,away_source,advancing_team,manual_override,source,match_minute",
     )
     .order("match_time", { ascending: true });
 
@@ -74,6 +88,9 @@ export default async function SuperAdminPage({ params }: Props) {
     home_source: r.home_source ?? null,
     away_source: r.away_source ?? null,
     advancing_team: r.advancing_team ?? null,
+    manual_override: r.manual_override ?? false,
+    source: (r.source ?? "manual") as "manual" | "api",
+    match_minute: r.match_minute ?? null,
   }));
 
   const nextMatch = matches.find(
@@ -186,6 +203,8 @@ export default async function SuperAdminPage({ params }: Props) {
             </div>
           ))}
         </section>
+
+        <SyncStatusCard initialState={syncState} />
 
         {/* Match management */}
         <MatchManagement

@@ -1146,6 +1146,19 @@
       "sendReminders": "Enviar recordatorios ahora",
       "updateOdds": "Actualizar cuotas (SQL)",
       "exportData": "Exportar datos (próximamente)"
+    },
+    "sync": {
+      "title": "Estado de sincronización",
+      "lastSync": "Última sincronización:",
+      "apiRemaining": "Llamadas API restantes:",
+      "nextScheduled": "Próxima sincronización:",
+      "pollInterval": "Intervalo de sondeo",
+      "lastError": "Último error",
+      "statusActive": "Sincronización automática activa",
+      "statusError": "Error de sincronización automática",
+      "forceSync": "Sincronizar ahora",
+      "manualOverrideActive": "Sobreescritura manual activa"
+    }
     }
   }
 }

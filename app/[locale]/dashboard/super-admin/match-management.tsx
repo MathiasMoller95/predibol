@@ -26,6 +26,9 @@ export type SAMatch = {
   home_source: string | null;
   away_source: string | null;
   advancing_team: string | null;
+  manual_override: boolean;
+  source: "manual" | "api";
+  match_minute: string | null;
 };
 
 type Props = {
@@ -164,7 +167,16 @@ export default function MatchManagement({ matches, locale, profileTimeZone }: Pr
     try {
       const { error } = await supabase
         .from("matches")
-        .update({ home_score: hs, away_score: as_, status: "finished" as MatchStatus, ...advPayload })
+        .update({
+          home_score: hs,
+          away_score: as_,
+          status: "finished" as MatchStatus,
+          manual_override: true,
+          source: "manual",
+          match_minute: "FT",
+          needs_scoring: false,
+          ...advPayload,
+        })
         .eq("id", m.id);
       if (error) {
         showToast("Error updating match", "error");
@@ -222,8 +234,30 @@ export default function MatchManagement({ matches, locale, profileTimeZone }: Pr
           away_score: null,
           status: "scheduled" as MatchStatus,
           advancing_team: null,
+          manual_override: false,
+          source: "manual",
+          match_minute: null,
+          needs_scoring: false,
         })
         .eq("id", m.id);
+      router.refresh();
+    } finally {
+      setBusyMatch((p) => ({ ...p, [m.id]: false }));
+    }
+  }
+
+  async function clearManualOverride(m: SAMatch) {
+    setBusyMatch((p) => ({ ...p, [m.id]: true }));
+    try {
+      const { error } = await supabase
+        .from("matches")
+        .update({ manual_override: false })
+        .eq("id", m.id);
+      if (error) {
+        showToast("Error clearing override", "error");
+        return;
+      }
+      showToast("Manual override cleared", "success");
       router.refresh();
     } finally {
       setBusyMatch((p) => ({ ...p, [m.id]: false }));
@@ -332,6 +366,19 @@ export default function MatchManagement({ matches, locale, profileTimeZone }: Pr
                     </p>
                   )}
                   <p className="mt-1 text-xs text-slate-400">{formatWhen(m.match_time)}</p>
+                  <div className="mt-1 flex flex-wrap gap-2">
+                    {m.source === "api" && (
+                      <span className="inline-flex items-center rounded-full bg-slate-900/40 px-2 py-0.5 text-[10px] font-semibold text-slate-300 ring-1 ring-dark-500">
+                        API
+                        {m.match_minute ? ` · ${m.match_minute}` : ""}
+                      </span>
+                    )}
+                    {m.manual_override && (
+                      <span className="inline-flex items-center rounded-full bg-amber-900/30 px-2 py-0.5 text-[10px] font-semibold text-amber-300 ring-1 ring-amber-700/40">
+                        {t("sync.manualOverrideActive")}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${statusBadge(m.status)}`}>
                   {m.status}
@@ -426,6 +473,16 @@ export default function MatchManagement({ matches, locale, profileTimeZone }: Pr
                   >
                     {t("matches.reset")}
                   </button>
+                  {m.manual_override && (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void clearManualOverride(m)}
+                      className="rounded-lg border border-dark-500 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-dark-700 disabled:opacity-60"
+                    >
+                      Clear override
+                    </button>
+                  )}
                 </div>
               )}
 

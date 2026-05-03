@@ -1146,6 +1146,19 @@
       "sendReminders": "Enviar lembretes agora",
       "updateOdds": "Atualizar odds (SQL)",
       "exportData": "Exportar dados (em breve)"
+    },
+    "sync": {
+      "title": "Estado de sincronização",
+      "lastSync": "Última sincronização:",
+      "apiRemaining": "Chamadas API restantes:",
+      "nextScheduled": "Próxima sincronização:",
+      "pollInterval": "Intervalo de sondagem",
+      "lastError": "Último erro",
+      "statusActive": "Sincronização automática ativa",
+      "statusError": "Erro de sincronização automática",
+      "forceSync": "Sincronizar agora",
+      "manualOverrideActive": "Sobreposição manual ativa"
+    }
     }
   }
 }
