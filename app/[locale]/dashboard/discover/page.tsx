@@ -3,6 +3,16 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DiscoverGroupList, { type DiscoverGroupRow } from "./discover-group-list";
 
+type RpcPublicGroupRow = {
+  id: string;
+  name: string;
+  slug: string;
+  primary_color: string | null;
+  description: string | null;
+  admin_id: string;
+  member_count: number | null;
+};
+
 type Props = {
   params: { locale: string };
 };
@@ -23,13 +33,13 @@ export default async function DiscoverPage({ params }: Props) {
 
   const { data: rpcRows } = await supabase.rpc("get_public_groups_with_counts");
 
-  const withCounts = (rpcRows ?? []).map((row) => ({
-    id: row.id as string,
-    name: row.name as string,
-    slug: row.slug as string,
-    primary_color: row.primary_color as string | null,
-    description: (row.description as string | null) ?? "",
-    admin_id: row.admin_id as string,
+  const withCounts = ((rpcRows ?? []) as RpcPublicGroupRow[]).map((row) => ({
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    primary_color: row.primary_color,
+    description: row.description ?? "",
+    admin_id: row.admin_id,
     memberCount: Number(row.member_count ?? 0),
   }));
 
@@ -61,7 +71,7 @@ export default async function DiscoverPage({ params }: Props) {
         <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
         <p className="mt-1 text-sm text-slate-500">{t("subtitle")}</p>
 
-        <DiscoverGroupList locale={locale} currentUserId={user.id} userEmail={user.email ?? undefined} groups={groups} />
+        <DiscoverGroupList locale={locale} groups={groups} />
       </section>
     </main>
   );

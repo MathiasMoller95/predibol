@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 export type DiscoverGroupRow = {
@@ -22,13 +20,12 @@ export type DiscoverGroupRow = {
 
 type Props = {
   locale: string;
-  currentUserId: string;
-  userEmail: string | undefined;
   groups: DiscoverGroupRow[];
 };
 
-export default function DiscoverGroupList({ locale, currentUserId, userEmail, groups }: Props) {
+export default function DiscoverGroupList({ locale, groups }: Props) {
   const t = useTranslations("Discover");
+  const tp = useTranslations("Pricing");
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [rows, setRows] = useState(groups);
@@ -51,16 +48,18 @@ export default function DiscoverGroupList({ locale, currentUserId, userEmail, gr
       return next;
     });
 
-    const supabase = createClient();
-    const displayName = await getDisplayNameForMemberInsert(supabase, currentUserId, userEmail);
-    const { error } = await supabase.from("group_members").insert({
-      group_id: group.id,
-      user_id: currentUserId,
-      display_name: displayName,
+    const res = await fetch(`/api/groups/${group.id}/join`, {
+      method: "POST",
+      credentials: "same-origin",
     });
+    const payload = (await res.json()) as { ok?: boolean; error?: string; count?: number; limit?: number };
 
-    if (error && error.code !== "23505") {
-      setErrorById((prev) => ({ ...prev, [group.id]: error.message }));
+    if (!res.ok) {
+      const msg =
+        payload.error === "group_full"
+          ? tp("groupFull", { count: String(payload.count ?? 0), limit: String(payload.limit ?? 0) })
+          : "Could not join";
+      setErrorById((prev) => ({ ...prev, [group.id]: msg }));
       setBusyId(null);
       return;
     }

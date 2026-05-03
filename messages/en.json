@@ -274,7 +274,45 @@
     "groupDescription": "Description",
     "groupDescriptionPlaceholder": "Describe your group so others can find it",
     "groupDescriptionHelp": "Max 200 characters. Shown on the discovery page.",
-    "backToDashboard": "Back to dashboard"
+    "backToDashboard": "Back to dashboard",
+    "continueToPlan": "Continue to plan"
+  },
+  "PaymentSuccess": {
+    "title": "Welcome to your group!",
+    "subtitle": "Redirecting to your group hub…",
+    "waiting": "Confirming payment…",
+    "failed": "We could not confirm payment yet. Open your group from the dashboard or contact support."
+  },
+  "Pricing": {
+    "choosePlan": "Choose your plan",
+    "choosePlanSubtitle": "All plans include the same features — only member capacity changes.",
+    "tierNames": {
+      "pichanga": "Pichanga",
+      "partido": "Match",
+      "partidazo": "Big Match",
+      "corpo": "Corporate"
+    },
+    "upToPlayers": "Up to {n} players",
+    "free": "Free",
+    "freeDuringBeta": "Free during beta",
+    "allFeaturesLine": "All features included",
+    "mostPopular": "Most popular",
+    "corpoContactLine": "Or contact us for custom setup",
+    "corpoEmail": "Email us",
+    "corpoWhatsapp": "WhatsApp",
+    "haveCode": "Have a code?",
+    "apply": "Apply",
+    "discountApplied": "Discount applied",
+    "finalPrice": "Final price: {price}",
+    "back": "Back",
+    "createGroup": "Create group",
+    "couponInvalid": "Invalid or expired code",
+    "groupFull": "This group is full ({count}/{limit}). The admin can upgrade the tier.",
+    "currentPlan": "Current plan",
+    "almostFull": "Almost full — consider upgrading",
+    "upgradeContact": "Contact us to upgrade",
+    "planUsage": "{count} / {limit} members",
+    "planTierLabel": "{tierName} · up to {limit} members"
   },
   "AccessCode": {
     "title": "Group access",
@@ -589,7 +627,8 @@
       "title": "Join group",
       "groupNameLabel": "Group: {name}",
       "joinButton": "Join this group",
-      "joiningButton": "Joining..."
+      "joiningButton": "Joining...",
+      "joinFailed": "Could not join this group. Try again."
     }
   },
   "Leaderboard": {
@@ -1158,6 +1197,37 @@
       "statusError": "Auto-sync error",
       "forceSync": "Force Sync Now",
       "manualOverrideActive": "Manual override active"
+    },
+    "coupons": {
+      "title": "Coupons",
+      "code": "Code",
+      "type": "Type",
+      "typePercent": "Percentage",
+      "typeFixed": "Fixed (USD)",
+      "typeFree": "Free",
+      "value": "Value",
+      "maxUses": "Max uses (empty = unlimited)",
+      "tiers": "Applicable tiers",
+      "expires": "Expires",
+      "create": "Create coupon",
+      "listCode": "Code",
+      "listType": "Type",
+      "listValue": "Value",
+      "listUses": "Uses",
+      "listTiers": "Tiers",
+      "listExpires": "Expires",
+      "listStatus": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "toggle": "Toggle",
+      "delete": "Delete",
+      "statusActive": "active",
+      "statusExpired": "expired",
+      "statusMaxed": "maxed",
+      "usesUnlimited": "∞",
+      "saved": "Coupon saved",
+      "deleted": "Coupon deleted",
+      "error": "Something went wrong"
     }
   }
 }

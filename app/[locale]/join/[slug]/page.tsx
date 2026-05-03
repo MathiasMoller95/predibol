@@ -72,7 +72,7 @@ export default async function JoinGroupPage({ params, searchParams }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,slug,access_mode")
+    .select("id,name,slug,access_mode,admin_id,payment_status")
     .eq("slug", slug)
     .single();
 
@@ -80,7 +80,11 @@ export default async function JoinGroupPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  const typedGroup = group as GroupRecord;
+  const typedGroup = group as GroupRecord & { admin_id: string; payment_status: string };
+
+  if (typedGroup.payment_status === "pending" && typedGroup.admin_id !== user.id) {
+    notFound();
+  }
 
   const autoJoin = searchParams.autoJoin === "1";
 

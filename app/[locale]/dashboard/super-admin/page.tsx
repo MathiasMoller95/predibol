@@ -7,6 +7,7 @@ import { teamFlags } from "@/lib/team-metadata";
 import MatchManagement, { type SAMatch } from "./match-management";
 import GroupsOverview, { type SAGroup } from "./groups-overview";
 import SyncStatusCard, { type SyncState } from "./sync-status-card";
+import CouponsAdmin from "./coupons-admin";
 
 type Props = { params: { locale: string } };
 
@@ -205,6 +206,8 @@ export default async function SuperAdminPage({ params }: Props) {
         </section>
 
         <SyncStatusCard initialState={syncState} />
+
+        <CouponsAdmin />
 
         {/* Match management */}
         <MatchManagement

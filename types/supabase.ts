@@ -148,6 +148,14 @@ export type Database = {
           secondary_color: string | null
           slug: string
           tiebreaker_rule: Database["public"]["Enums"]["tiebreaker_rule"]
+          tier: string
+          member_limit: number
+          payment_status: string
+          stripe_session_id: string | null
+          stripe_payment_intent_id: string | null
+          paid_at: string | null
+          amount_paid_cents: number | null
+          coupon_code: string | null
         }
         Insert: {
           access_code?: string | null
@@ -176,6 +184,14 @@ export type Database = {
           secondary_color?: string | null
           slug: string
           tiebreaker_rule?: Database["public"]["Enums"]["tiebreaker_rule"]
+          tier?: string
+          member_limit?: number
+          payment_status?: string
+          stripe_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          paid_at?: string | null
+          amount_paid_cents?: number | null
+          coupon_code?: string | null
         }
         Update: {
           access_code?: string | null
@@ -204,6 +220,101 @@ export type Database = {
           secondary_color?: string | null
           slug?: string
           tiebreaker_rule?: Database["public"]["Enums"]["tiebreaker_rule"]
+          tier?: string
+          member_limit?: number
+          payment_status?: string
+          stripe_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          paid_at?: string | null
+          amount_paid_cents?: number | null
+          coupon_code?: string | null
+        }
+        Relationships: []
+      }
+      coupon_usage: {
+        Row: {
+          id: string
+          coupon_id: string | null
+          group_id: string | null
+          user_id: string | null
+          discount_cents: number
+          final_price_cents: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          coupon_id?: string | null
+          group_id?: string | null
+          user_id?: string | null
+          discount_cents: number
+          final_price_cents: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          coupon_id?: string | null
+          group_id?: string | null
+          user_id?: string | null
+          discount_cents?: number
+          final_price_cents?: number
+          created_at?: string
+        }
+        Relationships: []
+      }
+      coupons: {
+        Row: {
+          id: string
+          code: string
+          type: string
+          value: number
+          max_uses: number | null
+          times_used: number
+          applicable_tiers: string[]
+          expires_at: string | null
+          created_by: string | null
+          created_at: string
+          active: boolean
+        }
+        Insert: {
+          id?: string
+          code: string
+          type: string
+          value?: number
+          max_uses?: number | null
+          times_used?: number
+          applicable_tiers?: string[]
+          expires_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          active?: boolean
+        }
+        Update: {
+          id?: string
+          code?: string
+          type?: string
+          value?: number
+          max_uses?: number | null
+          times_used?: number
+          applicable_tiers?: string[]
+          expires_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          active?: boolean
+        }
+        Relationships: []
+      }
+      stripe_events: {
+        Row: {
+          id: string
+          processed_at: string
+        }
+        Insert: {
+          id: string
+          processed_at?: string
+        }
+        Update: {
+          id?: string
+          processed_at?: string
         }
         Relationships: []
       }
@@ -644,6 +755,10 @@ export type Database = {
       }
       invoke_send_prediction_reminders_cron: { Args: never; Returns: undefined }
       invoke_sync_matches_cron: { Args: never; Returns: undefined }
+      join_group_if_room: {
+        Args: { p_display_name: string; p_group_id: string }
+        Returns: Json
+      }
       is_group_admin: { Args: { _group_id: string }; Returns: boolean }
       is_group_member: { Args: { _group_id: string }; Returns: boolean }
       resolve_knockout_match: {

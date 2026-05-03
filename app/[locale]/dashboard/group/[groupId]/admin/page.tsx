@@ -5,7 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { isSuperAdmin } from "@/lib/auth";
 import { resolveGroupTheme } from "@/lib/group-theme";
 import type { Json } from "@/types/supabase";
-import type { GroupAccessMode } from "@/types/database-enums";
+import type { GroupAccessMode, TierKey } from "@/types/database-enums";
+import GroupPlanPanel from "./group-plan-panel";
 import AdminMatchPanel, { type AdminMatch, type PredictionLite } from "./admin-match-panel";
 import GroupAccessAdminPanel from "./group-access-admin-panel";
 import GroupIdentityPanel from "./group-identity-panel";
@@ -27,6 +28,8 @@ type GroupRecord = {
   logo_url: string | null;
   primary_color: string | null;
   secondary_color: string | null;
+  tier: string;
+  member_limit: number;
 };
 
 type MemberRecord = {
@@ -51,7 +54,7 @@ export default async function GroupAdminResultsPage({ params }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,slug,admin_id,colors,logo_url,primary_color,secondary_color")
+    .select("id,name,slug,admin_id,colors,logo_url,primary_color,secondary_color,tier,member_limit")
     .eq("id", groupId)
     .single();
 
@@ -186,6 +189,13 @@ export default async function GroupAdminResultsPage({ params }: Props) {
           initialPrimary={theme.primary}
           initialSecondary={theme.secondary}
           initialTintHex={theme.primary}
+        />
+
+        <GroupPlanPanel
+          locale={locale}
+          tier={(typedGroup.tier as TierKey) ?? "pichanga"}
+          memberLimit={typedGroup.member_limit ?? 7}
+          memberCount={((members ?? []) as MemberRecord[]).length}
         />
 
         <MemberActivitySection locale={locale} rows={activityRows} />

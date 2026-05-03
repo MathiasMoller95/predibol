@@ -274,7 +274,45 @@
     "groupDescription": "Descricao",
     "groupDescriptionPlaceholder": "Descreva seu grupo para outras pessoas encontrarem",
     "groupDescriptionHelp": "No maximo 200 caracteres. Aparece na pagina de descoberta.",
-    "backToDashboard": "Voltar ao início"
+    "backToDashboard": "Voltar ao início",
+    "continueToPlan": "Continuar para o plano"
+  },
+  "PaymentSuccess": {
+    "title": "Bem-vindo ao seu grupo!",
+    "subtitle": "Redirecionando para o grupo…",
+    "waiting": "Confirmando pagamento…",
+    "failed": "Ainda não confirmamos o pagamento. Abra o grupo pelo painel ou fale com o suporte."
+  },
+  "Pricing": {
+    "choosePlan": "Escolha seu plano",
+    "choosePlanSubtitle": "Todos os planos incluem os mesmos recursos — só muda o limite de membros.",
+    "tierNames": {
+      "pichanga": "Pichanga",
+      "partido": "Partida",
+      "partidazo": "Partidão",
+      "corpo": "Corporativo"
+    },
+    "upToPlayers": "Até {n} jogadores",
+    "free": "Grátis",
+    "freeDuringBeta": "Grátis durante o beta",
+    "allFeaturesLine": "Todas as funcionalidades incluídas",
+    "mostPopular": "Mais popular",
+    "corpoContactLine": "Ou entre em contato para configuracao personalizada",
+    "corpoEmail": "E-mail",
+    "corpoWhatsapp": "WhatsApp",
+    "haveCode": "Tem um código?",
+    "apply": "Aplicar",
+    "discountApplied": "Desconto aplicado",
+    "finalPrice": "Preco final: {price}",
+    "back": "Voltar",
+    "createGroup": "Criar grupo",
+    "couponInvalid": "Código inválido ou expirado",
+    "groupFull": "Este grupo está cheio ({count}/{limit}). O admin pode melhorar o plano.",
+    "currentPlan": "Plano atual",
+    "almostFull": "Quase cheio — considere melhorar",
+    "upgradeContact": "Entre em contato para melhorar",
+    "planUsage": "{count} / {limit} membros",
+    "planTierLabel": "{tierName} · até {limit} membros"
   },
   "AccessCode": {
     "title": "Acesso ao grupo",
@@ -589,7 +627,8 @@
       "title": "Entrar no grupo",
       "groupNameLabel": "Grupo: {name}",
       "joinButton": "Entrar neste grupo",
-      "joiningButton": "Entrando..."
+      "joiningButton": "Entrando...",
+      "joinFailed": "Nao foi possivel entrar no grupo. Tente novamente."
     }
   },
   "Leaderboard": {
@@ -1158,6 +1197,37 @@
       "statusError": "Erro de sincronização automática",
       "forceSync": "Sincronizar agora",
       "manualOverrideActive": "Sobreposição manual ativa"
-    }
+    },
+    "coupons": {
+      "title": "Cupons",
+      "code": "Código",
+      "type": "Tipo",
+      "typePercent": "Percentual",
+      "typeFixed": "Fixo (USD)",
+      "typeFree": "Grátis",
+      "value": "Valor",
+      "maxUses": "Usos máximos (vazio = ilimitado)",
+      "tiers": "Planos aplicáveis",
+      "expires": "Expira",
+      "create": "Criar cupom",
+      "listCode": "Código",
+      "listType": "Tipo",
+      "listValue": "Valor",
+      "listUses": "Usos",
+      "listTiers": "Planos",
+      "listExpires": "Expira",
+      "listStatus": "Estado",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "toggle": "Alternar",
+      "delete": "Excluir",
+      "statusActive": "ativo",
+      "statusExpired": "expirado",
+      "statusMaxed": "esgotado",
+      "usesUnlimited": "∞",
+      "saved": "Cupom salvo",
+      "deleted": "Cupom excluído",
+      "error": "Algo deu errado"
     }
   }
+}

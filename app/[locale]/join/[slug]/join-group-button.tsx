@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import type { GroupAccessMode } from "@/types/database-enums";
 
@@ -81,6 +80,7 @@ function JoinAccessCodeInputs({
 export default function JoinGroupButton({ groupId, slug, accessMode, autoJoin, isLoggedIn }: Props) {
   const t = useTranslations("Groups");
   const ta = useTranslations("AccessCode");
+  const tp = useTranslations("Pricing");
   const locale = useLocale();
   const router = useRouter();
   const [isJoining, setIsJoining] = useState(false);
@@ -134,16 +134,24 @@ export default function JoinGroupButton({ groupId, slug, accessMode, autoJoin, i
       }
     }
 
-    const displayName = await getDisplayNameForMemberInsert(supabase, user.id, user.email);
-
-    const { error: joinError } = await supabase.from("group_members").insert({
-      group_id: groupId,
-      user_id: user.id,
-      display_name: displayName,
+    const res = await fetch(`/api/groups/${groupId}/join`, {
+      method: "POST",
+      credentials: "same-origin",
     });
+    const payload = (await res.json()) as {
+      ok?: boolean;
+      error?: string;
+      already_member?: boolean;
+      count?: number;
+      limit?: number;
+    };
 
-    if (joinError && joinError.code !== "23505") {
-      setError(joinError.message);
+    if (!res.ok) {
+      if (payload.error === "group_full") {
+        setError(tp("groupFull", { count: String(payload.count ?? 0), limit: String(payload.limit ?? 0) }));
+      } else {
+        setError(t("join.joinFailed"));
+      }
       setIsJoining(false);
       return;
     }
@@ -161,6 +169,8 @@ export default function JoinGroupButton({ groupId, slug, accessMode, autoJoin, i
     router,
     slug,
     ta,
+    tp,
+    t,
   ]);
 
   useEffect(() => {

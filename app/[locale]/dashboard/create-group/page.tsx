@@ -9,8 +9,10 @@ import { useToast } from "@/components/ui/toast-provider";
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
-import { MAX_GROUPS_PER_USER } from "@/lib/constants";
-import type { GroupAccessMode } from "@/types/database-enums";
+import { MAX_GROUPS_PER_USER, PAYMENTS_ENABLED } from "@/lib/constants";
+import { PRICING_TIERS } from "@/lib/stripe";
+import type { GroupAccessMode, TierKey } from "@/types/database-enums";
+import CreateGroupTierStep, { type CouponUiState } from "./create-group-tier-step";
 
 type TiebreakerRule = "most_exact_scores" | "most_correct_results" | "earliest_submission";
 
@@ -89,6 +91,7 @@ export default function CreateGroupPage() {
   const t = useTranslations("Groups");
   const tc = useTranslations("CreateGroup");
   const ta = useTranslations("AccessCode");
+  const tp = useTranslations("Pricing");
   const locale = useLocale();
   const router = useRouter();
   const { showToast } = useToast();
@@ -102,6 +105,10 @@ export default function CreateGroupPage() {
   const [accessCode, setAccessCode] = useState("");
   const [limitReached, setLimitReached] = useState(false);
   const [limitChecked, setLimitChecked] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [selectedTier, setSelectedTier] = useState<TierKey>("partido");
+  const [couponCode, setCouponCode] = useState("");
+  const [couponState, setCouponState] = useState<CouponUiState>({ status: "idle" });
 
   useEffect(() => {
     const supabase = createClient();
@@ -139,9 +146,8 @@ export default function CreateGroupPage() {
     setForm((prev) => ({ ...prev, [key]: Number.isNaN(number) ? 0 : Math.max(0, number) }));
   }
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+  function onFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     if (!canSubmit) {
       if (form.name.trim().length === 0 || form.slug.trim().length === 0) {
         setError(t("errors.missingRequired"));
@@ -150,7 +156,42 @@ export default function CreateGroupPage() {
       }
       return;
     }
+    setError(null);
+    setStep(2);
+  }
 
+  async function applyCoupon() {
+    if (!couponCode.trim() || selectedTier === "pichanga") return;
+    setCouponState({ status: "loading" });
+    const res = await fetch("/api/coupons/validate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: couponCode.trim(), tier: selectedTier }),
+    });
+    const data = (await res.json()) as {
+      valid?: boolean;
+      reason?: string;
+      discount_cents?: number;
+      final_price_cents?: number;
+      coupon_id?: string;
+    };
+    if (res.ok && data?.valid === true && data.coupon_id) {
+      setCouponState({
+        status: "valid",
+        discount_cents: data.discount_cents ?? 0,
+        final_price_cents: data.final_price_cents ?? 0,
+        coupon_id: data.coupon_id,
+      });
+    } else {
+      const reason = (data as { reason?: string }).reason;
+      setCouponState({
+        status: "error",
+        message: reason && reason.length < 120 ? reason : tp("couponInvalid"),
+      });
+    }
+  }
+
+  async function completeTierCreate() {
     setIsSubmitting(true);
     setError(null);
     const supabase = createClient();
@@ -162,10 +203,10 @@ export default function CreateGroupPage() {
 
     if (userError || !user) {
       router.replace(`/${locale}/login`);
+      setIsSubmitting(false);
       return;
     }
 
-    // Server-side limit check
     const { count: adminCount } = await supabase
       .from("groups")
       .select("id", { count: "exact", head: true })
@@ -179,62 +220,143 @@ export default function CreateGroupPage() {
     const descriptionTrimmed = isPublic ? description.trim().slice(0, 200) : "";
     const codeTrim = accessCode.trim();
     const accessCodeInsert = accessMode === "protected" ? codeTrim : null;
+    const memberLimit = PRICING_TIERS[selectedTier].maxMembers;
+    const baseCents = PRICING_TIERS[selectedTier].priceCents;
+    const appliedCouponCode =
+      couponState.status === "valid" && selectedTier !== "pichanga" ? couponCode.trim().toUpperCase() : null;
 
-    const { data: group, error: groupError } = await supabase
-      .from("groups")
-      .insert({
-        name: form.name.trim(),
-        slug: form.slug.trim(),
-        primary_color: form.primaryColor,
-        secondary_color: form.secondaryColor,
-        admin_id: user.id,
-        points_correct_result: form.pointsCorrectResult,
-        points_correct_difference: form.pointsCorrectDifference,
-        points_exact_score: form.pointsExactScore,
-        pre_tournament_bonus_champion: form.bonusChampion,
-        pre_tournament_bonus_runner_up: form.bonusRunnerUp,
-        pre_tournament_bonus_third_place: form.bonusThirdPlace,
-        pre_tournament_bonus_top_scorer: form.bonusTopScorer,
-        pre_tournament_bonus_best_player: form.bonusBestPlayer,
-        pre_tournament_bonus_best_goalkeeper: form.bonusBestGoalkeeper,
-        tiebreaker_rule: form.tiebreakerRule,
-        is_public: isPublic,
-        description: descriptionTrimmed,
-        access_mode: accessMode,
-        access_code: accessCodeInsert,
-      })
-      .select("id")
-      .single();
+    const baseInsert = {
+      name: form.name.trim(),
+      slug: form.slug.trim(),
+      primary_color: form.primaryColor,
+      secondary_color: form.secondaryColor,
+      admin_id: user.id,
+      points_correct_result: form.pointsCorrectResult,
+      points_correct_difference: form.pointsCorrectDifference,
+      points_exact_score: form.pointsExactScore,
+      pre_tournament_bonus_champion: form.bonusChampion,
+      pre_tournament_bonus_runner_up: form.bonusRunnerUp,
+      pre_tournament_bonus_third_place: form.bonusThirdPlace,
+      pre_tournament_bonus_top_scorer: form.bonusTopScorer,
+      pre_tournament_bonus_best_player: form.bonusBestPlayer,
+      pre_tournament_bonus_best_goalkeeper: form.bonusBestGoalkeeper,
+      tiebreaker_rule: form.tiebreakerRule,
+      is_public: isPublic,
+      description: descriptionTrimmed,
+      access_mode: accessMode,
+      access_code: accessCodeInsert,
+      tier: selectedTier,
+      member_limit: memberLimit,
+      coupon_code: appliedCouponCode,
+    };
 
-    if (groupError || !group?.id) {
-      setError(messageForGroupInsertError(groupError, t));
-      setIsSubmitting(false);
+    if (!PAYMENTS_ENABLED) {
+      const { data: group, error: groupError } = await supabase
+        .from("groups")
+        .insert({
+          ...baseInsert,
+          payment_status: "beta",
+        })
+        .select("id")
+        .single();
+
+      if (groupError || !group?.id) {
+        setError(messageForGroupInsertError(groupError, t));
+        setIsSubmitting(false);
+        return;
+      }
+
+      const memberDisplayName = await getDisplayNameForMemberInsert(supabase, user.id, user.email);
+      const { error: memberError } = await supabase.from("group_members").upsert(
+        { group_id: group.id, user_id: user.id, display_name: memberDisplayName },
+        { onConflict: "group_id,user_id" },
+      );
+      if (memberError) {
+        setError(memberError.message || t("errors.memberSaveFailed"));
+        setIsSubmitting(false);
+        return;
+      }
+      showToast(`${t("create.submit")} ✓`, "success");
+      track("group_created", { tier: selectedTier, accessMode, payments: "beta" });
+      router.push(`/${locale}/dashboard/group/${group.id}`);
       return;
     }
 
-    const memberDisplayName = await getDisplayNameForMemberInsert(supabase, user.id, user.email);
-
-    const { error: memberError } = await supabase.from("group_members").upsert(
-      {
-        group_id: group.id,
-        user_id: user.id,
-        display_name: memberDisplayName,
-      },
-      { onConflict: "group_id,user_id" }
-    );
-
-    if (memberError) {
-      setError(memberError.message || t("errors.memberSaveFailed"));
-      setIsSubmitting(false);
+    if (selectedTier === "pichanga" || baseCents === 0) {
+      const { data: group, error: groupError } = await supabase
+        .from("groups")
+        .insert({
+          ...baseInsert,
+          payment_status: "free",
+        })
+        .select("id")
+        .single();
+      if (groupError || !group?.id) {
+        setError(messageForGroupInsertError(groupError, t));
+        setIsSubmitting(false);
+        return;
+      }
+      const memberDisplayName = await getDisplayNameForMemberInsert(supabase, user.id, user.email);
+      const { error: memberError } = await supabase.from("group_members").upsert(
+        { group_id: group.id, user_id: user.id, display_name: memberDisplayName },
+        { onConflict: "group_id,user_id" },
+      );
+      if (memberError) {
+        setError(memberError.message || t("errors.memberSaveFailed"));
+        setIsSubmitting(false);
+        return;
+      }
+      showToast(`${t("create.submit")} ✓`, "success");
+      track("group_created", { tier: selectedTier, accessMode, payments: "free" });
+      router.push(`/${locale}/dashboard/group/${group.id}`);
       return;
     }
 
-    showToast(`${t("create.submit")} ✓`, "success");
-    track("group_created", {
-      tier: isPublic ? "public" : "private",
-      accessMode,
+    const res = await fetch("/api/stripe/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        locale,
+        tier: selectedTier,
+        couponCode: appliedCouponCode,
+        group: {
+          name: form.name.trim(),
+          slug: form.slug.trim(),
+          primary_color: form.primaryColor,
+          secondary_color: form.secondaryColor,
+          points_correct_result: form.pointsCorrectResult,
+          points_correct_difference: form.pointsCorrectDifference,
+          points_exact_score: form.pointsExactScore,
+          pre_tournament_bonus_champion: form.bonusChampion,
+          pre_tournament_bonus_runner_up: form.bonusRunnerUp,
+          pre_tournament_bonus_third_place: form.bonusThirdPlace,
+          pre_tournament_bonus_top_scorer: form.bonusTopScorer,
+          pre_tournament_bonus_best_player: form.bonusBestPlayer,
+          pre_tournament_bonus_best_goalkeeper: form.bonusBestGoalkeeper,
+          tiebreaker_rule: form.tiebreakerRule,
+          is_public: isPublic,
+          description: descriptionTrimmed,
+          access_mode: accessMode,
+          access_code: accessCodeInsert,
+        },
+      }),
     });
-    router.push(`/${locale}/dashboard/group/${group.id}`);
+    const payload = (await res.json()) as { url?: string; redirect?: string; error?: string };
+    if (!res.ok) {
+      setError(payload.error ?? "Checkout failed");
+      setIsSubmitting(false);
+      return;
+    }
+    if (payload.redirect) {
+      window.location.href = payload.redirect;
+      return;
+    }
+    if (payload.url) {
+      window.location.href = payload.url;
+      return;
+    }
+    setError("Checkout failed");
+    setIsSubmitting(false);
   }
 
   if (limitReached) {
@@ -268,13 +390,39 @@ export default function CreateGroupPage() {
     );
   }
 
+  if (step === 2) {
+    return (
+      <main className="min-h-screen bg-dark-900 px-4 py-8">
+        <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
+          <CreateGroupTierStep
+            selectedTier={selectedTier}
+            onSelectTier={(t) => {
+              setSelectedTier(t);
+              setCouponState({ status: "idle" });
+            }}
+            couponCode={couponCode}
+            onCouponCodeChange={setCouponCode}
+            couponState={couponState}
+            onApplyCoupon={() => void applyCoupon()}
+            onBack={() => setStep(1)}
+            onSubmit={() => void completeTierCreate()}
+            busy={isSubmitting}
+          />
+          {error ? (
+            <p className="mt-4 rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p>
+          ) : null}
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-2xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
         <h1 className="text-2xl font-bold text-white">{t("create.title")}</h1>
         <p className="mt-1 text-sm text-slate-500">{t("create.subtitle")}</p>
 
-        <form className="mt-6 space-y-5" onSubmit={onSubmit}>
+        <form className="mt-6 space-y-5" onSubmit={onFormSubmit}>
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="group-name">
               {t("fields.name")}
@@ -581,10 +729,10 @@ export default function CreateGroupPage() {
 
           <button
             type="submit"
-            disabled={isSubmitting || !canSubmit}
+            disabled={!canSubmit}
             className={`min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700 disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
           >
-            {isSubmitting ? t("create.submitting") : t("create.submit")}
+            {tc("continueToPlan")}
           </button>
         </form>
       </section>
