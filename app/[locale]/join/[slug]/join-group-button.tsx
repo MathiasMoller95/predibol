@@ -148,7 +148,7 @@ export default function JoinGroupButton({ groupId, slug, accessMode, autoJoin, i
 
     if (!res.ok) {
       if (payload.error === "group_full") {
-        setError(tp("groupFull", { count: String(payload.count ?? 0), limit: String(payload.limit ?? 0) }));
+        setError(tp("groupFullAskAdmin", { count: String(payload.count ?? 0), limit: String(payload.limit ?? 0) }));
       } else {
         setError(t("join.joinFailed"));
       }

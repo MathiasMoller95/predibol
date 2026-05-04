@@ -76,19 +76,22 @@ export default function CreateGroupTierStep({
               ) : null}
               <p className="text-lg font-semibold text-white">{t(`tierNames.${tier}`)}</p>
               <p className="mt-1 text-sm text-slate-400">{t("upToPlayers", { n: cfg.maxMembers })}</p>
-              <div className="mt-3 flex flex-wrap items-baseline gap-2">
-                {cfg.priceCents === 0 ? (
-                  <span className="text-lg font-bold text-emerald-400">{t("free")}</span>
-                ) : showStrike ? (
-                  <>
-                    <span className="text-lg font-bold text-slate-500 line-through">{formatUsd(cfg.priceCents)}</span>
-                    <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-300">
-                      {t("freeDuringBeta")}
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-lg font-bold text-white">{formatUsd(cfg.priceCents)} USD</span>
-                )}
+              <div className="mt-3">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  {cfg.priceCents === 0 ? (
+                    <span className="text-lg font-bold text-emerald-400">{t("free")}</span>
+                  ) : showStrike ? (
+                    <>
+                      <span className="text-lg font-bold text-slate-500 line-through">{formatUsd(cfg.priceCents)}</span>
+                      <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-300">
+                        {t("freeDuringBeta")}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-bold text-white">{formatUsd(cfg.priceCents)} USD</span>
+                  )}
+                </div>
+                <p className="mt-0.5 text-xs text-slate-500">{cfg.clpRef}</p>
               </div>
               <p className="mt-3 text-xs text-slate-500">{t("allFeaturesLine")}</p>
               {tier === "corpo" ? (

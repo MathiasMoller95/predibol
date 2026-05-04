@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
-import { getStripe } from "@/lib/stripe";
+import { getStripe, PRICING_TIERS } from "@/lib/stripe";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
+import { isStrictTierUpgrade } from "@/lib/tier-order";
+import type { TierKey } from "@/types/database-enums";
 
 export const runtime = "nodejs";
+
+const ALL_TIERS = new Set<TierKey>(["pichanga", "partido", "partidazo", "corpo"]);
 
 export async function POST(req: Request) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -39,6 +43,71 @@ export async function POST(req: Request) {
   try {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
+
+      if (session.metadata?.upgrade === "true") {
+        const groupId = (session.metadata.group_id ?? "").trim();
+        const newTierRaw = (session.metadata.new_tier ?? "").trim() as TierKey;
+        const userId = (session.metadata.user_id ?? "").trim();
+        const amountCents = session.amount_total ?? 0;
+        const pi = typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
+
+        if (!groupId || !ALL_TIERS.has(newTierRaw) || !userId) {
+          console.error("webhook upgrade: bad metadata", session.id, session.metadata);
+          return NextResponse.json({ received: true });
+        }
+
+        const { data: g, error: gErr } = await admin
+          .from("groups")
+          .select("id,admin_id,tier,amount_paid_cents")
+          .eq("id", groupId)
+          .single();
+
+        if (gErr || !g) {
+          console.error("webhook upgrade: group not found", groupId, gErr);
+          return NextResponse.json({ received: true });
+        }
+
+        if (g.admin_id !== userId) {
+          console.error("webhook upgrade: admin mismatch", groupId);
+          return NextResponse.json({ received: true });
+        }
+
+        const currentTier = g.tier as TierKey;
+        if (!ALL_TIERS.has(currentTier) || !isStrictTierUpgrade(currentTier, newTierRaw)) {
+          console.error("webhook upgrade: invalid tier transition", currentTier, newTierRaw);
+          return NextResponse.json({ received: true });
+        }
+
+        const paidSoFar = Number(g.amount_paid_cents ?? 0) || 0;
+        const expectedDelta = Math.max(0, PRICING_TIERS[newTierRaw].priceCents - paidSoFar);
+        if (amountCents !== expectedDelta) {
+          console.error("webhook upgrade: amount mismatch", { amountCents, expectedDelta, session: session.id });
+          return NextResponse.json({ received: true });
+        }
+
+        const paidAt = new Date().toISOString();
+        const cfg = PRICING_TIERS[newTierRaw];
+        const { error: upErr } = await admin
+          .from("groups")
+          .update({
+            tier: newTierRaw,
+            member_limit: cfg.maxMembers,
+            amount_paid_cents: cfg.priceCents,
+            payment_status: "paid",
+            paid_at: paidAt,
+            stripe_payment_intent_id: pi ?? null,
+            stripe_session_id: session.id,
+          })
+          .eq("id", groupId);
+
+        if (upErr) {
+          console.error("webhook upgrade: update failed", upErr);
+          return NextResponse.json({ error: "upgrade update failed" }, { status: 500 });
+        }
+
+        return NextResponse.json({ received: true });
+      }
+
       const groupId = (session.metadata?.group_id ?? session.client_reference_id ?? "").trim();
       if (!groupId) {
         console.error("webhook: missing group id", session.id);
@@ -84,6 +153,9 @@ export async function POST(req: Request) {
       }
     } else if (event.type === "checkout.session.expired") {
       const session = event.data.object as Stripe.Checkout.Session;
+      if (session.metadata?.upgrade === "true") {
+        return NextResponse.json({ received: true });
+      }
       const groupId = (session.metadata?.group_id ?? session.client_reference_id ?? "").trim();
       if (groupId) {
         await admin.from("groups").delete().eq("id", groupId).eq("payment_status", "pending");

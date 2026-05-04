@@ -57,7 +57,7 @@ export default function DiscoverGroupList({ locale, groups }: Props) {
     if (!res.ok) {
       const msg =
         payload.error === "group_full"
-          ? tp("groupFull", { count: String(payload.count ?? 0), limit: String(payload.limit ?? 0) })
+          ? tp("groupFullAskAdmin", { count: String(payload.count ?? 0), limit: String(payload.limit ?? 0) })
           : "Could not join";
       setErrorById((prev) => ({ ...prev, [group.id]: msg }));
       setBusyId(null);

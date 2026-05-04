@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -6,7 +7,9 @@ import { isSuperAdmin } from "@/lib/auth";
 import { resolveGroupTheme } from "@/lib/group-theme";
 import type { Json } from "@/types/supabase";
 import type { GroupAccessMode, TierKey } from "@/types/database-enums";
+import AdminUpgradeQueryToast from "./admin-upgrade-query-toast";
 import GroupPlanPanel from "./group-plan-panel";
+import GroupUpgradePanel from "./group-upgrade-panel";
 import AdminMatchPanel, { type AdminMatch, type PredictionLite } from "./admin-match-panel";
 import GroupAccessAdminPanel from "./group-access-admin-panel";
 import GroupIdentityPanel from "./group-identity-panel";
@@ -30,6 +33,8 @@ type GroupRecord = {
   secondary_color: string | null;
   tier: string;
   member_limit: number;
+  amount_paid_cents: number | null;
+  payment_status: string;
 };
 
 type MemberRecord = {
@@ -54,7 +59,9 @@ export default async function GroupAdminResultsPage({ params }: Props) {
 
   const { data: group, error: groupError } = await supabase
     .from("groups")
-    .select("id,name,slug,admin_id,colors,logo_url,primary_color,secondary_color,tier,member_limit")
+    .select(
+      "id,name,slug,admin_id,colors,logo_url,primary_color,secondary_color,tier,member_limit,amount_paid_cents,payment_status",
+    )
     .eq("id", groupId)
     .single();
 
@@ -191,11 +198,21 @@ export default async function GroupAdminResultsPage({ params }: Props) {
           initialTintHex={theme.primary}
         />
 
+        <Suspense fallback={null}>
+          <AdminUpgradeQueryToast groupId={groupId} />
+        </Suspense>
+
         <GroupPlanPanel
           locale={locale}
           tier={(typedGroup.tier as TierKey) ?? "pichanga"}
           memberLimit={typedGroup.member_limit ?? 7}
           memberCount={((members ?? []) as MemberRecord[]).length}
+        />
+
+        <GroupUpgradePanel
+          groupId={groupId}
+          currentTier={(typedGroup.tier as TierKey) ?? "pichanga"}
+          amountPaidCents={typedGroup.amount_paid_cents}
         />
 
         <MemberActivitySection locale={locale} rows={activityRows} />
