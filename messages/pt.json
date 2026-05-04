@@ -275,7 +275,10 @@
     "groupDescriptionPlaceholder": "Descreva seu grupo para outras pessoas encontrarem",
     "groupDescriptionHelp": "No maximo 200 caracteres. Aparece na pagina de descoberta.",
     "backToDashboard": "Voltar ao início",
-    "continueToPlan": "Continuar para o plano"
+    "continueToPlan": "Continuar para o plano",
+    "continueAfterPlan": "Continuar",
+    "backToPlan": "Voltar ao plano",
+    "configureTitle": "Configure o seu grupo"
   },
   "PaymentSuccess": {
     "title": "Bem-vindo ao seu grupo!",

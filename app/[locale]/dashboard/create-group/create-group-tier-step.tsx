@@ -27,6 +27,7 @@ type Props = {
   onApplyCoupon: () => void;
   onBack: () => void;
   onSubmit: () => void;
+  submitLabel: string;
   busy: boolean;
 };
 
@@ -39,6 +40,7 @@ export default function CreateGroupTierStep({
   onApplyCoupon,
   onBack,
   onSubmit,
+  submitLabel,
   busy,
 }: Props) {
   const t = useTranslations("Pricing");
@@ -53,7 +55,7 @@ export default function CreateGroupTierStep({
         <p className="mt-1 text-sm text-slate-400">{t("choosePlanSubtitle")}</p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {TIER_ORDER.map((tier) => {
           const cfg = PRICING_TIERS[tier];
           const selected = selectedTier === tier;
@@ -161,7 +163,7 @@ export default function CreateGroupTierStep({
           onClick={onSubmit}
           className={`rounded-lg bg-emerald-600 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 ${PRIMARY_BUTTON_CLASSES}`}
         >
-          {busy ? "…" : t("createGroup")}
+          {busy ? "…" : submitLabel}
         </button>
       </div>
     </div>

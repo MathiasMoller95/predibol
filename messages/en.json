@@ -275,7 +275,10 @@
     "groupDescriptionPlaceholder": "Describe your group so others can find it",
     "groupDescriptionHelp": "Max 200 characters. Shown on the discovery page.",
     "backToDashboard": "Back to dashboard",
-    "continueToPlan": "Continue to plan"
+    "continueToPlan": "Continue to plan",
+    "continueAfterPlan": "Continue",
+    "backToPlan": "Back to plan",
+    "configureTitle": "Configure your group"
   },
   "PaymentSuccess": {
     "title": "Welcome to your group!",

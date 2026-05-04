@@ -146,7 +146,7 @@ export default function CreateGroupPage() {
     setForm((prev) => ({ ...prev, [key]: Number.isNaN(number) ? 0 : Math.max(0, number) }));
   }
 
-  function onFormSubmit(event: FormEvent<HTMLFormElement>) {
+  function onCreateGroupSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!canSubmit) {
       if (form.name.trim().length === 0 || form.slug.trim().length === 0) {
@@ -157,7 +157,7 @@ export default function CreateGroupPage() {
       return;
     }
     setError(null);
-    setStep(2);
+    void completeTierCreate();
   }
 
   async function applyCoupon() {
@@ -390,23 +390,27 @@ export default function CreateGroupPage() {
     );
   }
 
-  if (step === 2) {
+  if (step === 1) {
     return (
       <main className="min-h-screen bg-dark-900 px-4 py-8">
         <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
           <CreateGroupTierStep
             selectedTier={selectedTier}
-            onSelectTier={(t) => {
-              setSelectedTier(t);
+            onSelectTier={(tier) => {
+              setSelectedTier(tier);
               setCouponState({ status: "idle" });
             }}
             couponCode={couponCode}
             onCouponCodeChange={setCouponCode}
             couponState={couponState}
             onApplyCoupon={() => void applyCoupon()}
-            onBack={() => setStep(1)}
-            onSubmit={() => void completeTierCreate()}
-            busy={isSubmitting}
+            onBack={() => router.push(`/${locale}/dashboard`)}
+            onSubmit={() => {
+              setError(null);
+              setStep(2);
+            }}
+            submitLabel={tc("continueAfterPlan")}
+            busy={false}
           />
           {error ? (
             <p className="mt-4 rounded-lg border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p>
@@ -419,10 +423,20 @@ export default function CreateGroupPage() {
   return (
     <main className="min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-2xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
-        <h1 className="text-2xl font-bold text-white">{t("create.title")}</h1>
+        <button
+          type="button"
+          onClick={() => {
+            setError(null);
+            setStep(1);
+          }}
+          className="mb-4 text-sm text-slate-400 underline-offset-2 hover:text-white hover:underline"
+        >
+          {tc("backToPlan")}
+        </button>
+        <h1 className="text-2xl font-bold text-white">{tc("configureTitle")}</h1>
         <p className="mt-1 text-sm text-slate-500">{t("create.subtitle")}</p>
 
-        <form className="mt-6 space-y-5" onSubmit={onFormSubmit}>
+        <form className="mt-6 space-y-5" onSubmit={onCreateGroupSubmit}>
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="group-name">
               {t("fields.name")}
@@ -729,10 +743,10 @@ export default function CreateGroupPage() {
 
           <button
             type="submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit || isSubmitting}
             className={`min-h-[48px] w-full rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700 disabled:bg-emerald-400 ${PRIMARY_BUTTON_CLASSES}`}
           >
-            {tc("continueToPlan")}
+            {isSubmitting ? t("create.submitting") : t("create.submit")}
           </button>
         </form>
       </section>
