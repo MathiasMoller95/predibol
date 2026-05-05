@@ -278,13 +278,23 @@
     "continueToPlan": "Continuar al plan",
     "continueAfterPlan": "Continuar",
     "backToPlan": "Volver al plan",
-    "configureTitle": "Configura tu grupo"
+    "configureTitle": "Configura tu grupo",
+    "logoOptional": "Logo del grupo (opcional)",
+    "logoUpload": "Subir logo",
+    "logoDragHint": "Arrastra y suelta o toca para seleccionar",
+    "logoFormats": "PNG, JPG, WEBP, SVG · Máx. 2MB",
+    "logoRemove": "Quitar",
+    "logoUploadFailed": "No se pudo subir el logo. Añádelo después en la administración del grupo.",
+    "logoCouldNotStore": "No se pudo guardar el logo para el pago. Podrás añadirlo después en la administración del grupo.",
+    "advancedSettings": "Configuración avanzada",
+    "advancedSettingsHint": "Reglas de puntuación, bonos y desempate. Los valores predeterminados funcionan bien para la mayoría de los grupos."
   },
   "PaymentSuccess": {
     "title": "¡Bienvenido a tu grupo!",
     "subtitle": "Redirigiendo al grupo…",
     "waiting": "Confirmando el pago…",
-    "failed": "Aún no confirmamos el pago. Abre tu grupo desde el panel o contacta soporte."
+    "failed": "No pudimos confirmar el pago aún. Abre tu grupo desde el panel o contacta soporte.",
+    "logoUploadFailed": "No se pudo subir el logo. Añádelo en la administración del grupo."
   },
   "Pricing": {
     "choosePlan": "Elige tu plan",
@@ -297,7 +307,6 @@
     },
     "upToPlayers": "Hasta {n} jugadores",
     "free": "Gratis",
-    "freeDuringBeta": "Gratis durante la beta",
     "allFeaturesLine": "Todas las funciones incluidas",
     "mostPopular": "Mas popular",
     "corpoContactLine": "O contáctanos para una configuracion personalizada",
@@ -659,7 +668,11 @@
     "colExactScores": "Marcadores exactos",
     "colPredictionsMade": "Pronosticos",
     "notPlayedYet": "Aún sin jugar",
-    "rankNewAria": "Nuevo en la tabla"
+    "rankNewAria": "Nuevo en la tabla",
+    "preTournamentBanner": "🏟️ Clasificación pre-torneo — según predicciones enviadas. ¡Los puntos empiezan a contar el 11 de junio!",
+    "colPredictions": "Predicciones",
+    "colStatus": "Estado",
+    "ready": "Listo"
   },
   "VirtualBets": {
     "tab": {
@@ -823,6 +836,7 @@
     "groupLabel": "Grupo {letter}",
     "groupProgress": "{count}/{total} pronosticados",
     "backToGroups": "Volver a grupos",
+    "collapse": "Cerrar",
     "knockoutTitle": "Fase eliminatoria",
     "tapToPredict": "Toca para jugar →",
     "allPredicted": "✓ Todo pronosticado — toca para editar",

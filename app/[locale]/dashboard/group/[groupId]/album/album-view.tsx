@@ -1,7 +1,6 @@
 "use client";
 
 import { track } from "@vercel/analytics";
-import Link from "next/link";
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -25,15 +24,12 @@ const ALL_TEAMS = Object.keys(teamFlags);
 const GROUP_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
 
 export default function AlbumView({
-  locale,
   groupId,
-  groupName,
   stickers,
   matchLabels,
   groupMembers,
 }: Props) {
   const t = useTranslations("Album");
-  const common = useTranslations("Common");
 
   const stickerMap = useMemo(() => {
     const m = new Map<string, StickerData>();
@@ -203,13 +199,6 @@ export default function AlbumView({
     <>
       <main className="animate-page-in min-h-screen bg-[#0A0E14] px-4 py-8">
         <div className="mx-auto w-full max-w-4xl">
-        <Link
-          href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-gpri hover:text-gpri/90"
-        >
-          {common("backToGroup", { groupName })}
-        </Link>
-
         <h1 className="mt-4 text-2xl font-bold text-white">{t("title")}</h1>
 
         {/* Progress */}

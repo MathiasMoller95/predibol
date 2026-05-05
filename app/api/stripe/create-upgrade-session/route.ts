@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
-import { PAYMENTS_ENABLED } from "@/lib/constants";
 import { getStripe, PRICING_TIERS, siteBaseUrl } from "@/lib/stripe";
 import { higherTiersThan, isStrictTierUpgrade } from "@/lib/tier-order";
 import type { TierKey } from "@/types/database-enums";
@@ -15,10 +14,6 @@ function paidAtIso() {
 }
 
 export async function POST(req: Request) {
-  if (!PAYMENTS_ENABLED) {
-    return NextResponse.json({ error: "Payments disabled" }, { status: 400 });
-  }
-
   let body: { groupId?: string; newTier?: TierKey; locale?: string };
   try {
     body = (await req.json()) as typeof body;

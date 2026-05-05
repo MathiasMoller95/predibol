@@ -1,5 +1,4 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
+import { setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { GroupMatchLite, PredictionScores } from "@/lib/projected-standings";
@@ -17,7 +16,6 @@ export default async function GroupBracketPage({ params }: Props) {
   const { locale, groupId } = params;
   setRequestLocale(locale);
 
-  const common = await getTranslations("Common");
   const supabase = await createClient();
   const {
     data: { user },
@@ -32,8 +30,6 @@ export default async function GroupBracketPage({ params }: Props) {
   if (groupError || !group) {
     notFound();
   }
-
-  const groupName = group.name as string;
 
   const { data: membership } = await supabase
     .from("group_members")
@@ -105,9 +101,6 @@ export default async function GroupBracketPage({ params }: Props) {
   return (
     <main className="animate-page-in min-h-screen bg-[#0A0E14] px-4 py-8">
       <section className="mx-auto w-full max-w-[1600px] rounded-xl border border-dark-600 bg-dark-800/60 p-5 sm:p-6">
-        <Link href={`/${locale}/dashboard/group/${groupId}`} className="text-sm font-medium text-gpri hover:text-gpri/90">
-          {common("backToGroup", { groupName })}
-        </Link>
         <BracketWithTabs
           knockoutMatches={matches}
           groupStageMatches={groupStageMatches}

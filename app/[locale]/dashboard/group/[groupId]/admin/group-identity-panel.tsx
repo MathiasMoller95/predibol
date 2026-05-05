@@ -1,20 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import LogoUploadField from "@/components/LogoUploadField";
+import { uploadGroupLogo } from "@/lib/group-logo-upload";
 import { extractDominantColorsFromFile } from "@/lib/extract-dominant-colors";
 import { useToast } from "@/components/ui/toast-provider";
-
-function extFromMime(m: string): string {
-  if (m === "image/png") return "png";
-  if (m === "image/jpeg" || m === "image/jpg") return "jpg";
-  if (m === "image/webp") return "webp";
-  if (m === "image/svg+xml") return "svg";
-  return "png";
-}
 
 function tintFromPrimaryHex(hex: string): string {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
@@ -46,8 +39,6 @@ export default function GroupIdentityPanel({
   const supabase = createClient();
   const { showToast } = useToast();
   const t = useTranslations("AdminPage.identity");
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const [logoUrl, setLogoUrl] = useState(initialLogoUrl);
   const [uploading, setUploading] = useState(false);
   const [pendingColors, setPendingColors] = useState<{
@@ -62,31 +53,12 @@ export default function GroupIdentityPanel({
   }));
 
   const onFile = useCallback(
-    async (file: File | null) => {
-      if (!file) return;
-      if (file.size > 2 * 1024 * 1024) {
-        showToast(t("fileTooBig"), "error");
-        return;
-      }
-      const allowed = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
-      if (!allowed.includes(file.type)) {
-        showToast(t("invalidType"), "error");
-        return;
-      }
+    async (file: File) => {
       setUploading(true);
       try {
-        const ext = extFromMime(file.type);
-        const path = `${groupId}/logo.${ext}`;
-        const { error: upErr } = await supabase.storage.from("group-logos").upload(path, file, {
-          upsert: true,
-          contentType: file.type,
-        });
-        if (upErr) throw upErr;
-        const { data: pub } = supabase.storage.from("group-logos").getPublicUrl(path);
-        const publicUrl = pub.publicUrl;
-        const { error: dbErr } = await supabase.from("groups").update({ logo_url: publicUrl }).eq("id", groupId);
-        if (dbErr) throw dbErr;
-        setLogoUrl(publicUrl);
+        const { error, publicUrl } = await uploadGroupLogo(supabase, groupId, file, file.type);
+        if (error) throw error;
+        if (publicUrl) setLogoUrl(publicUrl);
 
         try {
           const colors = await extractDominantColorsFromFile(file);
@@ -192,58 +164,24 @@ export default function GroupIdentityPanel({
       <p className="mt-1 text-sm text-slate-400">{t("sectionHint")}</p>
 
       <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start">
-        <div
-          className="flex shrink-0 flex-col items-center gap-2"
-          onDragOver={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+        <LogoUploadField
+          previewUrl={logoUrl}
+          onFileSelected={(f) => void onFile(f)}
+          onClear={() => void removeLogo()}
+          onValidationError={(reason) =>
+            showToast(reason === "size" ? t("fileTooBig") : t("invalidType"), "error")
+          }
+          labels={{
+            upload: t("uploadLogo"),
+            hint: t("dropHint"),
+            remove: t("removeLogo"),
           }}
-          onDrop={(e) => {
-            e.preventDefault();
-            const f = e.dataTransfer.files[0];
-            void onFile(f ?? null);
-          }}
-        >
-          <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border border-dark-500 bg-dark-800">
-            {logoUrl ? (
-              <Image src={logoUrl} alt="" width={96} height={96} className="h-full w-full object-cover" unoptimized />
-            ) : (
-              <span className="text-4xl text-slate-600" aria-hidden>
-                ⚽
-              </span>
-            )}
-            {uploading ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-sm font-medium text-white">
-                {t("uploading")}
-              </div>
-            ) : null}
-          </div>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
-            className="hidden"
-            onChange={(e) => void onFile(e.target.files?.[0] ?? null)}
-          />
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 hover:border-gpri/40 hover:bg-dark-600 disabled:opacity-50"
-          >
-            {t("uploadLogo")}
-          </button>
-          <p className="max-w-[12rem] text-center text-xs text-slate-500">{t("dropHint")}</p>
-          {logoUrl ? (
-            <button
-              type="button"
-              onClick={() => void removeLogo()}
-              className="text-sm font-medium text-red-400/90 hover:text-red-300"
-            >
-              {t("removeLogo")}
-            </button>
-          ) : null}
-        </div>
+          busy={uploading}
+          busyLabel={t("uploading")}
+          sizePx={96}
+          previewShape="rounded"
+          className="shrink-0 sm:w-auto"
+        />
 
         <div className="min-w-0 flex-1 space-y-4">
           {pendingColors ? (

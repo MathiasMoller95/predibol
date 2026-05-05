@@ -22,11 +22,19 @@ export type LeaderboardBoardRow = {
   positiveStreak?: number;
 };
 
+export type PreTournamentData = {
+  totalMatches: number;
+  predictionCountByUser: Record<string, number>;
+  firstSubmittedAtByUser: Record<string, string>;
+  picksCompleteByUser: Record<string, boolean>;
+};
+
 type Props = {
   groupName: string;
   locale: string;
   currentUserId: string;
   rows: LeaderboardBoardRow[];
+  preTournament?: PreTournamentData | null;
 };
 
 type Tab = "points" | "pnl";
@@ -38,10 +46,33 @@ function formatPnlLabel(pnl: number, t: ReturnType<typeof useTranslations<"Virtu
   return t("profit", { amount: "0.00" });
 }
 
-export default function LeaderboardBoard({ groupName, locale, currentUserId, rows }: Props) {
+export default function LeaderboardBoard({ groupName, locale, currentUserId, rows, preTournament }: Props) {
   const t = useTranslations("Leaderboard");
   const tv = useTranslations("VirtualBets");
   const [tab, setTab] = useState<Tab>("points");
+
+  const preTournamentRows = useMemo(() => {
+    if (!preTournament) return null;
+    const total = Math.max(0, Number(preTournament.totalMatches ?? 0) || 0);
+
+    const list = rows.map((r) => {
+      const predicted = Math.max(0, Number(preTournament.predictionCountByUser[r.user_id] ?? 0) || 0);
+      const picksComplete = preTournament.picksCompleteByUser[r.user_id] === true;
+      const first = preTournament.firstSubmittedAtByUser[r.user_id] ?? null;
+      return { base: r, predicted, picksComplete, first };
+    });
+
+    list.sort((a, b) => {
+      if (b.predicted !== a.predicted) return b.predicted - a.predicted;
+      if (b.picksComplete !== a.picksComplete) return b.picksComplete ? 1 : -1;
+      if (a.first && b.first) return a.first.localeCompare(b.first);
+      if (a.first) return -1;
+      if (b.first) return 1;
+      return a.base.display_name.localeCompare(b.base.display_name, undefined, { sensitivity: "base" });
+    });
+
+    return { totalMatches: total, list };
+  }, [preTournament, rows]);
 
   const pnlRows = useMemo(() => {
     const sorted = [...rows].sort((a, b) => {
@@ -90,10 +121,23 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
         </p>
       ) : null}
 
+      {tab === "points" && preTournamentRows ? (
+        <div className="mt-6 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-sm text-amber-300">
+          {t("preTournamentBanner")}
+        </div>
+      ) : null}
+
       <div className="mt-8 overflow-x-auto rounded-xl border border-dark-600">
         <table className="min-w-full border-collapse text-left text-sm">
           <thead>
-            {tab === "points" ? (
+            {tab === "points" && preTournamentRows ? (
+              <tr className="border-b border-dark-600 bg-dark-700 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <th className="whitespace-nowrap py-3 pl-4 pr-4">{t("colRank")}</th>
+                <th className="whitespace-nowrap py-3 pr-4">{t("colName")}</th>
+                <th className="whitespace-nowrap py-3 pr-4 text-right">{t("colPredictions")}</th>
+                <th className="whitespace-nowrap py-3 pr-4">{t("colStatus")}</th>
+              </tr>
+            ) : tab === "points" ? (
               <tr className="border-b border-dark-600 bg-dark-700 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 <th className="whitespace-nowrap py-3 pl-4 pr-4">{t("colRank")}</th>
                 <th className="whitespace-nowrap py-3 pr-4">{t("colName")}</th>
@@ -113,7 +157,68 @@ export default function LeaderboardBoard({ groupName, locale, currentUserId, row
             )}
           </thead>
           <tbody>
-            {tab === "points"
+            {tab === "points" && preTournamentRows
+              ? preTournamentRows.list.map((row, index) => {
+                  const r = row.base;
+                  const isAI = r.user_id === AI_PLAYER_ID;
+                  const isSelf = !isAI && r.user_id === currentUserId;
+                  const topThree = index + 1 <= 3;
+                  const medal = index === 0 ? "🥇 " : index === 1 ? "🥈 " : index === 2 ? "🥉 " : "";
+                  const tierBorder = isAI
+                    ? "border-l-4 border-purple-500"
+                    : index === 0
+                      ? "border-l-4 border-yellow-400"
+                      : index === 1
+                        ? "border-l-4 border-slate-300"
+                        : index === 2
+                          ? "border-l-4 border-amber-600"
+                          : "";
+                  const selfBorder = isSelf && !topThree ? "border-l-4 border-l-gpri" : "";
+                  const rowBg = isSelf ? "bg-gpri/15 ring-1 ring-inset ring-gpri/30" : "";
+
+                  const total = preTournamentRows.totalMatches;
+                  const predicted = Math.min(row.predicted, total);
+                  const predsLabel = `${predicted}/${total}`;
+                  const statusLabel =
+                    total > 0 && predicted >= total
+                      ? `✅ ${t("ready")}`
+                      : predicted === 0
+                        ? `😴 ${predsLabel}`
+                        : `⏳ ${predsLabel}`;
+
+                  return (
+                    <tr
+                      key={r.user_id}
+                      style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}
+                      className={["animate-page-in border-b border-dark-600", tierBorder, selfBorder, rowBg]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      <td className={`whitespace-nowrap py-3 pl-4 pr-4 font-medium ${topThree ? "text-gold" : "text-slate-200"}`}>
+                        <span aria-hidden>{medal}</span>
+                        {index + 1}
+                        {isSelf ? (
+                          <span className="ml-2 rounded-full bg-gpri/15 px-2 py-0.5 text-xs font-medium text-gsec ring-1 ring-gpri/40">
+                            {t("youBadge")}
+                          </span>
+                        ) : null}
+                      </td>
+                      <td className="py-3 pr-4 text-slate-300">
+                        <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
+                          {r.display_name}
+                          {isAI ? (
+                            <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-xs font-medium text-purple-400">
+                              IA
+                            </span>
+                          ) : null}
+                        </span>
+                      </td>
+                      <td className="py-3 pr-4 text-right font-mono tabular-nums text-slate-300">{predsLabel}</td>
+                      <td className="py-3 pr-4 text-slate-400">{statusLabel}</td>
+                    </tr>
+                  );
+                })
+              : tab === "points"
               ? rows.map((row, index) => {
                   const isAI = row.user_id === AI_PLAYER_ID;
                   const isSelf = !isAI && row.user_id === currentUserId;

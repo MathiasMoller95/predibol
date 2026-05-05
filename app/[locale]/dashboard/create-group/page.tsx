@@ -6,12 +6,19 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useToast } from "@/components/ui/toast-provider";
+import { ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
-import { MAX_GROUPS_PER_USER, PAYMENTS_ENABLED } from "@/lib/constants";
+import { MAX_GROUPS_PER_USER } from "@/lib/constants";
 import { PRICING_TIERS } from "@/lib/stripe";
 import type { GroupAccessMode, TierKey } from "@/types/database-enums";
+import LogoUploadField from "@/components/LogoUploadField";
+import {
+  PENDING_GROUP_LOGO_STORAGE_KEY,
+  readFileAsDataUrl,
+  uploadGroupLogo,
+} from "@/lib/group-logo-upload";
 import CreateGroupTierStep, { type CouponUiState } from "./create-group-tier-step";
 
 type TiebreakerRule = "most_exact_scores" | "most_correct_results" | "earliest_submission";
@@ -90,6 +97,7 @@ function messageForGroupInsertError(
 export default function CreateGroupPage() {
   const t = useTranslations("Groups");
   const tc = useTranslations("CreateGroup");
+  const ti = useTranslations("AdminPage.identity");
   const ta = useTranslations("AccessCode");
   const tp = useTranslations("Pricing");
   const locale = useLocale();
@@ -109,6 +117,19 @@ export default function CreateGroupPage() {
   const [selectedTier, setSelectedTier] = useState<TierKey>("partido");
   const [couponCode, setCouponCode] = useState("");
   const [couponState, setCouponState] = useState<CouponUiState>({ status: "idle" });
+  const [pendingLogoFile, setPendingLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+
+  useEffect(() => {
+    if (!pendingLogoFile) {
+      setLogoPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(pendingLogoFile);
+    setLogoPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [pendingLogoFile]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -250,38 +271,6 @@ export default function CreateGroupPage() {
       coupon_code: appliedCouponCode,
     };
 
-    if (!PAYMENTS_ENABLED) {
-      const { data: group, error: groupError } = await supabase
-        .from("groups")
-        .insert({
-          ...baseInsert,
-          payment_status: "beta",
-        })
-        .select("id")
-        .single();
-
-      if (groupError || !group?.id) {
-        setError(messageForGroupInsertError(groupError, t));
-        setIsSubmitting(false);
-        return;
-      }
-
-      const memberDisplayName = await getDisplayNameForMemberInsert(supabase, user.id, user.email);
-      const { error: memberError } = await supabase.from("group_members").upsert(
-        { group_id: group.id, user_id: user.id, display_name: memberDisplayName },
-        { onConflict: "group_id,user_id" },
-      );
-      if (memberError) {
-        setError(memberError.message || t("errors.memberSaveFailed"));
-        setIsSubmitting(false);
-        return;
-      }
-      showToast(`${t("create.submit")} ✓`, "success");
-      track("group_created", { tier: selectedTier, accessMode, payments: "beta" });
-      router.push(`/${locale}/dashboard/group/${group.id}`);
-      return;
-    }
-
     if (selectedTier === "pichanga" || baseCents === 0) {
       const { data: group, error: groupError } = await supabase
         .from("groups")
@@ -305,6 +294,27 @@ export default function CreateGroupPage() {
         setError(memberError.message || t("errors.memberSaveFailed"));
         setIsSubmitting(false);
         return;
+      }
+      const { error: aiRpcErrFree } = await supabase.rpc("ensure_ai_player_leaderboard", {
+        p_group_id: group.id,
+      });
+      if (aiRpcErrFree) {
+        setError(aiRpcErrFree.message || t("errors.createFailed"));
+        setIsSubmitting(false);
+        return;
+      }
+      if (pendingLogoFile) {
+        const { error: logoErrFree } = await uploadGroupLogo(
+          supabase,
+          group.id,
+          pendingLogoFile,
+          pendingLogoFile.type,
+        );
+        if (logoErrFree) {
+          setError(logoErrFree.message || tc("logoUploadFailed"));
+          setIsSubmitting(false);
+          return;
+        }
       }
       showToast(`${t("create.submit")} ✓`, "success");
       track("group_created", { tier: selectedTier, accessMode, payments: "free" });
@@ -341,17 +351,46 @@ export default function CreateGroupPage() {
         },
       }),
     });
-    const payload = (await res.json()) as { url?: string; redirect?: string; error?: string };
+    const payload = (await res.json()) as {
+      url?: string;
+      redirect?: string;
+      group_id?: string;
+      error?: string;
+    };
     if (!res.ok) {
       setError(payload.error ?? "Checkout failed");
       setIsSubmitting(false);
       return;
     }
     if (payload.redirect) {
+      if (pendingLogoFile && payload.group_id) {
+        const { error: logoErrCoupon } = await uploadGroupLogo(
+          supabase,
+          payload.group_id,
+          pendingLogoFile,
+          pendingLogoFile.type,
+        );
+        if (logoErrCoupon) {
+          setError(logoErrCoupon.message || tc("logoUploadFailed"));
+          setIsSubmitting(false);
+          return;
+        }
+      }
       window.location.href = payload.redirect;
       return;
     }
     if (payload.url) {
+      if (pendingLogoFile && payload.group_id) {
+        try {
+          const dataUrl = await readFileAsDataUrl(pendingLogoFile);
+          sessionStorage.setItem(
+            PENDING_GROUP_LOGO_STORAGE_KEY,
+            JSON.stringify({ groupId: payload.group_id, dataUrl }),
+          );
+        } catch {
+          showToast(tc("logoCouldNotStore"), "error");
+        }
+      }
       window.location.href = payload.url;
       return;
     }
@@ -468,6 +507,25 @@ export default function CreateGroupPage() {
             />
           </div>
 
+          <LogoUploadField
+            previewUrl={logoPreviewUrl}
+            onFileSelected={setPendingLogoFile}
+            onClear={() => setPendingLogoFile(null)}
+            onValidationError={(reason) =>
+              showToast(reason === "size" ? ti("fileTooBig") : ti("invalidType"), "error")
+            }
+            labels={{
+              title: tc("logoOptional"),
+              upload: tc("logoUpload"),
+              hint: tc("logoDragHint"),
+              formats: tc("logoFormats"),
+              remove: tc("logoRemove"),
+            }}
+            disabled={isSubmitting}
+            sizePx={80}
+            previewShape="circle"
+          />
+
           <fieldset className="rounded-lg border border-dark-600 bg-dark-700/50 p-4">
             <legend className="px-1 text-sm font-medium text-slate-200">{tc("visibility")}</legend>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
@@ -479,6 +537,8 @@ export default function CreateGroupPage() {
                   onChange={() => {
                     setIsPublic(false);
                     setDescription("");
+                    setAccessMode("open");
+                    setAccessCode("");
                   }}
                   className="mt-1"
                 />
@@ -518,6 +578,84 @@ export default function CreateGroupPage() {
                 <p className="mt-1 text-xs text-slate-500">{tc("groupDescriptionHelp")}</p>
               </div>
             ) : null}
+
+            {isPublic ? (
+              <div className="mt-5">
+                <h2 className="mb-3 text-sm font-semibold text-slate-200">{ta("title")}</h2>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAccessMode("open");
+                      setAccessCode("");
+                    }}
+                    className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 ${
+                      accessMode === "open"
+                        ? "bg-emerald-500/5 ring-2 ring-emerald-500"
+                        : "bg-[#111720] ring-0"
+                    }`}
+                  >
+                    <span className="text-lg" aria-hidden>
+                      🔓
+                    </span>
+                    <p className="mt-2 text-sm font-medium text-white">{ta("open")}</p>
+                    <p className="mt-1 text-xs text-slate-400">{ta("openDescription")}</p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAccessMode("protected");
+                      if (!/^\d{6}$/.test(accessCode)) {
+                        setAccessCode(randomSixDigitCode());
+                      }
+                    }}
+                    className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 ${
+                      accessMode === "protected"
+                        ? "bg-emerald-500/5 ring-2 ring-emerald-500"
+                        : "bg-[#111720] ring-0"
+                    }`}
+                  >
+                    <span className="text-lg" aria-hidden>
+                      🔒
+                    </span>
+                    <p className="mt-2 text-sm font-medium text-white">{ta("protected")}</p>
+                    <p className="mt-1 text-xs text-slate-400">{ta("protectedDescription")}</p>
+                  </button>
+                </div>
+
+                {accessMode === "protected" ? (
+                  <div className="mt-4 space-y-2 rounded-lg border border-dark-600 bg-dark-700/50 p-4">
+                    <label className="block text-xs font-medium text-slate-400" htmlFor="access-code">
+                      {ta("protected")}
+                    </label>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <input
+                        id="access-code"
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={6}
+                        value={accessCode}
+                        onChange={(e) => setAccessCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 font-mono text-lg tracking-widest text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 sm:max-w-[12rem]"
+                        placeholder="000000"
+                        aria-describedby="access-code-hint"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setAccessCode(randomSixDigitCode())}
+                        className="shrink-0 rounded-lg border border-dark-500 bg-dark-800 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:border-emerald-500/50"
+                      >
+                        {ta("generateCode")}
+                      </button>
+                    </div>
+                    <p id="access-code-hint" className="text-xs text-slate-500">
+                      {ta("shareCodeHint")}
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </fieldset>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -547,194 +685,145 @@ export default function CreateGroupPage() {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.pointsCorrectResult")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.pointsCorrectResult}
-                onChange={(event) => onNumberChange("pointsCorrectResult", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.pointsCorrectDifference")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.pointsCorrectDifference}
-                onChange={(event) => onNumberChange("pointsCorrectDifference", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.pointsExactScore")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.pointsExactScore}
-                onChange={(event) => onNumberChange("pointsExactScore", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusChampion")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.bonusChampion}
-                onChange={(event) => onNumberChange("bonusChampion", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusRunnerUp")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.bonusRunnerUp}
-                onChange={(event) => onNumberChange("bonusRunnerUp", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusThirdPlace")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.bonusThirdPlace}
-                onChange={(event) => onNumberChange("bonusThirdPlace", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusTopScorer")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.bonusTopScorer}
-                onChange={(event) => onNumberChange("bonusTopScorer", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusBestPlayer")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.bonusBestPlayer}
-                onChange={(event) => onNumberChange("bonusBestPlayer", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusBestGoalkeeper")}</label>
-              <input
-                type="number"
-                min={0}
-                value={form.bonusBestGoalkeeper}
-                onChange={(event) => onNumberChange("bonusBestGoalkeeper", event.target.value)}
-                className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="tiebreaker-rule">
-              {t("fields.tiebreakerRule")}
-            </label>
-            <select
-              id="tiebreaker-rule"
-              value={form.tiebreakerRule}
-              onChange={(event) =>
-                setForm((prev) => ({ ...prev, tiebreakerRule: event.target.value as TiebreakerRule }))
-              }
-              className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+          <div className="rounded-xl border border-dark-600 bg-dark-800/60 p-4">
+            <button
+              type="button"
+              onClick={() => setAdvancedOpen((v) => !v)}
+              className="flex w-full cursor-pointer items-center gap-2 text-left text-sm font-medium text-slate-400 hover:text-white"
+              aria-expanded={advancedOpen}
             >
-              <option value="most_exact_scores">{t("tiebreakers.mostExactScores")}</option>
-              <option value="most_correct_results">{t("tiebreakers.mostCorrectResults")}</option>
-              <option value="earliest_submission">{t("tiebreakers.earliestSubmission")}</option>
-            </select>
-          </div>
+              <ChevronRight
+                className={`h-4 w-4 transition-transform duration-200 ${advancedOpen ? "rotate-90" : ""}`}
+                aria-hidden
+              />
+              <span aria-hidden>⚙️</span>
+              <span>{tc("advancedSettings")}</span>
+            </button>
+            <p className="mt-1 text-xs text-slate-500">{tc("advancedSettingsHint")}</p>
 
-          <div>
-            <h2 className="mb-3 text-sm font-semibold text-slate-200">{ta("title")}</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setAccessMode("open");
-                  setAccessCode("");
-                }}
-                className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 ${
-                  accessMode === "open"
-                    ? "bg-emerald-500/5 ring-2 ring-emerald-500"
-                    : "bg-[#111720] ring-0"
-                }`}
-              >
-                <span className="text-lg" aria-hidden>
-                  🔓
-                </span>
-                <p className="mt-2 text-sm font-medium text-white">{ta("open")}</p>
-                <p className="mt-1 text-xs text-slate-400">{ta("openDescription")}</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setAccessMode("protected");
-                  if (!/^\d{6}$/.test(accessCode)) {
-                    setAccessCode(randomSixDigitCode());
-                  }
-                }}
-                className={`rounded-xl border border-dark-600 p-4 text-left transition-all duration-200 ${
-                  accessMode === "protected"
-                    ? "bg-emerald-500/5 ring-2 ring-emerald-500"
-                    : "bg-[#111720] ring-0"
-                }`}
-              >
-                <span className="text-lg" aria-hidden>
-                  🔒
-                </span>
-                <p className="mt-2 text-sm font-medium text-white">{ta("protected")}</p>
-                <p className="mt-1 text-xs text-slate-400">{ta("protectedDescription")}</p>
-              </button>
-            </div>
-
-            {accessMode === "protected" ? (
-              <div className="mt-4 space-y-2 rounded-lg border border-dark-600 bg-dark-700/50 p-4">
-                <label className="block text-xs font-medium text-slate-400" htmlFor="access-code">
-                  {ta("protected")}
-                </label>
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div
+              className={`transition-all duration-300 ${advancedOpen ? "mt-4 max-h-[1200px]" : "max-h-0 overflow-hidden"}`}
+            >
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">
+                    {t("fields.pointsCorrectResult")}
+                  </label>
                   <input
-                    id="access-code"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={6}
-                    value={accessCode}
-                    onChange={(e) => setAccessCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 font-mono text-lg tracking-widest text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 sm:max-w-[12rem]"
-                    placeholder="000000"
-                    aria-describedby="access-code-hint"
+                    type="number"
+                    min={0}
+                    value={form.pointsCorrectResult}
+                    onChange={(event) => onNumberChange("pointsCorrectResult", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setAccessCode(randomSixDigitCode())}
-                    className="shrink-0 rounded-lg border border-dark-500 bg-dark-800 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:border-emerald-500/50"
-                  >
-                    {ta("generateCode")}
-                  </button>
                 </div>
-                <p id="access-code-hint" className="text-xs text-slate-500">
-                  {ta("shareCodeHint")}
-                </p>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">
+                    {t("fields.pointsCorrectDifference")}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.pointsCorrectDifference}
+                    onChange={(event) => onNumberChange("pointsCorrectDifference", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.pointsExactScore")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.pointsExactScore}
+                    onChange={(event) => onNumberChange("pointsExactScore", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
               </div>
-            ) : null}
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusChampion")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.bonusChampion}
+                    onChange={(event) => onNumberChange("bonusChampion", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusRunnerUp")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.bonusRunnerUp}
+                    onChange={(event) => onNumberChange("bonusRunnerUp", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusThirdPlace")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.bonusThirdPlace}
+                    onChange={(event) => onNumberChange("bonusThirdPlace", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusTopScorer")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.bonusTopScorer}
+                    onChange={(event) => onNumberChange("bonusTopScorer", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">{t("fields.bonusBestPlayer")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.bonusBestPlayer}
+                    onChange={(event) => onNumberChange("bonusBestPlayer", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">
+                    {t("fields.bonusBestGoalkeeper")}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.bonusBestGoalkeeper}
+                    onChange={(event) => onNumberChange("bonusBestGoalkeeper", event.target.value)}
+                    className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="mb-1 block text-sm font-medium text-slate-300" htmlFor="tiebreaker-rule">
+                  {t("fields.tiebreakerRule")}
+                </label>
+                <select
+                  id="tiebreaker-rule"
+                  value={form.tiebreakerRule}
+                  onChange={(event) =>
+                    setForm((prev) => ({ ...prev, tiebreakerRule: event.target.value as TiebreakerRule }))
+                  }
+                  className="w-full rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-white outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                >
+                  <option value="most_exact_scores">{t("tiebreakers.mostExactScores")}</option>
+                  <option value="most_correct_results">{t("tiebreakers.mostCorrectResults")}</option>
+                  <option value="earliest_submission">{t("tiebreakers.earliestSubmission")}</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           {error ? (

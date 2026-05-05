@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/toast-provider";
-import { PAYMENTS_ENABLED } from "@/lib/constants";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 import { PRICING_TIERS } from "@/lib/stripe";
 import { higherTiersThan } from "@/lib/tier-order";
@@ -26,10 +25,6 @@ export default function GroupUpgradePanel({ groupId, currentTier, amountPaidCent
   const router = useRouter();
   const { showToast } = useToast();
   const [busyTier, setBusyTier] = useState<TierKey | null>(null);
-
-  if (!PAYMENTS_ENABLED) {
-    return null;
-  }
 
   const options = higherTiersThan(currentTier);
   if (options.length === 0) {

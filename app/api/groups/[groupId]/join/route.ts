@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { AI_PLAYER_ID } from "@/lib/constants";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 
 type RouteContext = { params: { groupId: string } };
@@ -45,7 +46,8 @@ export async function POST(_req: Request, context: RouteContext) {
       const { count } = await supabase
         .from("group_members")
         .select("id", { count: "exact", head: true })
-        .eq("group_id", groupId);
+        .eq("group_id", groupId)
+        .neq("user_id", AI_PLAYER_ID);
       return NextResponse.json(
         {
           error: code,

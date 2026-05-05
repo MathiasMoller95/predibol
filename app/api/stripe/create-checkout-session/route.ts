@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
-import { MAX_GROUPS_PER_USER, PAYMENTS_ENABLED } from "@/lib/constants";
+import { MAX_GROUPS_PER_USER } from "@/lib/constants";
 import { getStripe, PRICING_TIERS, siteBaseUrl } from "@/lib/stripe";
+import { ensureAiLeaderboardRow } from "@/lib/ensure-ai-leaderboard";
 import { validateCouponForTier } from "@/lib/coupons";
 import { getDisplayNameForMemberInsert } from "@/lib/display-name";
 import type { TierKey } from "@/types/database-enums";
@@ -34,10 +35,6 @@ type GroupPayload = {
 const TIERS = new Set<TierKey>(["pichanga", "partido", "partidazo", "corpo"]);
 
 export async function POST(req: Request) {
-  if (!PAYMENTS_ENABLED) {
-    return NextResponse.json({ error: "Payments disabled" }, { status: 400 });
-  }
-
   let body: {
     locale: string;
     tier: TierKey;
@@ -153,6 +150,12 @@ export async function POST(req: Request) {
       await admin.from("groups").delete().eq("id", gid);
       return NextResponse.json({ error: "Could not add admin membership" }, { status: 500 });
     }
+    const { error: aiErr0 } = await ensureAiLeaderboardRow(admin, gid);
+    if (aiErr0) {
+      console.error("ensure AI leaderboard (coupon path)", aiErr0);
+      await admin.from("groups").delete().eq("id", gid);
+      return NextResponse.json({ error: "Could not initialize leaderboard" }, { status: 500 });
+    }
     if (couponId) {
       await admin.from("coupon_usage").insert({
         coupon_id: couponId,
@@ -169,7 +172,7 @@ export async function POST(req: Request) {
           .eq("id", couponId);
       }
     }
-    return NextResponse.json({ redirect: `${base}/${locale}/dashboard/group/${gid}` });
+    return NextResponse.json({ redirect: `${base}/${locale}/dashboard/group/${gid}`, group_id: gid });
   }
 
   if (!priceId) {
@@ -206,6 +209,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Could not add admin membership" }, { status: 500 });
   }
 
+  const { error: aiErr } = await ensureAiLeaderboardRow(admin, groupId);
+  if (aiErr) {
+    console.error("ensure AI leaderboard (pending checkout)", aiErr);
+    await admin.from("groups").delete().eq("id", groupId);
+    return NextResponse.json({ error: "Could not initialize leaderboard" }, { status: 500 });
+  }
+
   const stripe = getStripe();
 
   const session = await stripe.checkout.sessions.create({
@@ -232,5 +242,5 @@ export async function POST(req: Request) {
 
   await admin.from("groups").update({ stripe_session_id: session.id }).eq("id", groupId);
 
-  return NextResponse.json({ url: session.url });
+  return NextResponse.json({ url: session.url, group_id: groupId });
 }

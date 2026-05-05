@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
-import { PAYMENTS_ENABLED } from "@/lib/constants";
 import { PRICING_TIERS } from "@/lib/stripe";
 import type { TierKey } from "@/types/database-enums";
 
@@ -45,9 +44,6 @@ export default function CreateGroupTierStep({
 }: Props) {
   const t = useTranslations("Pricing");
 
-  const baseCents = PRICING_TIERS[selectedTier].priceCents;
-  const showStrike = !PAYMENTS_ENABLED && baseCents > 0;
-
   return (
     <div className="space-y-6">
       <div>
@@ -80,13 +76,6 @@ export default function CreateGroupTierStep({
                 <div className="flex flex-wrap items-baseline gap-2">
                   {cfg.priceCents === 0 ? (
                     <span className="text-lg font-bold text-emerald-400">{t("free")}</span>
-                  ) : showStrike ? (
-                    <>
-                      <span className="text-lg font-bold text-slate-500 line-through">{formatUsd(cfg.priceCents)}</span>
-                      <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-300">
-                        {t("freeDuringBeta")}
-                      </span>
-                    </>
                   ) : (
                     <span className="text-lg font-bold text-white">{formatUsd(cfg.priceCents)} USD</span>
                   )}

@@ -278,13 +278,23 @@
     "continueToPlan": "Continuar para o plano",
     "continueAfterPlan": "Continuar",
     "backToPlan": "Voltar ao plano",
-    "configureTitle": "Configure o seu grupo"
+    "configureTitle": "Configure o seu grupo",
+    "logoOptional": "Logo do grupo (opcional)",
+    "logoUpload": "Enviar logo",
+    "logoDragHint": "Arraste e solte ou toque para selecionar",
+    "logoFormats": "PNG, JPG, WEBP, SVG · Máx. 2MB",
+    "logoRemove": "Remover",
+    "logoUploadFailed": "Não foi possível enviar o logo. Adicione depois na administração do grupo.",
+    "logoCouldNotStore": "Não foi possível guardar o logo para o pagamento. Pode adicioná-lo depois na administração do grupo.",
+    "advancedSettings": "Configurações avançadas",
+    "advancedSettingsHint": "Regras de pontuação, bônus e desempate. Os valores padrão funcionam bem para a maioria dos grupos."
   },
   "PaymentSuccess": {
     "title": "Bem-vindo ao seu grupo!",
     "subtitle": "Redirecionando para o grupo…",
     "waiting": "Confirmando pagamento…",
-    "failed": "Ainda não confirmamos o pagamento. Abra o grupo pelo painel ou fale com o suporte."
+    "failed": "Ainda não confirmamos o pagamento. Abra o grupo pelo painel ou fale com o suporte.",
+    "logoUploadFailed": "Não foi possível enviar o logo. Adicione na administração do grupo."
   },
   "Pricing": {
     "choosePlan": "Escolha seu plano",
@@ -297,7 +307,6 @@
     },
     "upToPlayers": "Até {n} jogadores",
     "free": "Grátis",
-    "freeDuringBeta": "Grátis durante o beta",
     "allFeaturesLine": "Todas as funcionalidades incluídas",
     "mostPopular": "Mais popular",
     "corpoContactLine": "Ou entre em contato para configuracao personalizada",
@@ -659,7 +668,11 @@
     "colExactScores": "Placares exatos",
     "colPredictionsMade": "Palpites",
     "notPlayedYet": "Ainda não jogou",
-    "rankNewAria": "Novo na classificação"
+    "rankNewAria": "Novo na classificação",
+    "preTournamentBanner": "🏟️ Classificação pré-torneio — por palpites enviados. Os pontos começam a contar em 11 de junho!",
+    "colPredictions": "Palpites",
+    "colStatus": "Status",
+    "ready": "Pronto"
   },
   "VirtualBets": {
     "tab": {
@@ -823,6 +836,7 @@
     "groupLabel": "Grupo {letter}",
     "groupProgress": "{count}/{total} palpites",
     "backToGroups": "Voltar aos grupos",
+    "collapse": "Fechar",
     "knockoutTitle": "Fase eliminatoria",
     "tapToPredict": "Toque para prever →",
     "allPredicted": "✓ Tudo previsto — toque para editar",

@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { AI_PLAYER_ID } from "@/lib/constants";
 import type { CopyPredictionOption } from "@/components/CopyPredictionsBanner";
 import PredictForm from "./predict-form";
-import Link from "next/link";
 import Image from "next/image";
 import type { GroupScoringRow } from "@/lib/match-points-client";
 
@@ -77,7 +76,6 @@ export default async function GroupPredictPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Predictions");
-  const common = await getTranslations("Common");
   const supabase = await createClient();
   const {
     data: { user },
@@ -323,12 +321,6 @@ export default async function GroupPredictPage({ params }: Props) {
   return (
     <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
-        <Link
-          href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-gpri hover:text-gpri/90"
-        >
-          {common("backToGroup", { groupName: typedGroup.name })}
-        </Link>
         <div className="mt-2 flex items-center gap-2">
           {typedGroup.logo_url ? (
             <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-dark-900">

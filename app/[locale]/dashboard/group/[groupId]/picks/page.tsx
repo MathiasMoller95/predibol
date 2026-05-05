@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PicksForm, { type InitialPicks } from "./picks-form";
@@ -19,7 +18,6 @@ export default async function GroupPicksPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Picks");
-  const common = await getTranslations("Common");
   const supabase = await createClient();
   const {
     data: { user },
@@ -73,24 +71,10 @@ export default async function GroupPicksPage({ params }: Props) {
   return (
     <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
-        <Link
-          href={`/${locale}/dashboard/group/${groupId}`}
-          className="text-sm font-medium text-gpri hover:text-gpri/90"
-        >
-          {common("backToGroup", { groupName: typedGroup.name })}
-        </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
             <p className="mt-1 text-sm text-slate-400">{t("subtitle")}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href={`/${locale}/dashboard/group/${groupId}`}
-              className="inline-flex rounded-lg border border-dark-500 bg-dark-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-gpri/40 hover:bg-dark-600"
-            >
-              {t("backToGroup")}
-            </Link>
           </div>
         </div>
 

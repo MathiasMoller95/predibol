@@ -5,9 +5,6 @@ export const AI_PLAYER_NAME = "🤖 Predibol IA";
 
 export const MAX_GROUPS_PER_USER = 3;
 
-/** When false: all tiers shown as free during beta; groups get `payment_status = beta`. Flip when Stripe goes live. */
-export const PAYMENTS_ENABLED = true;
-
 export type PowerType = "double_down" | "spy" | "shield";
 
 export const POWER_TYPES: PowerType[] = ["double_down", "spy", "shield"];

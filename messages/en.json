@@ -278,13 +278,23 @@
     "continueToPlan": "Continue to plan",
     "continueAfterPlan": "Continue",
     "backToPlan": "Back to plan",
-    "configureTitle": "Configure your group"
+    "configureTitle": "Configure your group",
+    "logoOptional": "Group logo (optional)",
+    "logoUpload": "Upload logo",
+    "logoDragHint": "Drag & drop or tap to select",
+    "logoFormats": "PNG, JPG, WEBP, SVG · Max 2MB",
+    "logoRemove": "Remove",
+    "logoUploadFailed": "Could not upload logo. Add it later in Group admin.",
+    "logoCouldNotStore": "Logo could not be saved for checkout. You can add it after payment in Group admin.",
+    "advancedSettings": "Advanced settings",
+    "advancedSettingsHint": "Scoring rules, bonuses, and tiebreakers. Default values work great for most groups."
   },
   "PaymentSuccess": {
     "title": "Welcome to your group!",
     "subtitle": "Redirecting to your group hub…",
     "waiting": "Confirming payment…",
-    "failed": "We could not confirm payment yet. Open your group from the dashboard or contact support."
+    "failed": "We could not confirm payment yet. Open your group from the dashboard or contact support.",
+    "logoUploadFailed": "Could not upload logo. Add it in Group admin."
   },
   "Pricing": {
     "choosePlan": "Choose your plan",
@@ -297,7 +307,6 @@
     },
     "upToPlayers": "Up to {n} players",
     "free": "Free",
-    "freeDuringBeta": "Free during beta",
     "allFeaturesLine": "All features included",
     "mostPopular": "Most popular",
     "corpoContactLine": "Or contact us for custom setup",
@@ -659,7 +668,11 @@
     "colExactScores": "Exact scores",
     "colPredictionsMade": "Predictions",
     "notPlayedYet": "Not played yet",
-    "rankNewAria": "New on the leaderboard"
+    "rankNewAria": "New on the leaderboard",
+    "preTournamentBanner": "🏟️ Pre-tournament standings — ranked by predictions submitted. Points start counting on June 11!",
+    "colPredictions": "Predictions",
+    "colStatus": "Status",
+    "ready": "Ready"
   },
   "VirtualBets": {
     "tab": {
@@ -823,6 +836,7 @@
     "groupLabel": "Group {letter}",
     "groupProgress": "{count}/{total} predicted",
     "backToGroups": "Back to groups",
+    "collapse": "Close",
     "knockoutTitle": "Knockout stage",
     "tapToPredict": "Tap to predict →",
     "allPredicted": "✓ All predicted — tap to edit",

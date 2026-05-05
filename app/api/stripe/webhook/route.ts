@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getStripe, PRICING_TIERS } from "@/lib/stripe";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
+import { ensureAiLeaderboardRow } from "@/lib/ensure-ai-leaderboard";
 import { isStrictTierUpgrade } from "@/lib/tier-order";
 import type { TierKey } from "@/types/database-enums";
 
@@ -129,6 +130,12 @@ export async function POST(req: Request) {
         })
         .eq("id", groupId)
         .eq("payment_status", "pending");
+
+      const { error: aiLbErr } = await ensureAiLeaderboardRow(admin, groupId);
+      if (aiLbErr) {
+        console.error("webhook ensure AI leaderboard", aiLbErr);
+        return NextResponse.json({ error: "ai leaderboard" }, { status: 500 });
+      }
 
       const couponId = (session.metadata?.coupon_id ?? "").trim();
       const userId = (session.metadata?.user_id ?? "").trim();

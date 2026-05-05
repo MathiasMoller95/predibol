@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { resolveDisplayName } from "@/lib/display-name";
 import { mergeGroupLeaderboardRows, type LeaderboardDbRow } from "@/lib/group-leaderboard-merge";
 import { positiveStreaksByUser } from "@/lib/leaderboard-streaks";
+import { AI_PLAYER_ID, AI_PLAYER_NAME } from "@/lib/constants";
 import LeaderboardBoard from "./leaderboard-board";
 
 type Props = {
@@ -61,7 +62,14 @@ export default async function GroupLeaderboardPage({ params }: Props) {
     redirect(`/${locale}/dashboard`);
   }
 
-  const [{ data: boardRows }, { data: members }, { data: predsForStreak }] = await Promise.all([
+  const [
+    { data: boardRows },
+    { data: members },
+    { data: predsForStreak },
+    { count: totalMatches },
+    { count: finishedMatchCount },
+    { data: picksRows },
+  ] = await Promise.all([
     supabase
       .from("leaderboard")
       .select(
@@ -70,10 +78,24 @@ export default async function GroupLeaderboardPage({ params }: Props) {
       .eq("group_id", groupId)
       .order("rank", { ascending: true, nullsFirst: false }),
     supabase.from("group_members").select("user_id,display_name").eq("group_id", groupId),
-    supabase.from("predictions").select("user_id,match_id,points_earned").eq("group_id", groupId),
+    supabase
+      .from("predictions")
+      .select("user_id,match_id,points_earned,submitted_at")
+      .eq("group_id", groupId),
+    supabase.from("matches").select("id", { count: "exact", head: true }),
+    supabase.from("matches").select("id", { count: "exact", head: true }).eq("status", "finished"),
+    supabase
+      .from("pre_tournament_picks")
+      .select("user_id,champion,runner_up,third_place,top_scorer,best_player,best_goalkeeper")
+      .eq("group_id", groupId),
   ]);
 
   const memberList = (members ?? []) as MemberRow[];
+  const boardUserIds = new Set(((boardRows ?? []) as unknown as LeaderboardDbRow[]).map((r) => r.user_id));
+  if (boardUserIds.has(AI_PLAYER_ID) && !memberList.some((m) => m.user_id === AI_PLAYER_ID)) {
+    memberList.push({ user_id: AI_PLAYER_ID, display_name: AI_PLAYER_NAME });
+  }
+
   const memberByUser = new Map(memberList.map((m) => [m.user_id, m.display_name]));
   const memberIds = memberList.map((m) => m.user_id);
   let profileByUserId = new Map<string, string>();
@@ -121,6 +143,41 @@ export default async function GroupLeaderboardPage({ params }: Props) {
       streakByUid[r.user_id] != null && streakByUid[r.user_id]! >= 3 ? streakByUid[r.user_id] : undefined,
   }));
 
+  const maxPoints = rows.reduce((m, r) => Math.max(m, r.total_points ?? 0), 0);
+  const preTournamentMode = maxPoints === 0 && (finishedMatchCount ?? 0) === 0;
+
+  const predCountByUser = new Map<string, number>();
+  const firstSubmittedAtByUser = new Map<string, string>();
+  for (const p of (predsForStreak ?? []) as unknown as { user_id: string; submitted_at: string | null }[]) {
+    const uid = p.user_id as string;
+    predCountByUser.set(uid, (predCountByUser.get(uid) ?? 0) + 1);
+    const s = p.submitted_at;
+    if (s) {
+      const prev = firstSubmittedAtByUser.get(uid);
+      if (!prev || s < prev) firstSubmittedAtByUser.set(uid, s);
+    }
+  }
+
+  const picksCompleteByUser = new Map<string, boolean>();
+  for (const pr of (picksRows ?? []) as unknown as {
+    user_id: string;
+    champion: string | null;
+    runner_up: string | null;
+    third_place: string | null;
+    top_scorer: string | null;
+    best_player: string | null;
+    best_goalkeeper: string | null;
+  }[]) {
+    const complete =
+      !!pr.champion?.trim() &&
+      !!pr.runner_up?.trim() &&
+      !!pr.third_place?.trim() &&
+      !!pr.top_scorer?.trim() &&
+      !!pr.best_player?.trim() &&
+      !!pr.best_goalkeeper?.trim();
+    picksCompleteByUser.set(pr.user_id, complete);
+  }
+
   return (
     <main className="animate-page-in min-h-screen bg-dark-900 px-4 py-8">
       <section className="mx-auto w-full max-w-4xl rounded-xl border border-dark-600 bg-dark-800 p-5 sm:p-6">
@@ -158,6 +215,16 @@ export default async function GroupLeaderboardPage({ params }: Props) {
             locale={locale}
             currentUserId={user.id}
             rows={rows}
+            preTournament={
+              preTournamentMode
+                ? {
+                    totalMatches: totalMatches ?? 0,
+                    predictionCountByUser: Object.fromEntries(predCountByUser.entries()),
+                    firstSubmittedAtByUser: Object.fromEntries(firstSubmittedAtByUser.entries()),
+                    picksCompleteByUser: Object.fromEntries(picksCompleteByUser.entries()),
+                  }
+                : null
+            }
           />
         )}
       </section>

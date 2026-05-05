@@ -29,8 +29,8 @@ import { formatDurationMs } from "@/lib/format-duration-ms";
 const SCORE_INPUT_KNOCKOUT_CLASS =
   "mt-1 min-h-[56px] w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-base text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50 disabled:bg-dark-700 disabled:text-slate-500 placeholder:text-gray-600 placeholder:text-center";
 
-/** Expanded group-stage compact row (square inputs, horizontal layout). */
-const COMPACT_GROUP_SCORE_CLASS =
+/** Group-stage stacked row: 48×48 score inputs beside each team name. */
+const STACKED_GROUP_SCORE_CLASS =
   "h-12 w-12 shrink-0 rounded-lg border border-white/10 bg-dark-900 text-center text-xl font-semibold tabular-nums text-white outline-none transition focus:border-gpri focus:ring-2 focus:ring-gpri/35 disabled:opacity-75 disabled:bg-dark-800 placeholder:text-gray-600";
 
 type MatchRecord = {
@@ -711,9 +711,9 @@ export default function PredictForm({
               <button
                 type="button"
                 onClick={() => setExpandedGroup(null)}
-                className="text-sm font-medium text-gpri transition-colors hover:text-gpri/90 active:scale-[0.97]"
+                className="text-sm font-medium text-slate-400 transition-colors hover:text-white active:scale-[0.97]"
               >
-                ← {t("backToGroups")}
+                {t("collapse")}
               </button>
 
               <div className="mt-4 space-y-2">
@@ -1552,9 +1552,9 @@ function CompactGroupPredictionRow({
     lockPassed === true
       ? "rounded-lg border border-white/10 bg-dark-800 p-3 opacity-[0.88] ring-1 ring-white/10"
       : isToday
-        ? "rounded-lg border border-white/5 border-l-[3px] border-l-amber-500 bg-dark-800 p-3 ring-1 ring-amber-500/25"
+        ? "rounded-lg border border-white/5 border-l-2 border-l-amber-500 bg-dark-800 p-3 ring-1 ring-amber-500/25"
         : saved
-          ? "rounded-lg border border-white/10 border-l-4 border-l-gpri bg-dark-800 p-3"
+          ? "rounded-lg border border-white/5 border-l-2 border-l-gpri bg-dark-800 p-3"
           : "rounded-lg border border-white/5 bg-dark-800 p-3";
 
   const oddsOk =
@@ -1572,40 +1572,31 @@ function CompactGroupPredictionRow({
   const saving = busy || isSaving;
   const canSave = bothFilled && !saving && !lockPassed;
 
+  const lockedScoreBoxClass =
+    "flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-dark-600 bg-dark-900 text-xl font-semibold tabular-nums text-slate-200";
+
   return (
     <div className={shellClass}>
-      <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
-        {isToday && !lockPassed ? (
-          <span className="mr-1 animate-pulse rounded-full bg-red-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-400 ring-1 ring-red-500/40">
-            {t("badges.today")}
-          </span>
-        ) : null}
-        {/* Home */}
-        <div className="flex min-w-0 max-w-[40%] flex-1 items-center gap-0.5 sm:gap-1">
-          <span className="shrink-0" aria-hidden>
-            {getFlag(match.home_team)}
-          </span>
-          <span
-            title={match.home_team}
-            className="truncate text-sm font-semibold leading-tight text-white max-[374px]:max-w-[10ch] sm:max-w-[12ch]"
-          >
-            {match.home_team}
-          </span>
-        </div>
-        {/* Inputs center */}
-        <div className="flex shrink-0 items-center gap-1.5 px-0.5">
-          {lockPassed ? (
-            <>
-              <span className="flex h-12 min-w-[2.75rem] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-2 text-xl font-semibold tabular-nums text-slate-200">
-                {currentInput.predictedHome || "—"}
+      <div className="flex gap-2">
+        <div className="min-w-0 flex-1 space-y-2">
+          {isToday && !lockPassed ? (
+            <div className="-mt-0.5">
+              <span className="inline-flex rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200 ring-1 ring-amber-500/35">
+                {t("badges.today")}
               </span>
-              <span className="font-medium text-slate-500">—</span>
-              <span className="flex h-12 min-w-[2.75rem] items-center justify-center rounded-lg border border-dark-600 bg-dark-900 px-2 text-xl font-semibold tabular-nums text-slate-200">
-                {currentInput.predictedAway || "—"}
-              </span>
-            </>
-          ) : (
-            <>
+            </div>
+          ) : null}
+
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-base leading-none" aria-hidden>
+              {getFlag(match.home_team)}
+            </span>
+            <span className="min-w-0 flex-1 break-words text-sm font-semibold leading-snug text-white">
+              {match.home_team}
+            </span>
+            {lockPassed ? (
+              <span className={lockedScoreBoxClass}>{currentInput.predictedHome || "—"}</span>
+            ) : (
               <input
                 type="number"
                 min={0}
@@ -1617,11 +1608,21 @@ function CompactGroupPredictionRow({
                 onChange={(e) =>
                   onPatchInput({ predictedHome: clampGroupScoreDigits(e.target.value) })
                 }
-                className={COMPACT_GROUP_SCORE_CLASS}
+                className={STACKED_GROUP_SCORE_CLASS}
               />
-              <span className="pb-1 text-sm font-medium text-slate-500" aria-hidden>
-                —
-              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-base leading-none" aria-hidden>
+              {getFlag(match.away_team)}
+            </span>
+            <span className="min-w-0 flex-1 break-words text-sm font-semibold leading-snug text-white">
+              {match.away_team}
+            </span>
+            {lockPassed ? (
+              <span className={lockedScoreBoxClass}>{currentInput.predictedAway || "—"}</span>
+            ) : (
               <input
                 type="number"
                 min={0}
@@ -1633,25 +1634,13 @@ function CompactGroupPredictionRow({
                 onChange={(e) =>
                   onPatchInput({ predictedAway: clampGroupScoreDigits(e.target.value) })
                 }
-                className={COMPACT_GROUP_SCORE_CLASS}
+                className={STACKED_GROUP_SCORE_CLASS}
               />
-            </>
-          )}
+            )}
+          </div>
         </div>
-        {/* Away */}
-        <div className="flex min-w-0 max-w-[40%] flex-1 items-center justify-end gap-0.5 sm:gap-1">
-          <span
-            title={match.away_team}
-            className="truncate text-right text-sm font-semibold leading-tight text-white max-[374px]:max-w-[10ch] sm:max-w-[12ch]"
-          >
-            {match.away_team}
-          </span>
-          <span className="shrink-0" aria-hidden>
-            {getFlag(match.away_team)}
-          </span>
-        </div>
-        {/* Save / lock */}
-        <div className="ml-auto flex shrink-0">
+
+        <div className="flex shrink-0 flex-col justify-center self-stretch">
           {lockPassed ? (
             <div
               className="flex h-11 min-h-[44px] min-w-[44px] items-center justify-center text-slate-500"
@@ -1700,7 +1689,7 @@ function CompactGroupPredictionRow({
         />
       ) : null}
 
-      <p className="mt-1.5 truncate text-[10px] leading-tight text-slate-500">
+      <p className="mt-2 text-xs leading-snug text-slate-500">
         {t("matchDate", { date: formatMatchWhen(match) })}
         {lockSoonLabel !== null ? ` · ${t("locksIn", { time: lockSoonLabel })}` : ""}
       </p>
