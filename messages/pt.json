@@ -5,33 +5,36 @@
   "LandingPage": {
     "metaTitle": "Predibol — Palpites da Copa do Mundo 2026",
     "metaDescription": "Preveja a Copa com amigos — ligas privadas, ranking ao vivo e palpites IA em 2026.",
-    "theme": {
-      "toggleLight": "Usar tema claro",
-      "toggleDark": "Usar tema escuro"
-    },
     "header": {
       "wordmark": "Predibol",
       "login": "Entrar"
     },
     "hero": {
-      "tagline": "Preveja a <wc>Copa do Mundo 2026</wc> com seus amigos",
-      "subtitle": "Crie sua liga privada, envie seus palpites para cada jogo e dispute o primeiro lugar do seu grupo.",
-      "pill1": "⚽ 48 seleções · 104 jogos",
-      "pill2": "👥 Ligas privadas e públicas",
-      "pill3": "🤖 Previsões IA incluídas",
-      "cta": {
-        "createAccount": "Criar conta grátis",
-        "login": "Entrar"
+      "headlineLine1": "Preveja a <wc>Copa do Mundo</wc> 🏆",
+      "headlineLine2": "com seus amigos",
+      "subtitleOneLine": "Crie um grupo, mande seus palpites e suba no ranking.",
+      "primaryCta": "Criar meu grupo grátis →",
+      "primaryCtaHint": "Grátis até 7 jogadores · Sem cartão de crédito",
+      "iconRow": {
+        "superpowers": "Superpoderes",
+        "album": "Álbum",
+        "aiRival": "Rival IA"
       }
     },
     "countdown": {
       "urgency": "Crie sua liga antes que a Copa comece",
       "worldCup": "FIFA World Cup 2026",
       "hostCountries": "🇺🇸 USA · 🇲🇽 México · 🇨🇦 Canada",
+      "untilFirstMatch": "até o primeiro jogo ⚽",
       "days": "Dias",
       "hours": "Horas",
       "minutes": "Minutos",
       "seconds": "Segundos"
+    },
+    "social": {
+      "groupsCreated": "grupos criados",
+      "activePlayers": "jogadores ativos",
+      "countries": "🇲🇽🇨🇱🇪🇸🇺🇸 Jogadores de 4+ países"
     },
     "howItWorks": {
       "title": "Como funciona?",

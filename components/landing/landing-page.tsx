@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 const KICKOFF_UTC_MS = Date.UTC(2026, 5, 11, 0, 0, 0);
 const LOCALES = ["es", "en", "pt"] as const;
-const THEME_KEY = "predibol-theme";
-
-type LandingTheme = "dark" | "light";
 
 type Props = {
   locale: string;
@@ -27,30 +25,6 @@ function easeOutCubic(t: number) {
   return 1 - (1 - t) ** 3;
 }
 
-function IconSun({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden>
-      <circle cx="12" cy="12" r="4" />
-      <path
-        strokeLinecap="round"
-        d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
-      />
-    </svg>
-  );
-}
-
-function IconMoon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden>
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-      />
-    </svg>
-  );
-}
-
 function FloatingSoccerEmoji({ className }: { className?: string }) {
   return (
     <span className={`select-none ${className ?? ""}`} aria-hidden>
@@ -66,103 +40,12 @@ const WC_DIVIDER_COLORS = [
   "from-amber-500/40 via-emerald-500/30 to-purple-500/40",
 ] as const;
 
-const WC26_LETTER_COLORS = [
-  "#DC2626", // red
-  "#F97316", // orange
-  "#EAB308", // yellow
-  "#22C55E", // green
-  "#06B6D4", // cyan
-  "#3B82F6", // blue
-  "#8B5CF6", // purple
-  "#EC4899", // pink
-  "#14B8A6", // teal
-  "#E11D48", // rose
-  "#A855F7", // violet
-  "#0EA5E9", // sky
-  "#F59E0B", // amber
-  "#10B981", // emerald
-  "#6366F1", // indigo
-] as const;
-
-function WcColorLetters({ children }: { children: React.ReactNode }) {
-  const text = typeof children === "string" ? children : String(children ?? "");
-  let colorIdx = 0;
-
-  return (
-    <>
-      {Array.from(text).map((char, i) => {
-        if (char === " ") return <span key={i}>{" "}</span>;
-        const color = WC26_LETTER_COLORS[colorIdx % WC26_LETTER_COLORS.length];
-        colorIdx++;
-        return (
-          <span key={i} style={{ color }} className="font-extrabold">
-            {char}
-          </span>
-        );
-      })}
-    </>
-  );
-}
-
 function WcDivider({ index = 0 }: { index?: number }) {
   return (
     <div className="mx-auto max-w-6xl px-4" aria-hidden>
       <div
         className={`h-px w-full bg-gradient-to-r opacity-30 ${WC_DIVIDER_COLORS[index % WC_DIVIDER_COLORS.length]}`}
       />
-    </div>
-  );
-}
-
-function CountdownUnit({
-  value,
-  label,
-  pad = 2,
-}: {
-  value: number;
-  label: string;
-  pad?: number;
-}) {
-  const prev = useRef(value);
-  const [tick, setTick] = useState(false);
-  const display = String(value).padStart(pad, "0");
-
-  useEffect(() => {
-    if (prev.current !== value) {
-      prev.current = value;
-      setTick(true);
-      const id = window.setTimeout(() => setTick(false), 450);
-      return () => window.clearTimeout(id);
-    }
-  }, [value]);
-
-  return (
-    <div className="flex min-w-0 flex-1 flex-col items-center">
-      <div className="relative w-full min-w-[4.5rem] max-w-[7rem] overflow-hidden rounded-xl p-px">
-        <div className="landing-countdown-border-spin" aria-hidden />
-        <div
-          className={`relative z-[1] flex w-full flex-col items-center rounded-[11px] border px-2 py-4 sm:px-4 sm:py-5 ${
-            tick ? "landing-countdown-tick" : ""
-          }`}
-          style={{
-            backgroundColor: "var(--landing-countdown-inner)",
-            borderColor: "var(--landing-countdown-border)",
-          }}
-        >
-          <span
-            className="font-mono text-3xl font-bold tabular-nums sm:text-4xl md:text-5xl"
-            style={{ color: "var(--landing-countdown-num)" }}
-          >
-            {display}
-          </span>
-        </div>
-      </div>
-      <span
-        className="mt-2 text-center text-[10px] font-medium uppercase tracking-wider sm:text-xs"
-        style={{ color: "var(--landing-countdown-label)" }}
-      >
-        {label}
-      </span>
     </div>
   );
 }
@@ -288,22 +171,26 @@ function LandingStatsGrid({ locale }: { locale: string }) {
   );
 }
 
+function fmtCountdownLine({ days, hours, minutes, seconds }: { days: number; hours: number; minutes: number; seconds: number }) {
+  const hh = String(hours).padStart(2, "0");
+  const mm = String(minutes).padStart(2, "0");
+  const ss = String(seconds).padStart(2, "0");
+  return `${days}d · ${hh}h · ${mm}m · ${ss}s`;
+}
+
 export default function LandingPage({ locale }: Props) {
   const t = useTranslations("LandingPage");
-  const [theme, setTheme] = useState<LandingTheme>("dark");
-  const [mounted, setMounted] = useState(false);
   const [remaining, setRemaining] = useState(() => KICKOFF_UTC_MS - Date.now());
   const [groupCount, setGroupCount] = useState(0);
+  const [activePlayers, setActivePlayers] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-    const stored = window.localStorage.getItem(THEME_KEY);
-    if (stored === "light" || stored === "dark") {
-      setTheme(stored);
-    }
     fetch("/api/stats")
       .then((r) => r.json())
-      .then((d) => setGroupCount(d.groups ?? 0))
+      .then((d) => {
+        setGroupCount(d.groups ?? 0);
+        setActivePlayers(d.active_players ?? 0);
+      })
       .catch(() => {});
   }, []);
 
@@ -329,35 +216,16 @@ export default function LandingPage({ locale }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  function toggleTheme() {
-    setTheme((prev) => {
-      const next: LandingTheme = prev === "dark" ? "light" : "dark";
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(THEME_KEY, next);
-      }
-      return next;
-    });
-  }
-
   const { days, hours, minutes, seconds } = splitRemaining(remaining);
   const featureKeys = ["leaderboard", "odds", "ai", "groups", "rules", "mobile"] as const;
-  const isLight = theme === "light";
 
-  const wordmarkPredi = <span className={isLight ? "text-emerald-600" : "text-emerald-400"}>{t("header.wordmark").slice(0, 5)}</span>;
-  const wordmarkBol = (
-    <span style={{ color: isLight ? "#1e293b" : "inherit" }} className={isLight ? "" : "text-white"}>
-      {t("header.wordmark").slice(5)}
-    </span>
-  );
-
-  const pillClass = isLight
-    ? "inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-100 px-3 py-1.5 text-sm text-gray-600"
-    : "inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-gray-400";
+  const wordmarkPredi = <span className="text-emerald-400">{t("header.wordmark").slice(0, 5)}</span>;
+  const wordmarkBol = <span className="text-white">{t("header.wordmark").slice(5)}</span>;
 
   return (
     <div
       className="landing-root min-h-screen animate-page-in motion-reduce:animate-none"
-      data-theme={mounted ? theme : "dark"}
+      data-theme="dark"
       style={{
         backgroundColor: "var(--landing-bg)",
         color: "var(--landing-text)",
@@ -370,52 +238,37 @@ export default function LandingPage({ locale }: Props) {
           borderColor: "var(--landing-border-subtle)",
         }}
       >
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4">
-          <Link href={`/${locale}`} className="text-lg font-bold tracking-tight" style={{ color: "var(--landing-text-heading)" }}>
+        <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-2 px-4">
+          <Link
+            href={`/${locale}`}
+            className="text-lg font-bold tracking-tight"
+            style={{ color: "var(--landing-text-heading)" }}
+          >
             {wordmarkPredi}
             {wordmarkBol}
           </Link>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className={`rounded-lg p-2 transition ${isLight ? "hover:bg-gray-200 text-slate-700" : "hover:bg-white/10 text-slate-300"}`}
-              aria-label={isLight ? t("theme.toggleDark") : t("theme.toggleLight")}
-            >
-              {isLight ? <IconMoon className="h-5 w-5" /> : <IconSun className="h-5 w-5" />}
-            </button>
-            <Link
-              href={`/${locale}/login`}
-              className="min-h-[44px] min-w-[44px] content-center text-center text-sm font-medium transition"
-              style={{ color: "var(--landing-header-login)" }}
-            >
-              {t("header.login")}
-            </Link>
-          </div>
+          <Link
+            href={`/${locale}/login`}
+            className="min-h-[44px] min-w-[44px] content-center text-center text-sm font-medium transition"
+            style={{ color: "var(--landing-header-login)" }}
+          >
+            {t("header.login")}
+          </Link>
         </div>
         <div
           className="landing-wc-header-stripe h-[3px] w-full"
-          style={{ opacity: isLight ? 0.6 : 0.45 }}
+          style={{ opacity: 0.45 }}
           aria-hidden
         />
       </header>
 
       <main>
-        {/* Live counter pill */}
-        {groupCount >= 10 && (
-          <div className="flex justify-center px-4 pt-4">
-            <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-              {t("stats.groupsCreated", { count: groupCount })}
-            </span>
-          </div>
-        )}
-
         {/* Hero */}
-        <section className={`relative overflow-x-hidden px-4 pb-20 ${groupCount >= 10 ? "pt-6 sm:pt-10 md:pt-14" : "pt-12 sm:pt-16 md:pt-20"}`}>
+        <section className="relative overflow-x-hidden px-4 pb-10 pt-8 sm:pt-10">
           {/* "26" watermark */}
           <span
             className="pointer-events-none absolute left-1/2 top-[8%] z-0 -translate-x-1/2 select-none font-mono text-[280px] font-black leading-none tracking-tighter sm:text-[360px] md:text-[420px]"
-            style={{ color: isLight ? "rgba(0,0,0,0.025)" : "rgba(255,255,255,0.02)" }}
+            style={{ color: "rgba(255,255,255,0.02)" }}
             aria-hidden
           >
             26
@@ -426,84 +279,73 @@ export default function LandingPage({ locale }: Props) {
             aria-hidden
           />
 
-          {/*
-            Option A: minimalist dashed ring + emoji (left) and large trophy emoji (right).
-            Option B fallback: delete the next two absolutely-positioned blocks for zero floating decor —
-            typography + the radial gradient above carries the page.
-          */}
           <div className="landing-hero-dash-wrap pointer-events-none absolute -left-[22px] top-[16%] z-0 sm:top-[18%]" aria-hidden>
             <div className="landing-hero-dash-circle">
               <span className="landing-hero-dash-emoji">⚽</span>
             </div>
           </div>
-          <div className="pointer-events-none absolute -right-2 top-14 z-0 sm:-right-4 sm:top-20 md:top-24" aria-hidden>
-            <span className="landing-hero-trophy-emoji text-[100px] opacity-[0.15] sm:text-[120px]">🏆</span>
-          </div>
 
-          <div className="relative z-10 mx-auto max-w-6xl text-center">
-            <p className="mb-4 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl" style={{ color: "var(--landing-text-heading)" }}>
-              {wordmarkPredi}
-              {wordmarkBol}
-            </p>
+          <div className="relative z-10 mx-auto max-w-6xl md:flex md:items-center md:justify-between md:gap-10">
+            <div className="mx-auto max-w-xl text-center md:mx-0 md:text-left">
+              <h1 className="text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
+                {t.rich("hero.headlineLine1", {
+                  wc: (chunks) => (
+                    <span className="bg-gradient-to-r from-teal-400 via-pink-400 to-amber-400 bg-clip-text text-transparent">
+                      {chunks}
+                    </span>
+                  ),
+                })}
+                <br />
+                <span>{t("hero.headlineLine2")}</span>
+              </h1>
 
-            <h1
-              className="mx-auto mt-6 max-w-3xl text-balance text-2xl font-bold leading-tight sm:text-3xl md:text-4xl"
-              style={{ color: "var(--landing-text-heading)" }}
-            >
-              {t.rich("hero.tagline", {
-                wc: (chunks) => <WcColorLetters>{chunks}</WcColorLetters>,
-              })}
-            </h1>
+              <p className="mt-3 text-base font-medium text-slate-400">{t("hero.subtitleOneLine")}</p>
 
-            <p
-              className="mx-auto mt-5 max-w-2xl text-pretty text-base font-medium leading-relaxed sm:text-lg"
-              style={{ color: "var(--landing-text-muted)" }}
-            >
-              {t("hero.subtitle")}
-            </p>
+              <div className="mt-5">
+                <p className="font-mono text-base font-bold text-slate-200" aria-live="polite" aria-atomic="true">
+                  {fmtCountdownLine({ days, hours, minutes, seconds })}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">{t("countdown.untilFirstMatch")}</p>
+              </div>
 
-            <div className="mx-auto mt-8 flex max-w-xl flex-wrap items-center justify-center gap-3">
-              <span className={pillClass}>{t("hero.pill1")}</span>
-              <span className={pillClass}>{t("hero.pill2")}</span>
-              <span className={pillClass}>{t("hero.pill3")}</span>
+              <div className="mt-5">
+                <Link
+                  href={`/${locale}/signup`}
+                  className="animate-cta-pulse inline-flex w-full min-h-[56px] items-center justify-center rounded-xl bg-gpri px-6 py-4 text-lg font-bold text-white shadow-lg transition hover:brightness-110 md:max-w-sm"
+                >
+                  {t("hero.primaryCta")}
+                </Link>
+                <p className="mt-2 text-xs text-slate-500">{t("hero.primaryCtaHint")}</p>
+              </div>
+
+              <div className="mt-4 text-sm text-slate-500">
+                {groupCount >= 20 ? (
+                  <p>
+                    ⚽ {groupCount} {t("social.groupsCreated")} · 🏟️ {activePlayers} {t("social.activePlayers")}
+                  </p>
+                ) : (
+                  <p>{t("social.countries")}</p>
+                )}
+              </div>
+
+              <div className="mt-4 flex items-center justify-center gap-6 text-xs text-slate-400 md:justify-start">
+                <span>⚡ {t("hero.iconRow.superpowers")}</span>
+                <span>🎴 {t("hero.iconRow.album")}</span>
+                <span>🤖 {t("hero.iconRow.aiRival")}</span>
+              </div>
             </div>
 
-            <p className="mt-10 text-balance text-lg font-semibold text-emerald-400 sm:text-xl">{t("countdown.urgency")}</p>
-            <p className="mt-2 flex items-center justify-center gap-2">
-              <span className="landing-wc26-text text-sm font-extrabold uppercase tracking-widest sm:text-base">
-                {t("countdown.worldCup")}
-              </span>
-              <span className="text-base sm:text-lg" aria-hidden>🇺🇸🇲🇽🇨🇦</span>
-            </p>
-            <div
-              className="mx-auto mt-4 flex max-w-3xl flex-wrap justify-center gap-3 sm:gap-4"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <CountdownUnit value={days} label={t("countdown.days")} />
-              <CountdownUnit value={hours} label={t("countdown.hours")} />
-              <CountdownUnit value={minutes} label={t("countdown.minutes")} />
-              <CountdownUnit value={seconds} label={t("countdown.seconds")} />
-            </div>
-
-            <div className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
-              <Link
-                href={`/${locale}/signup`}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-emerald-500 px-8 py-3 text-center text-base font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600"
-              >
-                {t("hero.cta.createAccount")}
-              </Link>
-              <Link
-                href={`/${locale}/login`}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-lg border px-8 py-3 text-center text-base font-semibold transition hover:border-emerald-500/50"
-                style={{
-                  borderColor: "var(--landing-secondary-border)",
-                  backgroundColor: "var(--landing-secondary-bg)",
-                  color: "var(--landing-secondary-text)",
-                }}
-              >
-                {t("hero.cta.login")}
-              </Link>
+            <div className="mt-8 hidden md:block md:shrink-0">
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-2xl shadow-emerald-500/10">
+                <Image
+                  src="/landing/phone-mockup.svg"
+                  alt=""
+                  width={360}
+                  height={720}
+                  className="h-[520px] w-auto"
+                  priority={false}
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -534,7 +376,7 @@ export default function LandingPage({ locale }: Props) {
               ].map(({ emoji, step }) => (
                 <div key={step} className="flex flex-col items-center text-center">
                   <div
-                    className={`flex h-16 w-16 items-center justify-center rounded-full text-3xl ${isLight ? "bg-emerald-600/10" : "bg-emerald-500/10"}`}
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 text-3xl"
                     aria-hidden
                   >
                     {emoji}

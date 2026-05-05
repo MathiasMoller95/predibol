@@ -280,43 +280,6 @@ body {
   --landing-header-login: #cbd5e1;
 }
 
-.landing-root[data-theme="light"] {
-  --landing-bg: #f8fafc;
-  --landing-text: #1e293b;
-  --landing-text-heading: #1e293b;
-  --landing-text-muted: #64748b;
-  --landing-text-subtle: #64748b;
-  --landing-card: #ffffff;
-  --landing-header-bg: rgba(255, 255, 255, 0.85);
-  --landing-footer-bg: #f1f5f9;
-  --landing-countdown-inner: #ffffff;
-  --landing-countdown-border: #e2e8f0;
-  --landing-countdown-label: #64748b;
-  --landing-countdown-num: #1e293b;
-  --landing-cta-card: #ffffff;
-  --landing-safe-bg: #ecfdf5;
-  --landing-safe-border: #a7f3d0;
-  --landing-safe-text: #047857;
-  --landing-icon-bg: #ffffff;
-  --landing-icon-border: #e2e8f0;
-  --landing-border-subtle: #e2e8f0;
-  --landing-blob-1: rgba(16, 185, 129, 0.08);
-  --landing-blob-2: rgba(245, 158, 11, 0.06);
-  --landing-blob-3: rgba(16, 185, 129, 0.06);
-  --landing-blob-svg: rgba(100, 116, 139, 0.12);
-  --landing-blob-dot: rgba(100, 116, 139, 0.1);
-  --landing-blob-dot-stroke: #e2e8f0;
-  --landing-tagline-from: #0f172a;
-  --landing-tagline-via: #1e293b;
-  --landing-tagline-to: #64748b;
-  --landing-gradient-cta: 0 0 32px -8px rgba(16, 185, 129, 0.2);
-  --landing-secondary-border: #cbd5e1;
-  --landing-secondary-bg: #ffffff;
-  --landing-secondary-text: #1e293b;
-  --landing-link-hover: #0f172a;
-  --landing-header-login: #475569;
-}
-
 @keyframes landing-football-y {
   0%,
   100% {
@@ -382,13 +345,6 @@ body {
   animation: landing-hero-dash-rotate 20s linear infinite;
 }
 
-.landing-root[data-theme="light"] .landing-hero-dash-circle {
-  border-color: rgba(16, 185, 129, 0.28);
-  box-shadow:
-    0 0 0 1px rgba(16, 185, 129, 0.08),
-    0 0 40px -12px rgba(16, 185, 129, 0.14);
-}
-
 .landing-hero-dash-emoji {
   display: flex;
   align-items: center;
@@ -447,10 +403,6 @@ body {
   opacity: 0.045;
 }
 
-.landing-root[data-theme="light"] .landing-how-pattern::before {
-  opacity: 0.035;
-}
-
 /* Bottom CTA — grass tint along bottom edge */
 .landing-cta-grass {
   position: relative;
@@ -480,28 +432,8 @@ body {
   }
 }
 
-.landing-root[data-theme="light"] .landing-stats-trophy-wrap {
-  --landing-trophy-base: 0.08;
-}
-
 .landing-stats-trophy-wrap {
   animation: landing-trophy-gleam 4s ease-in-out infinite;
-}
-
-.landing-root[data-theme="light"] .landing-stats-trophy-wrap {
-  animation: landing-trophy-gleam-light 4s ease-in-out infinite;
-}
-
-@keyframes landing-trophy-gleam-light {
-  0%,
-  100% {
-    opacity: 0.06;
-    filter: brightness(1);
-  }
-  50% {
-    opacity: 0.11;
-    filter: brightness(1.12);
-  }
 }
 
 @keyframes landing-countdown-border-spin {
@@ -524,17 +456,6 @@ body {
   animation: landing-countdown-border-spin 10s linear infinite;
 }
 
-.landing-root[data-theme="light"] .landing-countdown-border-spin {
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(16, 185, 129, 0.32) 90deg,
-    transparent 180deg,
-    rgba(16, 185, 129, 0.18) 270deg,
-    transparent 360deg
-  );
-}
-
 @media (prefers-reduced-motion: reduce) {
   .landing-hero-football,
   .landing-hero-football-inner,
@@ -555,10 +476,6 @@ body {
   .landing-stats-trophy-wrap {
     animation: none !important;
     opacity: 0.1;
-  }
-
-  .landing-root[data-theme="light"] .landing-stats-trophy-wrap {
-    opacity: 0.08;
   }
 
   .landing-countdown-border-spin {
@@ -590,23 +507,6 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.landing-root[data-theme="light"] .landing-wc26-text {
-  background: linear-gradient(
-    95deg,
-    #B91C1C 0%,
-    #EA580C 12%,
-    #CA8A04 24%,
-    #16A34A 38%,
-    #0891B2 52%,
-    #2563EB 66%,
-    #7C3AED 80%,
-    #DB2777 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 /* ── World Cup 2026 header stripe ── */
 .landing-wc-header-stripe {
   background: linear-gradient(
@@ -622,10 +522,6 @@ body {
     #DC2626 88%,
     #10B981 100%
   );
-}
-
-.landing-root[data-theme="light"] .landing-wc-header-stripe {
-  opacity: 0.5 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

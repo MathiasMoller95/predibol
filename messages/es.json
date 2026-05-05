@@ -5,33 +5,36 @@
   "LandingPage": {
     "metaTitle": "Predibol — Predicciones del Mundial 2026",
     "metaDescription": "Predice el Mundial con amigos — ligas privadas, ranking en vivo y predicciones IA para 2026.",
-    "theme": {
-      "toggleLight": "Cambiar a tema claro",
-      "toggleDark": "Cambiar a tema oscuro"
-    },
     "header": {
       "wordmark": "Predibol",
       "login": "Iniciar sesión"
     },
     "hero": {
-      "tagline": "Predice el <wc>Mundial 2026</wc> con tus amigos",
-      "subtitle": "Crea tu grupo, envía tus pronósticos y averigua quién es el que sabe más de fútbol.",
-      "pill1": "⚽ 48 equipos · 104 partidos",
-      "pill2": "👥 Grupos privados y públicos",
-      "pill3": "🤖 Predicciones IA incluidas",
-      "cta": {
-        "createAccount": "Crear cuenta gratis",
-        "login": "Iniciar sesión"
+      "headlineLine1": "Predice el <wc>Mundial</wc> 🏆",
+      "headlineLine2": "con tus amigos",
+      "subtitleOneLine": "Crea tu grupo, mete tus pronósticos y sube en el ranking.",
+      "primaryCta": "Crear mi grupo gratis →",
+      "primaryCtaHint": "Gratis hasta 7 jugadores · Sin tarjeta de crédito",
+      "iconRow": {
+        "superpowers": "Superpoderes",
+        "album": "Álbum",
+        "aiRival": "Rival IA"
       }
     },
     "countdown": {
       "urgency": "Crea tu grupo antes de que empiece el Mundial",
       "worldCup": "FIFA World Cup 2026",
       "hostCountries": "🇺🇸 USA · 🇲🇽 México · 🇨🇦 Canada",
+      "untilFirstMatch": "para el primer partido ⚽",
       "days": "Días",
       "hours": "Horas",
       "minutes": "Minutos",
       "seconds": "Segundos"
+    },
+    "social": {
+      "groupsCreated": "grupos creados",
+      "activePlayers": "jugadores activos",
+      "countries": "🇲🇽🇨🇱🇪🇸🇺🇸 Jugadores de 4+ países"
     },
     "howItWorks": {
       "title": "¿Cómo funciona?",
