@@ -335,16 +335,20 @@ export default function LandingPage({ locale }: Props) {
               </div>
             </div>
 
-            <div className="mt-8 hidden md:block md:shrink-0">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-2xl shadow-emerald-500/10">
-                <Image
-                  src="/landing/phone-mockup.svg"
-                  alt=""
-                  width={360}
-                  height={720}
-                  className="h-[520px] w-auto"
-                  priority={false}
-                />
+            <div className="mt-8 hidden md:flex md:shrink-0 md:justify-end">
+              <div className="relative w-[min(280px,34vw)] max-w-sm rounded-[2.75rem] border border-white/15 bg-gradient-to-b from-slate-800/90 to-slate-950 p-[10px] shadow-[0_32px_80px_-12px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.06)] ring-1 ring-white/10">
+                <div className="pointer-events-none absolute left-1/2 top-[10px] z-10 h-[26px] w-[96px] -translate-x-1/2 rounded-full bg-black/85" aria-hidden />
+                <div className="overflow-hidden rounded-[2.25rem] bg-black ring-1 ring-black/40">
+                  <Image
+                    src="/landing/app-screenshot.png"
+                    alt={t("hero.mockupAlt")}
+                    width={472}
+                    height={1024}
+                    className="h-auto w-full max-h-[min(520px,70vh)] object-cover object-top"
+                    sizes="(min-width: 768px) 280px, 0px"
+                    priority={false}
+                  />
+                </div>
               </div>
             </div>
           </div>
