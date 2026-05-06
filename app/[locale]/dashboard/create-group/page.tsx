@@ -56,15 +56,15 @@ const initialState: GroupFormState = {
   slug: "",
   primaryColor: "#16a34a",
   secondaryColor: "#0f172a",
-  pointsCorrectResult: 1,
-  pointsCorrectDifference: 2,
-  pointsExactScore: 3,
-  bonusChampion: 40,
-  bonusRunnerUp: 15,
-  bonusThirdPlace: 7,
+  pointsCorrectResult: 2,
+  pointsCorrectDifference: 3,
+  pointsExactScore: 5,
+  bonusChampion: 50,
+  bonusRunnerUp: 25,
+  bonusThirdPlace: 10,
   bonusTopScorer: 30,
-  bonusBestPlayer: 30,
-  bonusBestGoalkeeper: 30,
+  bonusBestPlayer: 20,
+  bonusBestGoalkeeper: 15,
   tiebreakerRule: "most_exact_scores",
 };
 
@@ -511,12 +511,28 @@ export default function CreateGroupPage() {
             previewUrl={logoPreviewUrl}
             onFileSelected={setPendingLogoFile}
             onClear={() => setPendingLogoFile(null)}
-            onValidationError={(reason) =>
-              showToast(reason === "size" ? ti("fileTooBig") : ti("invalidType"), "error")
-            }
+            onValidationError={(reason) => {
+              if (reason === "size") showToast(ti("fileTooBig"), "error");
+              else if (reason === "type") showToast(ti("invalidType"), "error");
+              else if (reason === "url") showToast(ti("logoUrlInvalid"), "error");
+              else showToast(ti("logoUrlFetchFailed"), "error");
+            }}
             labels={{
               title: tc("logoOptional"),
               upload: tc("logoUpload"),
+              chooseLogo: tc("logoChooseAction"),
+              sheetTitle: tc("logoSheetTitle"),
+              fromGallery: tc("logoFromGallery"),
+              takePhoto: tc("logoTakePhoto"),
+              pickIcon: tc("logoPickIcon"),
+              fromUrl: tc("logoFromUrl"),
+              searchWeb: tc("logoSearchWeb"),
+              searchWebHint: tc("logoSearchWebHint"),
+              urlModalTitle: tc("logoUrlModalTitle"),
+              urlPlaceholder: tc("logoUrlPlaceholder"),
+              urlLoad: tc("logoUrlLoad"),
+              cancel: tc("logoSheetCancel"),
+              iconsModalTitle: tc("logoIconsTitle"),
               hint: tc("logoDragHint"),
               formats: tc("logoFormats"),
               remove: tc("logoRemove"),

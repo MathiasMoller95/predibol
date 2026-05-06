@@ -168,11 +168,27 @@ export default function GroupIdentityPanel({
           previewUrl={logoUrl}
           onFileSelected={(f) => void onFile(f)}
           onClear={() => void removeLogo()}
-          onValidationError={(reason) =>
-            showToast(reason === "size" ? t("fileTooBig") : t("invalidType"), "error")
-          }
+          onValidationError={(reason) => {
+            if (reason === "size") showToast(t("fileTooBig"), "error");
+            else if (reason === "type") showToast(t("invalidType"), "error");
+            else if (reason === "url") showToast(t("logoUrlInvalid"), "error");
+            else showToast(t("logoUrlFetchFailed"), "error");
+          }}
           labels={{
             upload: t("uploadLogo"),
+            chooseLogo: t("logoChooseAction"),
+            sheetTitle: t("logoSheetTitle"),
+            fromGallery: t("logoFromGallery"),
+            takePhoto: t("logoTakePhoto"),
+            pickIcon: t("logoPickIcon"),
+            fromUrl: t("logoFromUrl"),
+            searchWeb: t("logoSearchWeb"),
+            searchWebHint: t("logoSearchWebHint"),
+            urlModalTitle: t("logoUrlModalTitle"),
+            urlPlaceholder: t("logoUrlPlaceholder"),
+            urlLoad: t("logoUrlLoad"),
+            cancel: t("logoSheetCancel"),
+            iconsModalTitle: t("logoIconsTitle"),
             hint: t("dropHint"),
             remove: t("removeLogo"),
           }}

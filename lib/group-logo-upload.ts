@@ -14,6 +14,19 @@ export const ALLOWED_LOGO_MIME_TYPES = [
 
 export type AllowedLogoMime = (typeof ALLOWED_LOGO_MIME_TYPES)[number];
 
+/** Sniff PNG / JPEG / WebP / SVG from bytes (for URL downloads where Content-Type is wrong). */
+export function detectImageMimeFromBytes(buf: Uint8Array): AllowedLogoMime | null {
+  if (buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return "image/jpeg";
+  if (buf.length >= 8 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) return "image/png";
+  if (buf.length >= 12 && buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46) {
+    const tag = String.fromCharCode(buf[8], buf[9], buf[10], buf[11]);
+    if (tag === "WEBP") return "image/webp";
+  }
+  const head = new TextDecoder("utf-8", { fatal: false }).decode(buf.subarray(0, Math.min(512, buf.length))).trimStart();
+  if (head.startsWith("<svg") || head.startsWith("<?xml") || head.includes("<svg")) return "image/svg+xml";
+  return null;
+}
+
 export function extFromMime(m: string): string {
   if (m === "image/png") return "png";
   if (m === "image/jpeg" || m === "image/jpg") return "jpg";

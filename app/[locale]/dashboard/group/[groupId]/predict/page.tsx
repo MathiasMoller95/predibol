@@ -99,9 +99,9 @@ export default async function GroupPredictPage({ params }: Props) {
 
   const typedGroup = group as unknown as GroupRecord;
   const groupScoring: GroupScoringRow = {
-    points_correct_result: typedGroup.points_correct_result ?? 1,
-    points_correct_difference: typedGroup.points_correct_difference ?? 2,
-    points_exact_score: typedGroup.points_exact_score ?? 3,
+    points_correct_result: typedGroup.points_correct_result ?? 2,
+    points_correct_difference: typedGroup.points_correct_difference ?? 3,
+    points_exact_score: typedGroup.points_exact_score ?? 5,
   };
 
   const { data: membership } = await supabase
