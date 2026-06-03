@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "icons:pwa": "node scripts/generate-pwa-icons.mjs",
-    "seed:api-football": "tsx scripts/seed-api-football-mapping.ts"
+    "seed:api-football": "tsx scripts/seed-api-football-mapping.ts",
+    "update:players": "tsx scripts/update-player-data.ts"
   },
   "dependencies": {
     "@sentry/nextjs": "^10.50.0",
