@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/toast-provider";
 import PlayerPicker from "@/components/picks/player-picker";
 import TeamPicker from "@/components/picks/team-picker";
-import { goalkeepers, players } from "@/lib/player-data";
+import { bestPlayers, goalkeepers, players } from "@/lib/player-data";
 import { PRIMARY_BUTTON_CLASSES } from "@/lib/primary-button-classes";
 
 export type InitialPicks = {
@@ -157,7 +157,7 @@ export default function PicksForm({ locked, initial }: Props) {
         <PlayerPicker
           label={t("bestPlayer")}
           placeholder={t("searchPlayer")}
-          playerList={players}
+          playerList={bestPlayers}
           value={values.bestPlayer}
           onChange={(v) => setField("bestPlayer", v)}
           disabled={disabled}

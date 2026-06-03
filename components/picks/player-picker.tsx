@@ -14,14 +14,17 @@ type Props = {
   disabled?: boolean;
 };
 
+function matchesQuery(player: Player, query: string): boolean {
+  const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return true;
+  const name = player.name.toLowerCase();
+  const team = player.team.toLowerCase();
+  return tokens.every((token) => name.includes(token) || team.includes(token));
+}
+
 function filterAndGroup(players: Player[], query: string) {
   const q = query.trim().toLowerCase();
-  const filtered =
-    q === ""
-      ? players
-      : players.filter(
-          (p) => p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q),
-        );
+  const filtered = q === "" ? players : players.filter((p) => matchesQuery(p, q));
   const byTeam = new Map<string, Player[]>();
   for (const p of filtered) {
     const list = byTeam.get(p.team) ?? [];
