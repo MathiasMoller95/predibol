@@ -794,6 +794,24 @@ export default function PredictForm({
               >
                 {isSaving ? t("saveSaving") : t("saveAll", { group: expandedGroup })}
               </button>
+
+              {(() => {
+                const currentIndex = groupCards.findIndex((g) => g.letter === expandedGroup);
+                const nextGroupCard = currentIndex !== -1 ? groupCards[currentIndex + 1] : undefined;
+                if (!nextGroupCard) return null;
+                return (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExpandedGroup(nextGroupCard.letter);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="mt-3 w-full min-h-[48px] rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-base font-semibold text-white hover:bg-dark-600"
+                  >
+                    {t("nextGroup", { group: nextGroupCard.letter })}
+                  </button>
+                );
+              })()}
             </section>
           </div>
         ) : (

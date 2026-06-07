@@ -158,6 +158,29 @@
     "signupLink": "Registrate",
     "invalidCredentials": "Correo o contraseña incorrectos.",
     "emailNotVerified": "Verifica tu correo antes de iniciar sesion.",
+    "genericError": "Algo salio mal. Intenta de nuevo.",
+    "forgotPassword": "¿Olvidaste tu contraseña?"
+  },
+  "ForgotPasswordPage": {
+    "title": "Recuperar contraseña",
+    "subtitle": "Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.",
+    "emailLabel": "Correo electronico",
+    "emailPlaceholder": "tu@email.com",
+    "sendButton": "Enviar enlace",
+    "sendingButton": "Enviando...",
+    "successTitle": "Revisa tu correo",
+    "successMessage": "Si existe una cuenta con ese correo, recibiras un enlace para restablecer tu contraseña.",
+    "genericError": "Algo salio mal. Intenta de nuevo."
+  },
+  "ResetPasswordPage": {
+    "title": "Establecer nueva contraseña",
+    "newPasswordLabel": "Nueva contraseña",
+    "confirmPasswordLabel": "Confirmar nueva contraseña",
+    "saveButton": "Guardar contraseña",
+    "savingButton": "Guardando...",
+    "passwordsMismatch": "Las contraseñas no coinciden.",
+    "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
+    "successMessage": "Tu contraseña ha sido actualizada. Redirigiendo...",
     "genericError": "Algo salio mal. Intenta de nuevo."
   },
   "SignupPage": {
@@ -862,6 +885,7 @@
     "save": "Guardar",
     "update": "Actualizar",
     "saveAll": "Guardar todos los pronósticos del Grupo {group}",
+    "nextGroup": "Siguiente: Grupo {group} →",
     "saved": "Pronósticos guardados!",
     "locked": "Bloqueado",
     "matchDate": "{date}",

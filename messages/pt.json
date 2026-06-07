@@ -158,6 +158,29 @@
     "signupLink": "Cadastre-se",
     "invalidCredentials": "E-mail ou senha incorretos.",
     "emailNotVerified": "Verifique seu e-mail antes de entrar.",
+    "genericError": "Algo deu errado. Tente novamente.",
+    "forgotPassword": "Esqueceu sua senha?"
+  },
+  "ForgotPasswordPage": {
+    "title": "Recuperar senha",
+    "subtitle": "Insira seu e-mail e enviaremos um link para redefinir sua senha.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "seu@email.com",
+    "sendButton": "Enviar link",
+    "sendingButton": "Enviando...",
+    "successTitle": "Verifique seu e-mail",
+    "successMessage": "Se existir uma conta com esse e-mail, voce receberá um link para redefinir sua senha.",
+    "genericError": "Algo deu errado. Tente novamente."
+  },
+  "ResetPasswordPage": {
+    "title": "Definir nova senha",
+    "newPasswordLabel": "Nova senha",
+    "confirmPasswordLabel": "Confirmar nova senha",
+    "saveButton": "Salvar senha",
+    "savingButton": "Salvando...",
+    "passwordsMismatch": "As senhas nao coincidem.",
+    "passwordTooShort": "A senha deve ter pelo menos 6 caracteres.",
+    "successMessage": "Sua senha foi atualizada. Redirecionando...",
     "genericError": "Algo deu errado. Tente novamente."
   },
   "SignupPage": {
@@ -862,6 +885,7 @@
     "save": "Salvar",
     "update": "Atualizar",
     "saveAll": "Salvar todas as previs?es do Grupo {group}",
+    "nextGroup": "Próximo: Grupo {group} →",
     "saved": "Previs?es salvas!",
     "locked": "Bloqueado",
     "matchDate": "{date}",
