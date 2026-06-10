@@ -564,6 +564,11 @@ export default function PredictForm({
     });
   }, [groupStageMatches, savedMatchIds, effectiveTz]);
 
+  const groupLettersAlphabetical = useMemo(
+    () => [...groupCards.map((g) => g.letter)].sort((a, b) => a.localeCompare(b)),
+    [groupCards],
+  );
+
   async function postPredictions(
     entries: PredictionPayload[],
     messageKey: "saved" | "messages.saveSuccess",
@@ -796,19 +801,20 @@ export default function PredictForm({
               </button>
 
               {(() => {
-                const currentIndex = groupCards.findIndex((g) => g.letter === expandedGroup);
-                const nextGroupCard = currentIndex !== -1 ? groupCards[currentIndex + 1] : undefined;
-                if (!nextGroupCard) return null;
+                const currentLetterIndex = groupLettersAlphabetical.indexOf(expandedGroup);
+                const nextLetter =
+                  currentLetterIndex !== -1 ? groupLettersAlphabetical[currentLetterIndex + 1] : undefined;
+                if (!nextLetter) return null;
                 return (
                   <button
                     type="button"
                     onClick={() => {
-                      setExpandedGroup(nextGroupCard.letter);
+                      setExpandedGroup(nextLetter);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
                     className="mt-3 w-full min-h-[48px] rounded-lg border border-dark-500 bg-dark-700 px-4 py-3 text-base font-semibold text-white hover:bg-dark-600"
                   >
-                    {t("nextGroup", { group: nextGroupCard.letter })}
+                    {t("nextGroup", { group: nextLetter })}
                   </button>
                 );
               })()}
