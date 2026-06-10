@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
-const KICKOFF_UTC_MS = Date.UTC(2026, 5, 11, 0, 0, 0);
+const KICKOFF_UTC_MS = Date.UTC(2026, 5, 11, 19, 0, 0);
 const LOCALES = ["es", "en", "pt"] as const;
 
 type Props = {

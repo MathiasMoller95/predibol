@@ -8,7 +8,7 @@ import { formatDurationMs } from "@/lib/format-duration-ms";
 import { DEFAULT_TIMEZONE } from "@/lib/format-match-time";
 import DashboardGroupList, { type GroupSummary } from "./dashboard-group-list";
 
-const WORLD_CUP_KICKOFF_UTC = Date.UTC(2026, 5, 11, 0, 0, 0);
+const WORLD_CUP_KICKOFF_UTC = Date.UTC(2026, 5, 11, 19, 0, 0);
 
 type Props = {
   params: { locale: string };
