@@ -154,34 +154,7 @@ Deno.serve(async (req: Request) => {
   const lastSyncAt = (stateRow?.last_sync_at as string | null) ?? null;
   const lastSyncMs = lastSyncAt ? new Date(lastSyncAt).getTime() : null;
 
-  const { count: liveCount } = await supabase
-    .from("matches")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "live");
-  const hasLiveMatches = (liveCount ?? 0) > 0;
-
-  const startIso = startOfUtcDayIso(now);
-  const endIso = endOfUtcDayIso(now);
-  const { count: todayCount } = await supabase
-    .from("matches")
-    .select("id", { count: "exact", head: true })
-    .gte("match_time", startIso)
-    .lte("match_time", endIso);
-  const hasMatchesToday = (todayCount ?? 0) > 0;
-
-  // Smart skip: if nothing live, nothing today, and we synced recently, skip heavy API calls.
-  if (!hasLiveMatches && !hasMatchesToday && lastSyncMs != null) {
-    const since = now.getTime() - lastSyncMs;
-    const fifteenMin = 15 * 60 * 1000;
-    if (since < fifteenMin) {
-      return new Response(
-        JSON.stringify({ ok: true, skipped: true, reason: "No matches today/live; synced recently" }),
-        { status: 200, headers: jsonHeaders },
-      );
-    }
-  }
-
-  // Retry scoring for any matches that finished earlier but failed to score
+  // Retry scoring for matches that need re-scoring (e.g. late double_down) before any early skip
   {
     const { data: retryMatches } = await supabase
       .from("matches")
@@ -199,6 +172,39 @@ Deno.serve(async (req: Request) => {
       } else {
         console.error("score-match retry failed", row.id, r.status, r.body.slice(0, 300));
       }
+    }
+  }
+
+  const { count: liveCount } = await supabase
+    .from("matches")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "live");
+  const hasLiveMatches = (liveCount ?? 0) > 0;
+
+  const startIso = startOfUtcDayIso(now);
+  const endIso = endOfUtcDayIso(now);
+  const { count: todayCount } = await supabase
+    .from("matches")
+    .select("id", { count: "exact", head: true })
+    .gte("match_time", startIso)
+    .lte("match_time", endIso);
+  const hasMatchesToday = (todayCount ?? 0) > 0;
+
+  const { count: needsScoringCount } = await supabase
+    .from("matches")
+    .select("id", { count: "exact", head: true })
+    .eq("needs_scoring", true)
+    .eq("status", "finished");
+
+  // Smart skip: if nothing live, nothing today, no pending re-scores, and we synced recently, skip heavy API calls.
+  if (!hasLiveMatches && !hasMatchesToday && (needsScoringCount ?? 0) === 0 && lastSyncMs != null) {
+    const since = now.getTime() - lastSyncMs;
+    const fifteenMin = 15 * 60 * 1000;
+    if (since < fifteenMin) {
+      return new Response(
+        JSON.stringify({ ok: true, skipped: true, reason: "No matches today/live; synced recently" }),
+        { status: 200, headers: jsonHeaders },
+      );
     }
   }
 
@@ -356,16 +362,20 @@ Deno.serve(async (req: Request) => {
       .update({ last_synced_at: now.toISOString() })
       .eq("api_fixture_id", fixtureId);
 
-    // Finished transition: call score-match
-    if (prevStatus !== "finished" && nextStatus === "finished" && nextHome != null && nextAway != null) {
-      finishedTransitions += 1;
+    const shouldScore =
+      nextStatus === "finished" &&
+      nextHome != null &&
+      nextAway != null &&
+      (prevStatus !== "finished" || m.needs_scoring);
+
+    if (shouldScore) {
+      if (prevStatus !== "finished") finishedTransitions += 1;
       const r = await invokeScoreMatch(supabaseUrl, serviceKey, m.id);
-      if (!r.ok) {
+      if (r.ok) {
+        await supabase.from("matches").update({ needs_scoring: false }).eq("id", m.id);
+      } else {
         console.error("score-match failed", m.id, r.status, r.body.slice(0, 300));
-        await supabase
-          .from("matches")
-          .update({ needs_scoring: true })
-          .eq("id", m.id);
+        await supabase.from("matches").update({ needs_scoring: true }).eq("id", m.id);
         await supabase
           .from("api_football_sync_state")
           .update({ last_error: `score-match failed for ${m.id}: ${r.status}` })

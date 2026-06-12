@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { invokeScoreMatch } from "@/lib/invoke-score-match";
+import { createServiceRoleClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { PowerType } from "@/lib/constants";
 
@@ -54,7 +56,7 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
 
   const { data: match } = await supabase
     .from("matches")
-    .select("id,locked_at")
+    .select("id,locked_at,status,home_score,away_score")
     .eq("id", matchId)
     .maybeSingle();
   if (!match) return NextResponse.json({ error: "Match not found" }, { status: 404 });
@@ -92,6 +94,22 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: "Already active" }, { status: 409 });
     }
     return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  if (
+    pt === "double_down" &&
+    match.status === "finished" &&
+    match.home_score != null &&
+    match.away_score != null
+  ) {
+    const scoreResult = await invokeScoreMatch(matchId);
+    const admin = createServiceRoleClient();
+    if (scoreResult.ok) {
+      await admin.from("matches").update({ needs_scoring: false }).eq("id", matchId);
+    } else {
+      console.error("score-match re-score failed after double_down", matchId, scoreResult.status);
+      await admin.from("matches").update({ needs_scoring: true }).eq("id", matchId);
+    }
   }
 
   return NextResponse.json({ ok: true, id: row.id });
