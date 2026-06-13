@@ -134,13 +134,13 @@ export default async function GroupPredictPage({ params }: Props) {
       .from("matches")
       .select(MATCH_SELECT_BASE)
       .eq("status", "scheduled")
-      .gt("locked_at", nowIso)
+      .gt("match_time", nowIso)
       .order("match_time", { ascending: true }),
     supabase
       .from("matches")
       .select(MATCH_SELECT_BASE)
       .eq("status", "scheduled")
-      .gt("locked_at", nowIso)
+      .gt("match_time", nowIso)
       .order("match_time", { ascending: true })
       .limit(1)
       .maybeSingle(),

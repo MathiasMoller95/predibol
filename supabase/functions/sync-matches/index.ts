@@ -190,19 +190,63 @@ Deno.serve(async (req: Request) => {
     .lte("match_time", endIso);
   const hasMatchesToday = (todayCount ?? 0) > 0;
 
+  const { data: allFinished } = await supabase
+    .from("matches")
+    .select("id")
+    .eq("status", "finished")
+    .not("home_score", "is", null)
+    .not("away_score", "is", null);
+
+  let hasPendingScoringMatches = false;
+  const pendingScoringMatchIds: string[] = [];
+
+  if ((allFinished ?? []).length > 0) {
+    const finishedIds = (allFinished as { id: string }[]).map((r) => r.id);
+    const { data: unscoredPreds } = await supabase
+      .from("predictions")
+      .select("match_id")
+      .in("match_id", finishedIds)
+      .eq("points_earned", 0)
+      .limit(500);
+
+    const unscoredMatchIds = [...new Set((unscoredPreds ?? []).map((r) => r.match_id as string))];
+    pendingScoringMatchIds.push(...unscoredMatchIds);
+    hasPendingScoringMatches = unscoredMatchIds.length > 0;
+  }
+
+  for (const matchId of pendingScoringMatchIds) {
+    const r = await invokeScoreMatch(supabaseUrl, serviceKey, matchId);
+    if (r.ok) {
+      await supabase.from("matches").update({ needs_scoring: false }).eq("id", matchId);
+    } else {
+      console.error("score-match pending unscored failed", matchId, r.status, r.body.slice(0, 300));
+      await supabase.from("matches").update({ needs_scoring: true }).eq("id", matchId);
+    }
+  }
+
   const { count: needsScoringCount } = await supabase
     .from("matches")
     .select("id", { count: "exact", head: true })
     .eq("needs_scoring", true)
     .eq("status", "finished");
 
-  // Smart skip: if nothing live, nothing today, no pending re-scores, and we synced recently, skip heavy API calls.
-  if (!hasLiveMatches && !hasMatchesToday && (needsScoringCount ?? 0) === 0 && lastSyncMs != null) {
+  // Smart skip: if nothing live, nothing today, no unscored recent finishes, no pending re-scores, and we synced recently, skip heavy API calls.
+  if (
+    !hasLiveMatches &&
+    !hasMatchesToday &&
+    !hasPendingScoringMatches &&
+    (needsScoringCount ?? 0) === 0 &&
+    lastSyncMs != null
+  ) {
     const since = now.getTime() - lastSyncMs;
     const fifteenMin = 15 * 60 * 1000;
     if (since < fifteenMin) {
       return new Response(
-        JSON.stringify({ ok: true, skipped: true, reason: "No matches today/live; synced recently" }),
+        JSON.stringify({
+          ok: true,
+          skipped: true,
+          reason: "No matches today/live/pending unscored; synced recently",
+        }),
         { status: 200, headers: jsonHeaders },
       );
     }
