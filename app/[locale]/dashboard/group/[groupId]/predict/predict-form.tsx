@@ -209,11 +209,11 @@ function toPayload(match: MatchRecord, input: PredictionInput | undefined): Pred
   };
 }
 
-function validateKnockoutDraw(_match: MatchRecord, _input: PredictionInput | undefined): boolean {
+function validateKnockoutDraw(): boolean {
   return false;
 }
 
-function validateKnockoutNeedsWinner(_match: MatchRecord, _input: PredictionInput | undefined): boolean {
+function validateKnockoutNeedsWinner(): boolean {
   return false;
 }
 
