@@ -569,9 +569,9 @@
     },
     "knockout": {
       "title": "🏟️ Knockout stage",
-      "description": "In knockout matches, you predict the 90-minute result.",
-      "drawRule": "If you predict a draw, you must choose which team advances (extra time / penalties).",
-      "bonus": "Bonus: if you correctly predict a draw and the advancing team, you earn {points} extra points."
+      "description": "In knockout matches, predict the 90-minute score AND who advances to the next round. There are no draws — someone always goes through (extra time or penalties if needed).",
+      "drawRule": "If you predict a draw after 90', you must also pick who wins in extra time or penalties.",
+      "bonus": "Bonus: correctly predicting the advancing team earns you {points} extra points — whether the match is a draw or not."
     },
     "picks": {
       "title": "⭐ Champion & more",
@@ -850,12 +850,12 @@
     "yourPick": "Your prediction: {home}-{away}",
     "homeScore": "Goals · {team}",
     "awayScore": "Goals · {team}",
-    "advancesLabel": "Team that advances",
-    "advancesIfNotDraw": "Team that advances (not a draw after 90′)",
-    "whoAdvances": "Who advances if the score is a draw after 90 minutes?",
+    "advancesLabel": "Who advances overall",
+    "advancesIfNotDraw": "Who advances to the next round? (incl. extra time & penalties)",
+    "whoAdvances": "Who wins the tie overall? (extra time / penalties if it's a draw after 90')",
     "teamsTbd": "Teams to be decided — enter your score once both sides are known.",
-    "selectAdvances": "Choose which team advances for drawn knockout scores.",
-    "selectWinnerIfNotDraw": "Choose which team advances when the score is not a draw.",
+    "selectAdvances": "Pick who you think will advance to the next round.",
+    "selectWinnerIfNotDraw": "Pick who you think will advance to the next round.",
     "phase": {
       "round_of_16": "Round of 16",
       "quarter_final": "Quarter-finals",

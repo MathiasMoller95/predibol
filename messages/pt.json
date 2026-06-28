@@ -569,9 +569,9 @@
     },
     "knockout": {
       "title": "🏟️ Fase eliminatória",
-      "description": "Nas eliminatórias, você prevê o resultado dos 90 minutos.",
-      "drawRule": "Se prever empate, deve escolher qual time avança (prorrogação / pênaltis).",
-      "bonus": "Bônus: se você acertar o empate e o time que avança, ganha {points} pontos extras."
+      "description": "Nas eliminatórias, preveja o placar dos 90 minutos E quem avança para a próxima fase. Não há empate — alguém sempre avança (prorrogação ou pênaltis se necessário).",
+      "drawRule": "Se prever empate aos 90', também deve escolher quem vence na prorrogação ou nos pênaltis.",
+      "bonus": "Bônus: acertar o time que avança rende {points} pontos extras — seja empate ou não."
     },
     "picks": {
       "title": "⭐ Campeão e mais",
@@ -850,12 +850,12 @@
     "yourPick": "Seu palpite: {home}-{away}",
     "homeScore": "Gols · {team}",
     "awayScore": "Gols · {team}",
-    "advancesLabel": "Time que avanca",
-    "advancesIfNotDraw": "Time que avanca (nao e empate aos 90′)",
-    "whoAdvances": "Quem avanca se o placar for empate aos 90 minutos?",
+    "advancesLabel": "Quem avança?",
+    "advancesIfNotDraw": "Quem avança para a próxima fase? (inclui prorrogação e pênaltis)",
+    "whoAdvances": "Quem vence o confronto? (prorrogação / pênaltis se empate aos 90')",
     "teamsTbd": "Times a definir — informe o placar quando ambos forem conhecidos.",
-    "selectAdvances": "Escolha qual time avanca em empates da eliminatoria.",
-    "selectWinnerIfNotDraw": "Escolha qual time avanca quando o placar nao e empate.",
+    "selectAdvances": "Escolha qual time avança para a próxima fase.",
+    "selectWinnerIfNotDraw": "Escolha qual time avança para a próxima fase.",
     "phase": {
       "round_of_16": "Oitavas de final",
       "quarter_final": "Quartas de final",
