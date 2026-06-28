@@ -158,7 +158,6 @@ export default function LiveMatchCard({
           },
           match.home_team,
           match.away_team,
-          match.advancing_team,
           groupScoring,
         )
       : null;

@@ -55,7 +55,6 @@ export default function ResultMatchCard({
     },
     match.home_team,
     match.away_team,
-    match.advancing_team,
     groupScoring,
   );
 
@@ -75,9 +74,7 @@ export default function ResultMatchCard({
   segments.push(
     exactPtsTotal > 0 ? tr("breakdownExactHit", { points: exactPtsTotal }) : tr("breakdownExactMiss"),
   );
-  if (d.advancingPts > 0) {
-    segments.push(tr("breakdownAdvancingHit", { points: d.advancingPts }));
-  }
+
 
   const breakdownLine = segments.join(tr("breakdownSeparator"));
 

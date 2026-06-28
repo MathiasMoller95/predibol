@@ -569,9 +569,9 @@
     },
     "knockout": {
       "title": "🏟️ Fase eliminatoria",
-      "description": "En eliminatorias, predices el marcador a los 90 minutos Y quién avanza a la siguiente ronda. No hay empates — siempre alguien pasa (prórroga o penales si hace falta).",
-      "drawRule": "Si predices empate a los 90', también debes elegir quién gana en prórroga o penales.",
-      "bonus": "Bono: acertar el equipo que avanza te da {points} puntos extra — ya sea empate o no."
+      "description": "Predice el marcador al final del tiempo extra — nada más. Los penales no cambian el marcador, así que un partido que llega a penales cuenta como empate (ej. 1-1).",
+      "drawRule": "Si el partido se decide en penales, el marcador queda como el empate (ej. 1-1). Predecir ese empate es la respuesta correcta.",
+      "bonus": "No hay empates en eliminatorias en términos de quién pasa — pero un empate al final del tiempo extra (que se decide en penales) sí es un marcador válido."
     },
     "picks": {
       "title": "⭐ Campeón y más",
@@ -853,6 +853,7 @@
     "advancesLabel": "¿Quién avanza?",
     "advancesIfNotDraw": "¿Quién pasa a la siguiente ronda? (incluye prórroga y penales)",
     "whoAdvances": "¿Quién gana el cruce? (prórroga / penales si hay empate a los 90')",
+    "knockoutScoreHint": "Predice el marcador incluyendo la prórroga. Si va a penales, el empate es la respuesta correcta.",
     "teamsTbd": "Equipos por definir — ingresa tu pronóstico cuando se conozcan ambos.",
     "selectAdvances": "Elige qué equipo avanza a la siguiente ronda.",
     "selectWinnerIfNotDraw": "Elige qué equipo avanza a la siguiente ronda.",

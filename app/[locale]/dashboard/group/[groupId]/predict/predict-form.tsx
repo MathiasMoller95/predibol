@@ -1084,78 +1084,9 @@ export default function PredictForm({
                                 tp={tp}
                               />
 
-                              {isDraw && !lockPassed ? (
-                                <div className="mt-3">
-                                  <p className="text-xs text-slate-300">{t("whoAdvances")}</p>
-                                  <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                                    <button
-                                      type="button"
-                                      disabled={lockPassed}
-                                      onClick={() =>
-                                        setInputs((prev) => ({
-                                          ...prev,
-                                          [match.id]: patchPredictionInput(
-                                            prev[match.id] ?? { ...emptyPredictionInput },
-                                            { predictedAdvancing: match.home_team },
-                                          ),
-                                        }))
-                                      }
-                                      className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
-                                        currentInput.predictedAdvancing === match.home_team
-                                          ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
-                                          : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
-                                      }`}
-                                    >
-                                      {match.home_team}
-                                    </button>
-                                    <button
-                                      type="button"
-                                      disabled={lockPassed}
-                                      onClick={() =>
-                                        setInputs((prev) => ({
-                                          ...prev,
-                                          [match.id]: patchPredictionInput(
-                                            prev[match.id] ?? { ...emptyPredictionInput },
-                                            { predictedAdvancing: match.away_team },
-                                          ),
-                                        }))
-                                      }
-                                      className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
-                                        currentInput.predictedAdvancing === match.away_team
-                                          ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
-                                          : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
-                                      }`}
-                                    >
-                                      {match.away_team}
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : null}
-
-                              {!isDraw && !lockPassed ? (
-                                <label className="mt-3 block text-xs text-slate-300">
-                                  {t("advancesIfNotDraw")}
-                                  <select
-                                    value={currentInput.predictedWinner}
-                                    onChange={(event) =>
-                                      setInputs((prev) => ({
-                                        ...prev,
-                                        [match.id]: patchPredictionInput(
-                                          prev[match.id] ?? { ...emptyPredictionInput },
-                                          {
-                                            predictedWinner: event.target.value as "home" | "away" | "",
-                                          },
-                                        ),
-                                      }))
-                                    }
-                                    className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50"
-                                  >
-                                    <option value="">{t("chooseTeam")}</option>
-                                    <option value="home">{match.home_team}</option>
-                                    <option value="away">{match.away_team}</option>
-                                  </select>
-                                </label>
-                              ) : null}
+                              {!lockPassed && (
+                                <p className="mt-3 text-xs text-slate-400">{t("knockoutScoreHint")}</p>
+                              )}
                             </>
                           )}
 
@@ -1295,73 +1226,8 @@ export default function PredictForm({
                         </div>
                       ) : null}
 
-                      {ko && !tbd && isDraw && !lockPassed ? (
-                        <div className="mt-3">
-                          <p className="text-xs text-slate-300">{t("whoAdvances")}</p>
-                          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setInputs((prev) => ({
-                                  ...prev,
-                                  [match.id]: patchPredictionInput(
-                                    prev[match.id] ?? { ...emptyPredictionInput },
-                                    { predictedAdvancing: match.home_team },
-                                  ),
-                                }))
-                              }
-                              className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
-                                currentInput.predictedAdvancing === match.home_team
-                                  ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
-                                  : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
-                              }`}
-                            >
-                              {match.home_team}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setInputs((prev) => ({
-                                  ...prev,
-                                  [match.id]: patchPredictionInput(
-                                    prev[match.id] ?? { ...emptyPredictionInput },
-                                    { predictedAdvancing: match.away_team },
-                                  ),
-                                }))
-                              }
-                              className={`min-h-[44px] flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
-                                currentInput.predictedAdvancing === match.away_team
-                                  ? "border-gpri bg-gpri/15 text-gsec ring-2 ring-gpri/50"
-                                  : "border-dark-500 bg-dark-900 text-slate-200 hover:border-gpri/40"
-                              }`}
-                            >
-                              {match.away_team}
-                            </button>
-                          </div>
-                        </div>
-                      ) : null}
-
-                      {ko && !tbd && !isDraw && !lockPassed ? (
-                        <label className="mt-3 block text-xs text-slate-300">
-                          {t("advancesIfNotDraw")}
-                          <select
-                            value={currentInput.predictedWinner}
-                            onChange={(event) =>
-                              setInputs((prev) => ({
-                                ...prev,
-                                [match.id]: patchPredictionInput(
-                                  prev[match.id] ?? { ...emptyPredictionInput },
-                                  { predictedWinner: event.target.value as "home" | "away" | "" },
-                                ),
-                              }))
-                            }
-                            className="mt-1 w-full rounded-lg border border-dark-500 bg-dark-900 px-3 py-2 text-sm text-white outline-none transition-colors duration-150 focus:border-gpri focus:ring-2 focus:ring-gpri/50"
-                          >
-                            <option value="">{t("chooseTeam")}</option>
-                            <option value="home">{match.home_team}</option>
-                            <option value="away">{match.away_team}</option>
-                          </select>
-                        </label>
+                      {ko && !tbd && !lockPassed ? (
+                        <p className="mt-3 text-xs text-slate-400">{t("knockoutScoreHint")}</p>
                       ) : null}
 
                       {lockPassed ? (

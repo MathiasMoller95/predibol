@@ -569,9 +569,9 @@
     },
     "knockout": {
       "title": "🏟️ Knockout stage",
-      "description": "In knockout matches, predict the 90-minute score AND who advances to the next round. There are no draws — someone always goes through (extra time or penalties if needed).",
-      "drawRule": "If you predict a draw after 90', you must also pick who wins in extra time or penalties.",
-      "bonus": "Bonus: correctly predicting the advancing team earns you {points} extra points — whether the match is a draw or not."
+      "description": "Predict the score at the end of extra time — that's all. Penalties don't change the scoreline, so a match that goes to penalties still counts as a draw (e.g. 1-1).",
+      "drawRule": "If the game is decided on penalties, the score stays as the tie result (e.g. 1-1). Predicting that draw is the correct call.",
+      "bonus": "There are no draws in knockouts overall — but a draw after extra time (decided by penalties) is a valid predicted score."
     },
     "picks": {
       "title": "⭐ Champion & more",
@@ -853,6 +853,7 @@
     "advancesLabel": "Who advances overall",
     "advancesIfNotDraw": "Who advances to the next round? (incl. extra time & penalties)",
     "whoAdvances": "Who wins the tie overall? (extra time / penalties if it's a draw after 90')",
+    "knockoutScoreHint": "Predict the score including extra time. If it goes to penalties, a draw is the correct call.",
     "teamsTbd": "Teams to be decided — enter your score once both sides are known.",
     "selectAdvances": "Pick who you think will advance to the next round.",
     "selectWinnerIfNotDraw": "Pick who you think will advance to the next round.",

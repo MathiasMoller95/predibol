@@ -126,21 +126,6 @@ function computePointsForPrediction(
   return pts;
 }
 
-/** Knockout 90-min draw + correct advancing side. Uses points_correct_result as bonus; could be its own column later. */
-function knockoutAdvancingBonus(
-  H: number,
-  A: number,
-  phase: MatchPhase,
-  actualAdvancing: string | null,
-  p: PredictionRow,
-  g: GroupRow
-): number {
-  if (!isKnockoutPhase(phase) || H !== A || !actualAdvancing) return 0;
-  if (p.predicted_home !== p.predicted_away) return 0;
-  const pred = (p.predicted_advancing ?? "").trim();
-  if (!pred || pred !== actualAdvancing.trim()) return 0;
-  return g.points_correct_result;
-}
 
 function resolveActualAdvancingTeam(m: MatchRow, H: number, A: number): string | null {
   if (H !== A) {
@@ -270,7 +255,6 @@ Deno.serve(async (req: Request) => {
       p.predicted_winner,
       g
     );
-    pts += knockoutAdvancingBonus(H, A, m.phase, actualAdvancing, p, g);
 
     const { data: ddPower } = await supabase
       .from("power_usage")
@@ -379,18 +363,7 @@ Deno.serve(async (req: Request) => {
       );
 
       // Calculate AI points for this match
-      let aiPts = computePointsForPrediction(H, A, m.phase, aiHome, aiAway, null, g);
-      aiPts += knockoutAdvancingBonus(H, A, m.phase, actualAdvancing, {
-        id: "",
-        user_id: AI_PLAYER_ID,
-        group_id: gid,
-        match_id: matchId,
-        predicted_home: aiHome,
-        predicted_away: aiAway,
-        predicted_winner: null,
-        predicted_advancing: null,
-        points_earned: 0,
-      }, g);
+      const aiPts = computePointsForPrediction(H, A, m.phase, aiHome, aiAway, null, g);
 
       // Upsert AI prediction row for audit trail
       await supabase.from("predictions").upsert(

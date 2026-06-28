@@ -569,9 +569,9 @@
     },
     "knockout": {
       "title": "🏟️ Fase eliminatória",
-      "description": "Nas eliminatórias, preveja o placar dos 90 minutos E quem avança para a próxima fase. Não há empate — alguém sempre avança (prorrogação ou pênaltis se necessário).",
-      "drawRule": "Se prever empate aos 90', também deve escolher quem vence na prorrogação ou nos pênaltis.",
-      "bonus": "Bônus: acertar o time que avança rende {points} pontos extras — seja empate ou não."
+      "description": "Preveja o placar ao final da prorrogação — só isso. Os pênaltis não alteram o placar, então um jogo decidido nos pênaltis conta como empate (ex: 1-1).",
+      "drawRule": "Se o jogo for decidido nos pênaltis, o placar fica como o empate (ex: 1-1). Prever esse empate é a resposta certa.",
+      "bonus": "Não há empate em eliminatórias em termos de quem avança — mas um empate ao final da prorrogação (decidido nos pênaltis) é um placar válido."
     },
     "picks": {
       "title": "⭐ Campeão e mais",
@@ -853,6 +853,7 @@
     "advancesLabel": "Quem avança?",
     "advancesIfNotDraw": "Quem avança para a próxima fase? (inclui prorrogação e pênaltis)",
     "whoAdvances": "Quem vence o confronto? (prorrogação / pênaltis se empate aos 90')",
+    "knockoutScoreHint": "Preveja o placar incluindo a prorrogação. Se for para pênaltis, o empate é a resposta certa.",
     "teamsTbd": "Times a definir — informe o placar quando ambos forem conhecidos.",
     "selectAdvances": "Escolha qual time avança para a próxima fase.",
     "selectWinnerIfNotDraw": "Escolha qual time avança para a próxima fase.",
