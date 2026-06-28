@@ -1023,7 +1023,17 @@ export default function PredictForm({
                               />
 
                               {!lockPassed && (
-                                <p className="mt-3 text-xs text-slate-400">{t("knockoutScoreHint")}</p>
+                                <>
+                                  <p className="mt-3 text-xs text-slate-400">{t("knockoutScoreHint")}</p>
+                                  <button
+                                    type="button"
+                                    disabled={savingMatchId === match.id || !currentInput.predictedHome || !currentInput.predictedAway}
+                                    onClick={() => void saveSingleMatch(match)}
+                                    className="mt-3 w-full rounded-lg bg-gpri px-4 py-2 text-sm font-medium text-white hover:brightness-110 disabled:cursor-not-allowed disabled:bg-gpri/50"
+                                  >
+                                    {savingMatchId === match.id ? t("saveSaving") : t("saveButton")}
+                                  </button>
+                                </>
                               )}
                             </>
                           )}
@@ -1157,7 +1167,17 @@ export default function PredictForm({
                       ) : null}
 
                       {ko && !tbd && !lockPassed ? (
-                        <p className="mt-3 text-xs text-slate-400">{t("knockoutScoreHint")}</p>
+                        <>
+                          <p className="mt-3 text-xs text-slate-400">{t("knockoutScoreHint")}</p>
+                          <button
+                            type="button"
+                            disabled={savingMatchId === match.id || !currentInput.predictedHome || !currentInput.predictedAway}
+                            onClick={() => void saveSingleMatch(match)}
+                            className="mt-3 w-full rounded-lg bg-gpri px-4 py-2 text-sm font-medium text-white hover:brightness-110 disabled:cursor-not-allowed disabled:bg-gpri/50"
+                          >
+                            {savingMatchId === match.id ? t("saveSaving") : t("saveButton")}
+                          </button>
+                        </>
                       ) : null}
 
                       {lockPassed ? (
