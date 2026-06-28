@@ -209,13 +209,6 @@ function toPayload(match: MatchRecord, input: PredictionInput | undefined): Pred
   };
 }
 
-function validateKnockoutDraw(): boolean {
-  return false;
-}
-
-function validateKnockoutNeedsWinner(): boolean {
-  return false;
-}
 
 export default function PredictForm({
   upcomingMatches,
@@ -586,14 +579,6 @@ export default function PredictForm({
 
   async function saveSingleMatch(match: MatchRecord) {
     const input = inputs[match.id];
-    if (validateKnockoutDraw(match, input)) {
-      showToast(t("selectAdvances"), "error");
-      return;
-    }
-    if (validateKnockoutNeedsWinner(match, input)) {
-      showToast(t("selectWinnerIfNotDraw"), "error");
-      return;
-    }
     const payload = toPayload(match, input);
     if (!payload) return;
     setSavingMatchId(match.id);
@@ -619,16 +604,6 @@ export default function PredictForm({
     event.preventDefault();
     const nowDate = new Date();
     const due = upcomingMatches.filter((match) => new Date(match.locked_at) > nowDate);
-    for (const match of due) {
-      if (validateKnockoutDraw(match, inputs[match.id])) {
-        showToast(t("selectAdvances"), "error");
-        return;
-      }
-      if (validateKnockoutNeedsWinner(match, inputs[match.id])) {
-        showToast(t("selectWinnerIfNotDraw"), "error");
-        return;
-      }
-    }
     const payload = due
       .map((match) => toPayload(match, inputs[match.id]))
       .filter((p): p is PredictionPayload => p !== null);
