@@ -198,23 +198,8 @@ function toPayload(match: MatchRecord, input: PredictionInput | undefined): Pred
   ) {
     return null;
   }
-  const ko = isKnockoutPhase(match.phase);
-  let predictedWinner: "home" | "away" | "draw" | null = null;
-  let predictedAdvancing: string | null = null;
-  if (!ko) {
-    predictedWinner = null;
-    predictedAdvancing = null;
-  } else if (predictedHome === predictedAway) {
-    predictedAdvancing = input.predictedAdvancing?.trim() || null;
-    if (!predictedAdvancing) return null;
-    predictedWinner = null;
-  } else {
-    predictedAdvancing = null;
-    if (input.predictedWinner !== "home" && input.predictedWinner !== "away") {
-      return null;
-    }
-    predictedWinner = input.predictedWinner;
-  }
+  const predictedWinner: "home" | "away" | "draw" | null = null;
+  const predictedAdvancing: string | null = null;
   return {
     matchId: match.id,
     predictedHome,
@@ -224,26 +209,12 @@ function toPayload(match: MatchRecord, input: PredictionInput | undefined): Pred
   };
 }
 
-function validateKnockoutDraw(match: MatchRecord, input: PredictionInput | undefined): boolean {
-  if (!input || !isKnockoutPhase(match.phase)) return false;
-  if (isTeamsTbd(match)) return false;
-  if (input.predictedHome === "" || input.predictedAway === "") return false;
-  const h = Number(input.predictedHome);
-  const a = Number(input.predictedAway);
-  if (Number.isNaN(h) || Number.isNaN(a) || h < 0 || a < 0) return false;
-  if (h === a && !input.predictedAdvancing?.trim()) return true;
+function validateKnockoutDraw(_match: MatchRecord, _input: PredictionInput | undefined): boolean {
   return false;
 }
 
-function validateKnockoutNeedsWinner(match: MatchRecord, input: PredictionInput | undefined): boolean {
-  if (!input || !isKnockoutPhase(match.phase)) return false;
-  if (isTeamsTbd(match)) return false;
-  if (input.predictedHome === "" || input.predictedAway === "") return false;
-  const h = Number(input.predictedHome);
-  const a = Number(input.predictedAway);
-  if (Number.isNaN(h) || Number.isNaN(a) || h < 0 || a < 0) return false;
-  if (h === a) return false;
-  return input.predictedWinner !== "home" && input.predictedWinner !== "away";
+function validateKnockoutNeedsWinner(_match: MatchRecord, _input: PredictionInput | undefined): boolean {
+  return false;
 }
 
 export default function PredictForm({
