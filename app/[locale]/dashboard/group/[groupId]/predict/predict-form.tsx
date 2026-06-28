@@ -940,14 +940,6 @@ export default function PredictForm({
                       const lockPassed = new Date(match.locked_at) <= new Date();
                       const currentInput = inputs[match.id] ?? { ...emptyPredictionInput };
                       const tbd = isTeamsTbd(match);
-                      const hN = Number(currentInput.predictedHome);
-                      const aN = Number(currentInput.predictedAway);
-                      const isDraw =
-                        currentInput.predictedHome !== "" &&
-                        currentInput.predictedAway !== "" &&
-                        !Number.isNaN(hN) &&
-                        !Number.isNaN(aN) &&
-                        hN === aN;
 
                       const kMatchPowers = activePowers[match.id];
                       const kHasDD = kMatchPowers?.has("double_down");
@@ -1121,14 +1113,6 @@ export default function PredictForm({
                   const currentInput = inputs[match.id] ?? { ...emptyPredictionInput };
                   const ko = isKnockoutPhase(match.phase);
                   const tbd = isTeamsTbd(match);
-                  const hN = Number(currentInput.predictedHome);
-                  const aN = Number(currentInput.predictedAway);
-                  const isDraw =
-                    currentInput.predictedHome !== "" &&
-                    currentInput.predictedAway !== "" &&
-                    !Number.isNaN(hN) &&
-                    !Number.isNaN(aN) &&
-                    hN === aN;
 
                   return (
                     <div key={match.id} className="rounded-lg border border-dark-600 bg-dark-800 p-3">
