@@ -70,9 +70,8 @@ export default function ResultMatchCard({
       ? tr("breakdownDiffHit", { points: d.diffPts })
       : tr("breakdownDiffMiss"),
   );
-  const exactPtsTotal = d.exactPtsBase + d.knockoutWinnerPts;
   segments.push(
-    exactPtsTotal > 0 ? tr("breakdownExactHit", { points: exactPtsTotal }) : tr("breakdownExactMiss"),
+    d.hitExact ? tr("breakdownExactHit", { points: d.exactPtsBase }) : tr("breakdownExactMiss"),
   );
 
 

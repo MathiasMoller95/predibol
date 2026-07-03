@@ -95,10 +95,9 @@ function isKnockoutPhase(phase: MatchPhase): boolean {
 function computePointsForPrediction(
   H: number,
   A: number,
-  phase: MatchPhase,
+  _phase: MatchPhase,
   predHome: number,
   predAway: number,
-  predictedWinner: "home" | "away" | "draw" | null,
   g: GroupRow
 ): number {
   const actualResult = outcome(H, A);
@@ -111,17 +110,6 @@ function computePointsForPrediction(
   if (correctResult) pts += g.points_correct_result;
   if (correctDiff) pts += g.points_correct_difference;
   if (exactScore) pts += g.points_exact_score;
-
-  if (isKnockoutPhase(phase) && H !== A) {
-    const actualWinner: "home" | "away" = H > A ? "home" : "away";
-    if (
-      !exactScore &&
-      (predictedWinner === "home" || predictedWinner === "away") &&
-      predictedWinner === actualWinner
-    ) {
-      pts += g.points_exact_score;
-    }
-  }
 
   return pts;
 }
@@ -252,7 +240,6 @@ Deno.serve(async (req: Request) => {
       m.phase,
       p.predicted_home,
       p.predicted_away,
-      p.predicted_winner,
       g
     );
 
@@ -363,7 +350,7 @@ Deno.serve(async (req: Request) => {
       );
 
       // Calculate AI points for this match
-      const aiPts = computePointsForPrediction(H, A, m.phase, aiHome, aiAway, null, g);
+      const aiPts = computePointsForPrediction(H, A, m.phase, aiHome, aiAway, g);
 
       // Upsert AI prediction row for audit trail
       await supabase.from("predictions").upsert(

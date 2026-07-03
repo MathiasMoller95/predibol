@@ -58,8 +58,6 @@ export type TierBreakdown = {
   resultPts: number;
   diffPts: number;
   exactPtsBase: number;
-  /** Knockout-only: bonus when correct winner (non-exact score). Same pool as edge function. */
-  knockoutWinnerPts: number;
 };
 
 export function computeTierBreakdown(
@@ -80,24 +78,7 @@ export function computeTierBreakdown(
   const resultPts = hitResult ? g.points_correct_result : 0;
   const diffPts = hitDiff ? g.points_correct_difference : 0;
 
-  let exactPtsBase = 0;
-  let knockoutWinnerPts = 0;
-
-  if (isKnockoutPhase(phase)) {
-    if (hitExact) {
-      exactPtsBase = g.points_exact_score;
-    } else if (H !== A) {
-      const actualWinner: "home" | "away" = H > A ? "home" : "away";
-      if (
-        (pred.predicted_winner === "home" || pred.predicted_winner === "away") &&
-        pred.predicted_winner === actualWinner
-      ) {
-        knockoutWinnerPts = g.points_exact_score;
-      }
-    }
-  } else {
-    if (hitExact) exactPtsBase = g.points_exact_score;
-  }
+  const exactPtsBase = hitExact ? g.points_exact_score : 0;
 
   return {
     hitResult,
@@ -106,12 +87,11 @@ export function computeTierBreakdown(
     resultPts,
     diffPts,
     exactPtsBase,
-    knockoutWinnerPts,
   };
 }
 
 export function sumBreakdown(d: TierBreakdown): number {
-  return d.resultPts + d.diffPts + d.exactPtsBase + d.knockoutWinnerPts;
+  return d.resultPts + d.diffPts + d.exactPtsBase;
 }
 
 export function applyDoubleDown(baseTotal: number, hasDoubleDown: boolean): number {
