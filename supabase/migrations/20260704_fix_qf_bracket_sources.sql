@@ -24,6 +24,12 @@ WHERE id = '43c1a141-e14e-44ca-83cb-203c3389e43e';
 UPDATE matches SET home_team = 'Brazil', away_team = 'Norway', home_source = 'W-R16-2', away_source = 'W-R16-5'
 WHERE id = '6ed5c912-69a7-4c25-9bf7-a3e0f1c8f89e';
 
--- 1e7c8b30: Argentina vs TBD (was TBD vs Egypt; Argentina won R16-15, R16-16 still pending)
-UPDATE matches SET home_team = 'Argentina', away_team = 'TBD'
+-- 1e7c8b30: Argentina vs Egypt
+-- away_source was W-R16-16 (Colombia/Ghana), should be W-R16-14 (Egypt)
+UPDATE matches SET home_team = 'Argentina', away_team = 'Egypt', away_source = 'W-R16-14'
 WHERE id = '1e7c8b30-873d-425e-94c5-affeef99bf3d';
+
+-- 5dffbe98: Switzerland vs Colombia
+-- away_source was W-R16-14 (Egypt), should be W-R16-16 (Colombia/Ghana winner = Colombia)
+UPDATE matches SET away_team = 'Colombia', away_source = 'W-R16-16'
+WHERE id = '5dffbe98-aa6e-4089-82cb-27a578028b8d';
