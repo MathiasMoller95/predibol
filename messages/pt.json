@@ -455,9 +455,9 @@
       "bracket": "🏟️ Chave",
       "bracketStatus": {
         "comingSoon": "Em breve",
-        "roundOf16": "Oitavas de final",
-        "quarterFinal": "Quartas de final",
-        "semiFinal": "Semifinais",
+        "roundOf16": "Fase de 32",
+        "quarterFinal": "Oitavas de final",
+        "semiFinal": "Quartas de final",
         "final": "Final",
         "thirdPlace": "Terceiro lugar",
         "complete": "Concluído"
@@ -858,11 +858,11 @@
     "selectAdvances": "Escolha qual time avança para a próxima fase.",
     "selectWinnerIfNotDraw": "Escolha qual time avança para a próxima fase.",
     "phase": {
-      "round_of_16": "Oitavas de final",
-      "quarter_final": "Quartas de final",
-      "quarter": "Quartas de final",
-      "semi_final": "Semifinais",
-      "semi": "Semifinais",
+      "round_of_16": "Fase de 32",
+      "quarter_final": "Oitavas de final",
+      "quarter": "Oitavas de final",
+      "semi_final": "Quartas de final",
+      "semi": "Quartas de final",
       "third_place": "Terceiro lugar",
       "final": "Final"
     },
@@ -930,12 +930,12 @@
     "thirdPlace": "Terceiro lugar",
     "final": "Final",
     "scrollHint": "Role na horizontal para ver a chave completa.",
-    "phaseRoundOf16": "Oitavas de final",
-    "phaseQuarter": "Quartas de final",
-    "phaseSemi": "Semifinais",
+    "phaseRoundOf16": "Fase de 32",
+    "phaseQuarter": "Oitavas de final",
+    "phaseSemi": "Quartas de final",
     "tabActual": "Resultados reais",
     "tabProjection": "Minha projeção",
-    "projectionDisclaimer": "As oitavas são preenchidas com seus palpites da fase de grupos. As fases seguintes seguem o chaveamento oficial."
+    "projectionDisclaimer": "A Fase de 32 é preenchida com seus palpites da fase de grupos. As fases seguintes seguem o chaveamento oficial."
   },
   "AdminPage": {
     "title": "Painel administrativo",

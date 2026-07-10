@@ -456,8 +456,8 @@
       "bracketStatus": {
         "comingSoon": "Próximamente",
         "roundOf16": "Octavos de final",
-        "quarterFinal": "Cuartos de final",
-        "semiFinal": "Semifinales",
+        "quarterFinal": "Octavos de final",
+        "semiFinal": "Cuartos de final",
         "final": "Final",
         "thirdPlace": "Tercer puesto",
         "complete": "Completo"
@@ -858,11 +858,11 @@
     "selectAdvances": "Elige qué equipo avanza a la siguiente ronda.",
     "selectWinnerIfNotDraw": "Elige qué equipo avanza a la siguiente ronda.",
     "phase": {
-      "round_of_16": "Octavos de final",
-      "quarter_final": "Cuartos de final",
-      "quarter": "Cuartos de final",
-      "semi_final": "Semifinales",
-      "semi": "Semifinales",
+      "round_of_16": "Ronda de 32",
+      "quarter_final": "Octavos de final",
+      "quarter": "Octavos de final",
+      "semi_final": "Cuartos de final",
+      "semi": "Cuartos de final",
       "third_place": "Tercer puesto",
       "final": "Final"
     },
@@ -930,12 +930,12 @@
     "thirdPlace": "Tercer puesto",
     "final": "Final",
     "scrollHint": "Desplázate en horizontal para ver el cuadro completo.",
-    "phaseRoundOf16": "Octavos de final",
-    "phaseQuarter": "Cuartos de final",
-    "phaseSemi": "Semifinales",
+    "phaseRoundOf16": "Ronda de 32",
+    "phaseQuarter": "Octavos de final",
+    "phaseSemi": "Cuartos de final",
     "tabActual": "Resultados reales",
     "tabProjection": "Mi proyección",
-    "projectionDisclaimer": "Los octavos se rellenan con tus pronósticos de fase de grupos. Las rondas siguientes siguen el cuadro oficial."
+    "projectionDisclaimer": "La Ronda de 32 se rellena con tus pronósticos de fase de grupos. Las rondas siguientes siguen el cuadro oficial."
   },
   "AdminPage": {
     "title": "Panel de administracion",
