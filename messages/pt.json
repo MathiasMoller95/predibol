@@ -862,7 +862,7 @@
       "quarter_final": "Oitavas de final",
       "quarter": "Oitavas de final",
       "semi_final": "Quartas de final",
-      "semi": "Quartas de final",
+      "semi": "Semifinais",
       "third_place": "Terceiro lugar",
       "final": "Final"
     },
@@ -933,6 +933,7 @@
     "phaseRoundOf16": "Fase de 32",
     "phaseQuarter": "Oitavas de final",
     "phaseSemi": "Quartas de final",
+    "phaseSemiReal": "Semifinais",
     "tabActual": "Resultados reais",
     "tabProjection": "Minha projeção",
     "projectionDisclaimer": "A Fase de 32 é preenchida com seus palpites da fase de grupos. As fases seguintes seguem o chaveamento oficial."

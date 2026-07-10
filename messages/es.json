@@ -862,7 +862,7 @@
       "quarter_final": "Octavos de final",
       "quarter": "Octavos de final",
       "semi_final": "Cuartos de final",
-      "semi": "Cuartos de final",
+      "semi": "Semifinales",
       "third_place": "Tercer puesto",
       "final": "Final"
     },
@@ -933,6 +933,7 @@
     "phaseRoundOf16": "Ronda de 32",
     "phaseQuarter": "Octavos de final",
     "phaseSemi": "Cuartos de final",
+    "phaseSemiReal": "Semifinales",
     "tabActual": "Resultados reales",
     "tabProjection": "Mi proyección",
     "projectionDisclaimer": "La Ronda de 32 se rellena con tus pronósticos de fase de grupos. Las rondas siguientes siguen el cuadro oficial."

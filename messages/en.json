@@ -862,7 +862,7 @@
       "quarter_final": "Round of 16",
       "quarter": "Round of 16",
       "semi_final": "Quarter-finals",
-      "semi": "Quarter-finals",
+      "semi": "Semi-finals",
       "third_place": "Third place",
       "final": "Final"
     },
@@ -933,6 +933,7 @@
     "phaseRoundOf16": "Round of 32",
     "phaseQuarter": "Round of 16",
     "phaseSemi": "Quarter-finals",
+    "phaseSemiReal": "Semi-finals",
     "tabActual": "Actual results",
     "tabProjection": "My projection",
     "projectionDisclaimer": "Round of 32 is filled from your group-stage predictions. Later rounds stay as in the official bracket."

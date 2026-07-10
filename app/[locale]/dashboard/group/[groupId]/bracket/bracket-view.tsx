@@ -49,7 +49,7 @@ type Props = {
 const NODE = BRACKET_NODE_HEIGHT;
 const GAP = BRACKET_NODE_GAP;
 
-const PHASE_SECTION_ORDER = ["round_of_16", "quarter_final", "semi_final", "final", "third_place"] as const;
+const PHASE_SECTION_ORDER = ["round_of_16", "quarter_final", "semi_final", "semi", "final", "third_place"] as const;
 
 function phaseSectionLabel(t: ReturnType<typeof useTranslations<"Bracket">>, phase: string): string {
   switch (phase) {
@@ -59,6 +59,8 @@ function phaseSectionLabel(t: ReturnType<typeof useTranslations<"Bracket">>, pha
       return t("phaseQuarter");
     case "semi_final":
       return t("phaseSemi");
+    case "semi":
+      return t("phaseSemiReal");
     case "final":
       return t("final");
     case "third_place":
